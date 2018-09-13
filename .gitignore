@@ -1,0 +1,14 @@
+
+## Django ##
+venv
+*.sqlite3
+.idea
+*.pyc
+*.log
+*.pot
+__pychache__/
+local_settings.py
+
+/media
+/static
+/src

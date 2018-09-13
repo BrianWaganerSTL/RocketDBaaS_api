@@ -1,0 +1,13 @@
+dj-static==0.0.6
+Django==2.1.1
+django-core==1.4.1
+django-filter==2.0.0
+djangorestframework==3.8.2
+djangorestframework-filters==0.10.2
+env==0.1.0
+gunicorn==19.9.0
+Markdown==2.6.11
+Pillow==5.2.0
+psycopg2==2.7.5
+pytz==2018.5
+static3==0.7.0
