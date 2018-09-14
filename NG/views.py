@@ -27,22 +27,17 @@ def environments(request):
 from django.shortcuts import render
 
 class PoolServerViewSet(viewsets.ModelViewSet):
-    queryset = PoolServer.objects.all()
+    queryset = PoolServer.objects.filter(statusInPool__exact=PoolServer.StatusInPoolChoices.Available).order_by('createdDttm')
     serializer_class = PoolServerSerializer
-    search_fields =('serverName','serverIp','dbms','cpu')
-    ordering_fields = '__all__'
-    ordering = ('-created_dttm',)
-    lookup_field = ('serverName')
-    permission_classes = [ ]
+    permission_classes = [AllowAny,]
+#     queryset = PoolServer.objects.all()
+#     serializer_class = PoolServerSerializer
+#     search_fields =('serverName','serverIp','dbms','cpu')
+#     ordering_fields = '__all__'
+#     ordering = ('-created_dttm',)
+#     lookup_field = ('serverName')
+#     permission_classes = [ ]
 
-# class PoolServer(Model):
-#     serverName = CharField(max_length=30, null=False)
-#     serverIp = CharField(max_length=14, null=False)
-#     dbms = CharField(choices=DBMS_TYPES, max_length=10, null=False)
-#     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-#     memGigs = DecimalField(decimal_places=1, max_digits=3, null=False)
-#     dbGigs = DecimalField(decimal_places=2, max_digits=4, null=False)
-#     dataCenter = CharField(max_length=20, null=False)
-#     activeSw = BooleanField(null=False)
-#     createdDttm = DateTimeField(editable=False, auto_now_add=True)
-#     updatedDttm = DateTimeField(auto_now=True)
+    # def get_queryset(self):
+      # poolServers = self.request.query_params.items() #.get('statusInPool', PoolServer.StatusInPoolChoices.AVAILABLE)
+      # return poolServers

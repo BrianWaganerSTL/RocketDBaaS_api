@@ -2,23 +2,29 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion
 from django.utils import timezone
+from djchoices import DjangoChoices, ChoiceItem
 
-
-DBMS_TYPES = (
-    ('PostgreSQL', 'PostgreSQL'),
-    ('MongoDB', 'MongoDB'),
-)
+class DbmsTypes(DjangoChoices):
+    NULL = ChoiceItem("")
+    PostgreSQL = ChoiceItem()
+    MongoDB = ChoiceItem()
 
 
 class PoolServer(Model):
+    class StatusInPoolChoices(DjangoChoices):
+        NULL = ChoiceItem("")
+        Available = ChoiceItem("Available")
+        Locked = ChoiceItem("Locked for Build")
+        Used = ChoiceItem("Used")
+
     serverName = CharField(max_length=30, null=False)
     serverIp = CharField(max_length=14, null=False)
-    dbms = CharField(choices=DBMS_TYPES, max_length=10, null=False)
+    dbms = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     memGigs = DecimalField(decimal_places=1, max_digits=3, null=False)
     dbGigs = DecimalField(decimal_places=2, max_digits=4, null=False)
     dataCenter = CharField(max_length=20, null=False)
-    activeSw = BooleanField(null=False)
+    statusInPool = CharField(max_length=10, null=False, choices=StatusInPoolChoices.choices)
     createdDttm = DateTimeField(editable=False, auto_now_add=True)
     updatedDttm = DateTimeField(auto_now=True)
 
@@ -60,7 +66,7 @@ class Application(Model):
 
 class Cluster(Model):
     clusterName = CharField(max_length=30, null=False)
-    dbms = CharField(choices=DBMS_TYPES, max_length=10, null=False)
+    dbms = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
     environment = ForeignKey(Environment, on_delete=deletion.ProtectedError, null=False)
     requestedCpu = DecimalField(decimal_places=1, max_digits=3, null=False)

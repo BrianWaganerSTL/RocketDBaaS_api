@@ -1,5 +1,7 @@
+cluster==1.4.1.post1
 dj-static==0.0.6
 Django==2.1.1
+django-choices==1.6.1
 django-core==1.4.1
 django-filter==2.0.0
 djangorestframework==3.8.2

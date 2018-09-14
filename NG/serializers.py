@@ -6,4 +6,4 @@ from .models import (
 class PoolServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('serverName', 'serverIp', 'dbms', 'cpu', 'memGigs', 'dbGigs', 'dataCenter', 'activeSw', 'createdDttm', 'updatedDttm' )
+        fields = ('serverName', 'serverIp', 'dbms', 'cpu', 'memGigs', 'dbGigs', 'dataCenter', 'statusInPool', 'createdDttm', 'updatedDttm' )
