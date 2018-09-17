@@ -19,7 +19,7 @@ class PoolServer(Model):
 
     serverName = CharField(max_length=30, null=False)
     serverIp = CharField(max_length=14, null=False)
-    dbms = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
+    dbmsType = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     memGigs = DecimalField(decimal_places=1, max_digits=3, null=False)
     dbGigs = DecimalField(decimal_places=2, max_digits=4, null=False)
@@ -27,9 +27,6 @@ class PoolServer(Model):
     statusInPool = CharField(max_length=10, null=False, choices=StatusInPoolChoices.choices)
     createdDttm = DateTimeField(editable=False, auto_now_add=True)
     updatedDttm = DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.serverName
 
 
 class Environment(Model):
@@ -44,8 +41,8 @@ class Environment(Model):
 class Contact(Model):
     contactName = CharField(max_length=60, null=False)
     contactType = CharField(max_length=30)
-    email = EmailField
-    phone = CharField(max_length=15)
+    contactEmail = EmailField
+    contactPhone = CharField(max_length=15)
     activeSw = BooleanField(null=False)
     createdDttm = DateTimeField(editable=False, auto_now_add=True)
     updatedDttm = DateTimeField(auto_now=True)
@@ -66,13 +63,13 @@ class Application(Model):
 
 class Cluster(Model):
     clusterName = CharField(max_length=30, null=False)
-    dbms = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
+    dbmsType = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
     environment = ForeignKey(Environment, on_delete=deletion.ProtectedError, null=False)
-    requestedCpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-    requestedMemGigs = DecimalField(decimal_places=1, max_digits=3, null=False)
-    requestedDbGigs = DecimalField(decimal_places=2, max_digits=4, null=False)
-    haPort = IntegerField(validators=[MaxValueValidator(9999)])
+    requestedCpu = IntegerField(validators=[MinValueValidator(2),MaxValueValidator(14)], null=False)
+    requestedMemGigs = IntegerField(validators=[MinValueValidator(2),MaxValueValidator(64)], null=False)
+    requestedDbGigs = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(102400)], null=False)
+    haPort = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(65535)])
     tlsEnabled = BooleanField(null=False)
     backupRetentionDays = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(30)], null=False)
     health = CharField(max_length=20, null=False)

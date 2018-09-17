@@ -3,7 +3,10 @@ from .models import (
     PoolServer
 )
 
-class PoolServerSerializer(serializers.ModelSerializer):
+class LockPoolServersSerializer (serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('serverName', 'serverIp', 'dbms', 'cpu', 'memGigs', 'dbGigs', 'dataCenter', 'statusInPool', 'createdDttm', 'updatedDttm' )
+        fields = ('serverName', 'serverIp', 'dbmsType', 'cpu', 'memGigs', 'dbGigs',
+                  'dataCenter', 'statusInPool', 'createdDttm', 'updatedDttm' )
+        extra_kwargs = {
+            'url': {'lookup_field': 'dbmsType'}}

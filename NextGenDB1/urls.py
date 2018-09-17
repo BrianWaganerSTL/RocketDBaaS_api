@@ -17,13 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
-
-from NG.views import PoolServerViewSet
+from NG.views import LockPoolServersViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'poolServers', PoolServerViewSet)
+router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+   # path('api/dbms/<dbmsType>/poolServers', PoolServerViewSet)
 ]
