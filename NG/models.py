@@ -4,7 +4,7 @@ from django.db.models import Model, CharField, DecimalField, BooleanField, DateT
 from django.utils import timezone
 from djchoices import DjangoChoices, ChoiceItem
 
-class DbmsTypes(DjangoChoices):
+class DbmsTypeChoices(DjangoChoices):
     NULL = ChoiceItem("")
     PostgreSQL = ChoiceItem()
     MongoDB = ChoiceItem()
@@ -19,7 +19,7 @@ class PoolServer(Model):
 
     serverName = CharField(max_length=30, null=False)
     serverIp = CharField(max_length=14, null=False)
-    dbmsType = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
+    dbmsType = CharField(max_length=10, null=False, choices=DbmsTypeChoices.choices)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     memGigs = DecimalField(decimal_places=1, max_digits=3, null=False)
     dbGigs = DecimalField(decimal_places=2, max_digits=4, null=False)
@@ -63,13 +63,13 @@ class Application(Model):
 
 class Cluster(Model):
     clusterName = CharField(max_length=30, null=False)
-    dbmsType = CharField(choices=DbmsTypes.choices, max_length=10, null=False)
+    dbmsType = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
     environment = ForeignKey(Environment, on_delete=deletion.ProtectedError, null=False)
     requestedCpu = IntegerField(validators=[MinValueValidator(2),MaxValueValidator(14)], null=False)
     requestedMemGigs = IntegerField(validators=[MinValueValidator(2),MaxValueValidator(64)], null=False)
     requestedDbGigs = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(102400)], null=False)
-    haPort = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(65535)])
+    haPort = IntegerField(validators=[MinValueValidator(1024),MaxValueValidator(65535)])
     tlsEnabled = BooleanField(null=False)
     backupRetentionDays = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(30)], null=False)
     health = CharField(max_length=20, null=False)

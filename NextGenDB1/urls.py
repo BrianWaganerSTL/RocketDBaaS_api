@@ -17,13 +17,23 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
-from NG.views import LockPoolServersViewSet
+from NG.views import *
+from NG.controllers import *
 
-router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
+router = routers.DefaultRouter()
+#router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
+router.register(r'MyPoolServers', MyPoolServersViewSet)
 
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('api/', admin.site.urls),
+#     # path('api/', include(router.urls)),
+#     path('api/ClaimPoolServers', ClaimPoolServers),
+#     path('api/profile/<int:NeededServers>/', profile),
+#     path('api/profile/', profile),
+# ]
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-   # path('api/dbms/<dbmsType>/poolServers', PoolServerViewSet)
+     path('api/', include(router.urls)),
+     path('admin/', admin.site.urls),
+     path('^api-auth/', include('rest_framework.urls')),
 ]

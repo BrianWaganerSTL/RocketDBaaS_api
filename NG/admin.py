@@ -13,6 +13,7 @@ class PoolServer(admin.ModelAdmin):
     list_editable = ('statusInPool',)
     list_display_links = ('serverName',)
 
+
 @admin.register(ApplicationContact)
 class ApplicationContact(admin.ModelAdmin):
     list_display = ('application','contact')
