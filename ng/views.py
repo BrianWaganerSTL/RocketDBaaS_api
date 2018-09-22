@@ -14,20 +14,15 @@ from django.http import  request
 from django.http.response import HttpResponseNotAllowed
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from .models import PoolServer, Environment, DbmsTypeChoices
+from .models import PoolServer, DbmsTypeChoices
 from .serializers import *
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView
 from django.http import HttpResponse
-# def poolServer(request, dbmsType):
-#     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbmsType)
+# def poolServer(request, dbms_type):
+#     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbms_type)
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
-
-
-def environments(request):
-    environments = Environment.objects.all()
-    return render(request, 'environment.html', {'environment':environments})
 
 
 def profile(request, NeededServers=3):
@@ -35,7 +30,7 @@ def profile(request, NeededServers=3):
 
 
 # .filter(statusInPool__exact=PoolServer.StatusInPoolChoices.Available) \
-# .filter(dbmsType__iexact=PoolServer.dbmsType) \
+# .filter(dbmsType__iexact=PoolServer.dbms_type) \
 
 
 
@@ -51,16 +46,16 @@ class LockPoolServersViewSet(viewsets.ModelViewSet):
     queryset = PoolServer.objects.all()
     serializer_class = LockPoolServersSerializer
     permission_classes = [AllowAny,]
-    # lookup_field = ('serverName')
+    # lookup_field = ('server_name')
 #     queryset = PoolServer.objects.all()
-#     search_fields =('serverName','serverIp','dbmsType','cpu')
+#     search_fields =('server_name','server_ip','dbms_type','cpu')
 #     ordering_fields = '__all__'
 #     ordering = ('-created_dttm',)
 #     permission_classes = [ ]
 
     # def __init__(self):
 
-    # self.dbmsType = dbmsType
+    # self.dbms_type = dbms_type
     #self.poolServersNeeded = poolServersNeeded
 
     # def get_queryset(self):
@@ -69,13 +64,13 @@ class LockPoolServersViewSet(viewsets.ModelViewSet):
     def poolserver_list(self,   poolServersNeeded):
         queryset = PoolServer.objects.filter(poolServersNeeded__=poolServersNeeded)
         # def detail(self, request, *args, **kwargs):
-        # print("DbmsType="+dbmsType)
+        # print("DbmsType="+dbms_type)
         #print(self.lookup_url_kwarg)
         poolServersQS = self.get_queryset()
         serializer = LockPoolServersSerializer(poolServersQS, many=True)
 
-        #queryset = PoolServer.objects.filter(dbmsType__iexact=dbmsType).order_by('-createdDttm')
-        #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbmsType))
+        #queryset = PoolServer.objects.filter(dbmsType__iexact=dbms_type).order_by('-created_dttm')
+        #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbms_type))
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -83,10 +78,10 @@ class LockPoolServersViewSet(viewsets.ModelViewSet):
         print(self.lookup_url_kwarg)
         poolServersQS = self.get_queryset()
         serializer = LockPoolServersSerializer(poolServersQS, many=True)
-        #queryset = PoolServer.objects.filter(dbmsType__iexact=dbmsType).order_by('-createdDttm')
-        #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbmsType))
+        #queryset = PoolServer.objects.filter(dbmsType__iexact=dbms_type).order_by('-created_dttm')
+        #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbms_type))
         return Response(serializer.data)
-      # poolServers = self.request.query_params.items() #.get('statusInPool', PoolServer.StatusInPoolChoices.AVAILABLE)
+      # poolServers = self.request.query_params.items() #.get('status_in_pool', PoolServer.StatusInPoolChoices.AVAILABLE)
       # return poolServers
 
 class MyPoolServersViewSet(viewsets.ModelViewSet):

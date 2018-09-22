@@ -17,8 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
-from NG.views import *
-from NG.controllers import *
+from ng.views import *
+from ng.controllers import *
 
 router = routers.DefaultRouter()
 #router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
@@ -35,5 +35,5 @@ router.register(r'MyPoolServers', MyPoolServersViewSet)
 urlpatterns = [
      path('api/', include(router.urls)),
      path('admin/', admin.site.urls),
-     path('^api-auth/', include('rest_framework.urls')),
+     path('api-auth/', include('rest_framework.urls')),
 ]
