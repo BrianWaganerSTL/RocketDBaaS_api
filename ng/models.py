@@ -19,6 +19,12 @@ class DbmsTypeChoices(DjangoChoices):
     MongoDB = ChoiceItem()
 
 
+class DataCenterChoices(DjangoChoices):
+    STL = ChoiceItem("STL", "Saint Louis", 1)
+    CH = ChoiceItem("CH", "Chicago", 2)
+    PA = ChoiceItem("PA", "Piscataway", 3)
+
+
 class PoolServer(Model):
     class Meta:
         db_table = "pool_server"
@@ -35,7 +41,7 @@ class PoolServer(Model):
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     mem_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = CharField(max_length=20, null=False)
+    data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     status_in_pool = CharField(max_length=20, null=False, blank=True, choices=StatusInPoolChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -116,7 +122,7 @@ class Server(Model):
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     mem_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = CharField(max_length=20, null=False)
+    data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, blank=True)
     os_version = CharField(max_length=30)
     db_version = CharField(max_length=30)
@@ -141,3 +147,13 @@ class ApplicationContact(Model):
 
     def __str__(self):
         return self.application.application_name + ': ' + self.contact.contact_name
+
+
+# ========================================================================================
+
+class CreateDBInit(models.Model):
+    dbms_types = DbmsTypeChoices
+    data_centers = DataCenterChoices.labels
+    requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False)
+    requested_mem_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False)
+    requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False)

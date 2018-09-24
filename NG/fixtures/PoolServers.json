@@ -1,0 +1,130 @@
+[
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX01",
+      "server_ip": "10.1.1.101",
+      "dbms_type": "PostgreSQL",
+      "cpu": "2",
+      "mem_gb": "4",
+      "db_gb": "10",
+      "data_center": "STL",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX02",
+      "server_ip": "10.1.1.102",
+      "dbms_type": "PostgreSQL",
+      "cpu": "2",
+      "mem_gb": "4",
+      "db_gb": "10",
+      "data_center": "STL",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX03",
+      "server_ip": "10.1.1.103",
+      "dbms_type": "PostgreSQL",
+      "cpu": "2",
+      "mem_gb": "4",
+      "db_gb": "10",
+      "data_center": "CH",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX04",
+      "server_ip": "10.1.1.104",
+      "dbms_type": "MongoDB",
+      "cpu": "4",
+      "mem_gb": "8",
+      "db_gb": "20",
+      "data_center": "STL",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX05",
+      "server_ip": "10.1.1.105",
+      "dbms_type": "MongoDB",
+      "cpu": "4",
+      "mem_gb": "8",
+      "db_gb": "20",
+      "data_center": "STL",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "CHX06",
+      "server_ip": "10.1.1.106",
+      "dbms_type": "MongoDB",
+      "cpu": "2",
+      "mem_gb": "12",
+      "db_gb": "30",
+      "data_center": "CH",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "CHX07",
+      "server_ip": "10.1.1.104",
+      "dbms_type": "MongoDB",
+      "cpu": "4",
+      "mem_gb": "8",
+      "db_gb": "20",
+      "data_center": "CH",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  },
+  {
+    "model": "ng.PoolServer",
+    "fields": {
+      "environment": "SBX",
+      "server_name": "STLX08",
+      "server_ip": "10.1.1.108",
+      "dbms_type": "MongoDB",
+      "cpu": "4",
+      "mem_gb": "8",
+      "db_gb": "30",
+      "data_center": "STL",
+      "status_in_pool": "Available",
+      "created_dttm": "2018-01-16T08:16:59.844Z",
+      "updated_dttm": "2018-01-16T08:16:59.844Z"
+    }
+  }
+]

@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework import routers
 from ng.views import *
 from ng.controllers import *
 
-router = routers.DefaultRouter()
-#router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
-router.register(r'MyPoolServers', MyPoolServersViewSet)
+# router = routers.DefaultRouter()
+# #router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
+# router.register(r'MyPoolServers', MyPoolServersViewSet)
+#router.register(r'createDB', MyPoolServersViewSet)
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -33,7 +34,9 @@ router.register(r'MyPoolServers', MyPoolServersViewSet)
 #     path('api/profile/', profile),
 # ]
 urlpatterns = [
-     path('api/', include(router.urls)),
+     path('api/', include('ng.urls')),
+     path('ng/', include('ng.urls')),
      path('admin/', admin.site.urls),
      path('api-auth/', include('rest_framework.urls')),
+     # path('auth_api/', include('auth_api.urls'))
 ]
