@@ -15,6 +15,6 @@ router.register(r'servers', ClusterViewSet)
 
 urlpatterns = [
     url('home$', homeViews.homeView),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += router.urls
