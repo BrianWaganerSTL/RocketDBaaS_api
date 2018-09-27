@@ -4,8 +4,8 @@ from django.contrib.messages.middleware import *
 from rest_framework.response import Response
 from rest_framework import viewsets, request
 
-from .models import PoolServer, DbmsTypeChoices
-from .serializers import LockPoolServers2Serializer
+from ng.models import PoolServer, DbmsTypeChoices
+from ng.serializers.serializers import LockPoolServers2Serializer
 
 
 # def LockPoolServers(request, needed_servers='3'):

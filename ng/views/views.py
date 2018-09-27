@@ -17,8 +17,7 @@ from django.http import  request
 from django.http.response import HttpResponseNotAllowed
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from .models import PoolServer, DbmsTypeChoices, DataCenterChoices
-from .serializers import *
+from ng.serializers import *
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView
 from django.http import HttpResponse
@@ -26,6 +25,8 @@ from django.http import HttpResponse
 #     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbms_type)
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
+from ng.models import PoolServer, DbmsTypeChoices, DataCenterChoices
+from ng.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer, MyPoolServersSerializer
 
 
 def CreateDBInit(request):
@@ -74,7 +75,7 @@ class LockPoolServersViewSet(ModelViewSet):
         # print("DbmsType="+dbms_type)
         #print(self.lookup_url_kwarg)
         poolServersQS = self.get_queryset()
-        serializer = LockPoolServersSerializer(poolServersQS, many=True)
+        serializer = LockPoolServersSerializer(poolServersQS) #, many=True)
 
         #queryset = PoolServer.objects.filter(dbmsType__iexact=dbms_type).order_by('-created_dttm')
         #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbms_type))
@@ -84,7 +85,7 @@ class LockPoolServersViewSet(ModelViewSet):
         print(self.request.query_params)
         print(self.lookup_url_kwarg)
         poolServersQS = self.get_queryset()
-        serializer = LockPoolServersSerializer(poolServersQS, many=True)
+        serializer = LockPoolServersSerializer(poolServersQS) #, many=True)
         #queryset = PoolServer.objects.filter(dbmsType__iexact=dbms_type).order_by('-created_dttm')
         #poolServers = request.filter_queryset(PoolServer.objects.filter(dbmsType__iexact=dbms_type))
         return Response(serializer.data)

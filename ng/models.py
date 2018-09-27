@@ -85,6 +85,13 @@ class Cluster(Model):
     class Meta:
         db_table = "cluster"
 
+    class ClusterHealthChoices(DjangoChoices):
+        ClusterConfiguring = ChoiceItem("ClusterConfig", "Cluster Configuring", 1)
+        ClusterUp = ChoiceItem("ClusterUp","Nodes Up and Healthy", 2)
+        ClusterUpWithIssues = ChoiceItem("ClusterUpWithIssues","Primary is Up but something is Not Healthy", 3)
+        ClusterDown = ChoiceItem("ClusterDown", "Cluster is Down", 4)
+        ClusterOnLineMaint = ChoiceItem("ClusterOnLineMaint","On-Line Maintenance", 5)
+
     cluster_name = CharField(max_length=30, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
@@ -95,7 +102,7 @@ class Cluster(Model):
     haproxy_port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)])
     tls_enabled_sw = BooleanField(null=False)
     backup_retention_days = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], null=False)
-    health = CharField(max_length=20, null=False)
+    cluster_health = CharField(max_length=30, null=False, choices=ClusterHealthChoices.choices, default=ClusterHealthChoices.ClusterConfiguring)
     active_sw = BooleanField(null=False, default=True)
     eff_dttm = DateTimeField(default=timezone.now)
     exp_dttm = DateTimeField
@@ -109,12 +116,12 @@ class Cluster(Model):
 class Server(Model):
     class Meta:
         db_table="server"
+
     class NodeRoleChoices(DjangoChoices):
         Primary = ChoiceItem("Primary","Primary Node",1)
         SecondarySync = ChoiceItem("SecondarySync","Secondary Node - Replication is Synchronous",2)
         SecondaryAsync = ChoiceItem("SecondaryAsync","Secondary Node- Replication is Asynchronous",3)
         Arbiter = ChoiceItem("Arbiter","Arbiter Node",4)
-
 
     cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     server_name = CharField(max_length=30, null=False)

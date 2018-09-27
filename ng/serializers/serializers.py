@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import (
+from ng.models import (
     PoolServer
 )
 
@@ -23,4 +23,4 @@ class LockPoolServers2Serializer(serializers.ModelSerializer):
 class MyPoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb', 'data_center', 'status_in_pool')
+        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb', 'data_center', 'status_in_pool', 'cluster')
