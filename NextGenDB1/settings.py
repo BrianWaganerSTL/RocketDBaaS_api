@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'ng',
     'rest_framework',
     'django_filters',
@@ -123,13 +124,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'NextGenDB1/static/')
+    os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # Should not have pre slashes
+STATIC_ROOT = 'C:\Git_Repos\Django\statics'  # Should not have pre slashes
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 MEDIA_URL = '/images/'
-SRC_ROOT = os.path.join(BASE_DIR, 'src')
+SRC_ROOT = os.path.join(BASE_DIR, 'static/src')
 SRC_ROOT = '/src/'
 
 REST_FRAMEWORK = {

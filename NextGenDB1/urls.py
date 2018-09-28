@@ -20,6 +20,7 @@ from django.urls import path, include
 from rest_framework import routers
 from ng.views import *
 from ng.controllers import *
+from ng import urls
 
 # router = routers.DefaultRouter()
 # #router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)

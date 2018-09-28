@@ -1,14 +1,16 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    {%  load staticfiles %}
+<head>
+    {% load static %}
+    {% load humanize %}
+    {% load i18n %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="{% static 'icons/favicon.ico' %}">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Rocket DBaaS</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -22,7 +24,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="{% static 'icons/apple-icon-144x144.png' %}">
     <link rel="apple-touch-icon" sizes="152x152" href="{% static 'icons/apple-icon-152x152.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" sizes="192x192"  href="{% static 'icons/android-icon-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/android-icon-192x192.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="96x96" href="{% static 'icons/favicon-96x96.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon-16x16.png' %}">
@@ -31,60 +33,105 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-      <!-- Custom styles for this template -->
+    <!-- Custom styles for this template -->
     <link href="{% static 'css/examples/starter-template.css' %}" rel="stylesheet">
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <img class="navbar-brand" src="{% static 'icons/favicon-32x32.png' %}">
+    <a class="navbar-brand" href="#"> Rocket DBaaS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
+    </button>
 
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Overview <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pool Servers</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Create ...</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="#">Create Contact</a>
+                    <a class="dropdown-item" href="#">Create Application</a>
+                    <a class="dropdown-item" href="#">Create Alert Triggers</a>
+                </div>
+            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
-      </div>
-    </nav>
+    </div>
+</nav>
 
-    <main role="main" class="container">
+<main role="main" class="container">
 
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Cluster</th>
+            <th scope="col">DBMS</th>
+            <th scope="col">Application</th>
+            <th scope="col">Nodes</th>
+            <th scope="col">CPU (GB)</th>
+            <th scope="col">RAM (GB)</th>
+            <th scope="col">DB GB</th>
+            <th scope="col">Health</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for c in clusters %}
+            <tr>
+                    <th>
+                        <button href="#{{ c.cluster_name }}" class="btn btn-info btn-sm" data-toggle="collapse">+</button>
+                        {{ c.cluster_name }}
+                    </th>
+                <td>{{ c.dbms_type }}</td>
+                <td>{{ c.application }}</td>
+                <td>{{ c.server_set.all|length }}</td>
+                {# https://stackoverflow.com/questions/44773579/django-template-nested-for-loop#}
+                <td>{{ c.requested_cpu }}</td>
+                <td>{{ c.requested_mem_gb }}</td>
+                <td>{{ c.requested_db_gb|intcomma }}</td>
+                <td>{{ c.cluster_health }}</td>
+            </tr>
+            {% for s in c.server_set.all %}
+                <tr id="{{ c.cluster_name }}" style="height: 30px" class="collapse in">
+                    {% if s.node_role == 'Primary' %}
+                        <td style="font-size: .8rem; padding:.25rem; text-align:right" >
+                            <img class="img-responsive" src="{% static 'icons/primary.jpg' %}" height="20px"></td>
+                    {% else %}
+                        <td style="font-size: .8rem; padding:.25rem; text-align:right" >
+                            <img class="img-responsive" src="{% static 'icons/secondary.jpg' %}" height="20px"></td>
+                    {% endif %}
+                    <td style="font-size: .8rem; padding:.25rem">{{ s.data_center }} : {{ s.server_name }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
 
-    </main><!-- /.container -->
+</main><!-- /.container -->
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-slim.min.js' %}"><\/script>')</script>
-    <script src="{% static 'js/vendor/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  </body>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-slim.min.js' %}"><\/script>')</script>
+<script src="{% static 'js/vendor/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
 </html>
