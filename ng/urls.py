@@ -4,7 +4,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from NextGenDB1 import settings
-from ng.views import homeViews, cluster_details_view
+from ng.views import overview_view, cluster_details_view
 from ng.views.views import CreateDBInit, MyPoolServersViewSet
 from ng.views.createClusterViewSet import ClusterViewSet
 
@@ -14,7 +14,8 @@ router.register(r'clusters', ClusterViewSet)
 router.register(r'servers', ClusterViewSet)
 
 urlpatterns = [
-    url('home$', homeViews.homeView),
+    # path('home', homeViews.homeView, name='home'),
+    path('overview/', overview_view.overview, name='overview'),
     path('cluster_details/<cluster_name>', cluster_details_view.cluster_details, name='cluster_details'),
 ]# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
