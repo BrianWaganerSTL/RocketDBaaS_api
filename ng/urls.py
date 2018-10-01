@@ -16,7 +16,7 @@ router.register(r'servers', ClusterViewSet)
 urlpatterns = [
     # path('home', homeViews.homeView, name='home'),
     path('overview/', overview_view.overview, name='overview'),
-    path('cluster_details/<cluster_name>', cluster_details_view.cluster_details, name='cluster_details'),
+    path('cluster_details/<_cluster_id>', cluster_details_view.cluster_details, name='cluster_details'),
 ]# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += router.urls

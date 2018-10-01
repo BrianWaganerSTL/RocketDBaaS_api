@@ -1,116 +1,42 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block content %}#}
-<!doctype html>
-<html lang="en">
-<head>
-    {% load static %}
-    {% load humanize %}
-    {% load i18n %}
+{% extends "master_template.html" %}
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="{% static 'icons/favicon.ico' %}">
+{% load static %}
+{% load humanize %}
+{% load i18n %}
 
-    <title>Rocket DBaaS - Cluster Details</title>
+{% block title %}Rocket DBaaS - Cluster Details{% endblock %}
 
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+{% block main_content %}
+    {#    {% for c in cluster %}#}
+    <div class="card-title">{{ cluster.application.application_name }} </div>
+    <div>
+        <table class="table table-hover" style="background-color: #afd9ee">
+            <thead>
+            <tr style="background-color: #79aec8">
+                <th scope="col">Cluster</th>
+                <th scope="col">DBMS</th>
+                <th scope="col">Application</th>
+                <th scope="col">CPU (GB)</th>
+                <th scope="col">RAM (GB)</th>
+                <th scope="col">DB GB</th>
+                <th scope="col">Health</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ cluster.cluster_name }}</td>
+                <td>{{ cluster.dbms_type }}</td>
+                <td>{{ cluster.application }}</td>
+                <td>{{ cluster.requested_cpu }}</td>
+                <td>{{ cluster.requested_mem_gb }}</td>
+                <td>{{ cluster.requested_db_gb|intcomma }}</td>
+                <td>{{ cluster.cluster_health }}</td>
+            </tr>
 
-    <link rel="apple-touch-icon" sizes="57x57" href="{% static 'icons/apple-icon-57x57.png' %}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{% static 'icons/apple-icon-60x60.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'icons/apple-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{% static 'icons/apple-icon-76x76.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'icons/apple-icon-114x114.png' %}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'icons/apple-icon-120x120.png' %}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'icons/apple-icon-144x144.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'icons/apple-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-icon-180x180.png' %}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/android-icon-192x192.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'icons/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'icons/favicon-96x96.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'icons/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'icons/manifest.json' %}">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-
-    <!-- Custom styles for this template -->
-    <link href="{% static 'css/examples/starter-template.css' %}" rel="stylesheet">
-</head>
-
-<body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <img class="navbar-brand" src="{% static 'icons/favicon-32x32.png' %}">
-    <a class="navbar-brand" href="#"> Rocket DBaaS</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item ">
-                <a class="nav-link" href="home">Overview</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Details</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pool Servers</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">Create ...</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" href="#">Create Contact</a>
-                    <a class="dropdown-item" href="#">Create Application</a>
-                    <a class="dropdown-item" href="#">Create Alert Triggers</a>
-                    <a class="dropdown-item" href="#">Create Cluster</a>
-                </div>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+            </tbody>
+        </table>
     </div>
-</nav>
 
-<main role="main" class="container">
-    {% for c in cluster %}
-        <div class="card-title">{{ c.application.application_name }}</div>
-        <div>
-            <table class="table table-hover" style="background-color: #afd9ee">
-                <thead>
-                <tr style="background-color: #79aec8">
-                    <th scope="col">Cluster</th>
-                    <th scope="col">DBMS</th>
-                    <th scope="col">Application</th>
-                    <th scope="col">CPU (GB)</th>
-                    <th scope="col">RAM (GB)</th>
-                    <th scope="col">DB GB</th>
-                    <th scope="col">Health</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ c.cluster_name }}</td>
-                    <td>{{ c.dbms_type }}</td>
-                    <td>{{ c.application }}</td>
-                    <td>{{ c.requested_cpu }}</td>
-                    <td>{{ c.requested_mem_gb }}</td>
-                    <td>{{ c.requested_db_gb|intcomma }}</td>
-                    <td>{{ c.cluster_health }}</td>
-                </tr>
-
-                </tbody>
-            </table>
-        </div>
-    {% endfor %}
     <div style="background-color: #b1dfbb">
         <table class="table table-hover">
             <thead>
@@ -150,55 +76,86 @@
         </table>
     </div>
 
+    <link href="{% static 'css/tabs.css' %}" rel="stylesheet">
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#home">Overview</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#profile">Backups</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#profile">Restores</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#profile">Activities</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#profile">Notes</a>
-  </li>
-    <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#profile">Contacts</a>
-  </li>
-</ul>
-<div id="myTabContent" class="tab-content">
-  <div class="tab-pane fade show active" id="home">
-    <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-  </div>
-  <div class="tab-pane fade" id="profile">
-    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
-  </div>
-  <div class="tab-pane fade" id="dropdown1">
-    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork.</p>
-  </div>
-  <div class="tab-pane fade" id="dropdown2">
-    <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater.</p>
-  </div>
-</div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#Graphs">Graphs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Backups">Backups</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Restores">Restores</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Activities">Activities</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Notes">Notes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Contacts">Contacts</a>
+        </li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade show active" id="Graphs">
+            <h3>Graphs</h3>
+            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                synth
+                master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro
+                keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
+                placeat
+                salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+        </div>
+        <div class="tab-pane fade" id="Backups">
+            <h3>Backups</h3>
+            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
+                labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft
+                beer
+                twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+                cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+        </div>
+        <div class="tab-pane fade" id="Restores">
+            <h3>Restores</h3>
+            <p>Restores:Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo
+                retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer,
+                iphone
+                skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings
+                gentrify squid 8-bit cred pitchfork.</p>
+        </div>
+        <div class="tab-pane fade" id="Notes">
+            <h3>Notes</h3>
+            <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master
+                cleanse
+                gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore
+                wolf
+                cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
+                farm-to-table VHS viral locavore cosby sweater.</p>
+        </div>
+        <div class="tab-pane fade" id="Contacts">
+            <h3>Contacts</h3>
+            <table class="table table-hover">
+                <thead>
+                <tr style="background-color: #28a745">
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.contact_name }}</td>
+                        <td>contact.contact_email</td>
+                        <td>{{ contact.contact_phone }}</td>
+                        <td>{{ contact.contact_type }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-
-
-
-</main><!-- /.container -->
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-slim.min.js' %}"><\/script>')</script>
-<script src="{% static 'js/vendor/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-</body>
-</html>
+{% endblock %}
