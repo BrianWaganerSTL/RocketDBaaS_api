@@ -69,6 +69,6 @@ class Migration(migrations.Migration):
                           "  from application_contact ac, application a, contact c "
                           "  where ac.application_id = a.id "
                           "  and ac.contact_id = c.id "
-                          "  and ac.active_sw = 'TRUE'",
+                          "  and ac.active_sw = TRUE",
                           "drop view application_contacts_details_view",)
     ]

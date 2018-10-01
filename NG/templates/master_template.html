@@ -51,13 +51,13 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="Overview">Overview</a>
+                <a class="nav-link" href="{% url 'overview' %}">Overview</a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Click on the Cluster Name">
+            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Click on the Application->Cluster Name">
                 <a class="nav-link disabled" href="#">Details</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pool Servers</a>
+                <a class="nav-link" href="{%  url 'pool_servers' %}">Pool Servers</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown"

@@ -1,0 +1,44 @@
+{% extends "master_template.html" %}
+
+{% load static %}
+{% load humanize %}
+{% load i18n %}
+
+{% block title %}Rocket DBaaS - Pool Servers{% endblock %}
+
+{% block main_content %}
+    <div>
+        <table class="table table-hover" style="background-color: #eaf8ff">
+            <thead>
+            <tr style="background-color: #79aec8">
+                <th scope="col">Environment</th>
+                <th scope="col">Server Name</th>
+                <th scope="col">Server IP</th>
+                <th scope="col">DBMS</th>
+                <th scope="col">CPU (GB)</th>
+                <th scope="col">RAM (GB)</th>
+                <th scope="col">DB GB</th>
+                <th scope="col">DC</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ps in poolServers %}
+                <tr>
+                    <td>{{ ps.environment }}</td>
+                    <td>{{ ps.server_name }}</td>
+                    <td>{{ ps.server_ip }}</td>
+                    <td>{{ ps.dbms_type }}</td>
+                    <td>{{ ps.cpu }}</td>
+                    <td>{{ ps.mem_gb }}</td>
+                    <td>{{ ps.db_gb|intcomma }}</td>
+                    <td>{{ ps.data_center }}</td>
+                    <td>{{ ps.status_in_pool }}</td>
+                    <td>{{ ps.created_dttm }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
