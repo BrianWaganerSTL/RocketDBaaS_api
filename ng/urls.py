@@ -14,6 +14,7 @@ urlpatterns = [
     path('overview/', overview_view.overview, name='overview'),
     path('cluster_details/<_cluster_id>', cluster_details_view.cluster_details, name='cluster_details'),
     path('pool_servers/', pool_servers_views.pool_servers, name='pool_servers'),
+    path('', overview_view.overview, name='overview'),
 ]
 
 urlpatterns += router.urls

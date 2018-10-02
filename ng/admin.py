@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from django.contrib.admin.sites import AdminSite
+
 from .models import *
 
 
@@ -43,3 +45,5 @@ class Server(admin.ModelAdmin):
     list_select_related = ('cluster',)
     list_display_links = ('server_name',)
 
+AdminSite.site_title="Rocket DBaaS"
+AdminSite.site_header = 'Rocket DBaaS Administration'
