@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import get_object_or_404
 
-from ng.models import Cluster, Server, ApplicationContactsDetailsView
+from ng.models2 import Cluster, Server, ApplicationContactsDetailsView
 from ng.serializers.ClusterDetailsSerializer import ClusterDetailsSerializer
 
 def cluster_details(request, _cluster_id):

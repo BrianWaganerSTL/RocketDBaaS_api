@@ -3,7 +3,7 @@ from django.contrib.contenttypes import fields
 from django.db.models.fields import reverse_related
 from rest_framework import serializers
 # from rest_framework.serializers.ModelSerializer import build
-from ng.models import Cluster, Server, PoolServer
+from ng.models2 import Cluster, Server, PoolServer
 
 
 class ClusterSerializer(serializers.ModelSerializer):

@@ -25,7 +25,7 @@ from django.http import HttpResponse
 #     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbms_type)
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
-from ng.models import PoolServer, DbmsTypeChoices, DataCenterChoices
+from ng.models2 import PoolServer, DbmsTypeChoices, DataCenterChoices
 from ng.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer, MyPoolServersSerializer
 
 

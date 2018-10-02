@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from django.contrib.admin.sites import AdminSite
 
-from .models import *
+from .models2 import *
 
 
 @admin.register(PoolServer)

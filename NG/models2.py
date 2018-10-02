@@ -130,6 +130,9 @@ class Cluster(Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.cluster_name
+
 
 class Server(Model):
     class Meta:
