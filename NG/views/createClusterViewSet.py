@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser,)
-from ng.models import PoolServer, Cluster, Server
+from ng.models2 import PoolServer, Cluster, Server
 from ng.serializers.CreateClusterSerializer import ClusterSerializer, ServerSerializer, PoolServerSerializer
 from django.http import HttpResponse
 from django.shortcuts import render

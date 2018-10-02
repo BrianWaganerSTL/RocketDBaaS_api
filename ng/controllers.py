@@ -4,7 +4,7 @@ from django.contrib.messages.middleware import *
 from rest_framework.response import Response
 from rest_framework import viewsets, request
 
-from ng.models2 import PoolServer, DbmsTypeChoices
+from ng.models import PoolServer, DbmsTypeChoices
 from ng.serializers.serializers import LockPoolServers2Serializer
 
 
