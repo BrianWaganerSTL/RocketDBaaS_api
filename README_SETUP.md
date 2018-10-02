@@ -10,10 +10,19 @@ Don't forget to add the local_settings.py file right next to the settings.py fil
  * python3 manage.py runserver
 
 <h3>Install via PyCharm</h3>
-
+```
 CTRL+ALT+s
+```
 
 * Add Django
   * Set Settings to the settings.py in the RocketDBaaS/RocketDBaaS directory
 
 * Add venv
+
+<h3>Create a Application User so you can login</h3>
+```
+manage.py@RocketDBaaS > createsuperuser
+Username:  RocketDBaaS
+Email address:
+Password:  RocketDBaaS
+```
