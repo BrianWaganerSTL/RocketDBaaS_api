@@ -20,10 +20,10 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 
 from rest_framework import routers
-#from ng2.views import *
-from ng2.views import overview_view
-from ng2.controllers import *
-from ng2 import urls
+#from dbaas.views import *
+from dbaas.views import overview_view
+from dbaas.controllers import *
+from dbaas import urls
 
 # router = routers.DefaultRouter()
 # #router.register(r'dbms/mongoDB/lockPoolServers', LockPoolServersViewSet)
@@ -39,8 +39,8 @@ from ng2 import urls
 #     path('api/profile/', profile),
 # ]
 urlpatterns = [
-     path('api/', include('ng2.urls')),
-     path('ng2/', include('ng2.urls')),
+     path('api/', include('dbaas.urls')),
+     path('dbaas/', include('dbaas.urls')),
      path('admin/', admin.site.urls),
      path('api-auth/', include('rest_framework.urls')),
      path('', overview_view.overview),

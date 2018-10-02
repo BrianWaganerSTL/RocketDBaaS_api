@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ng2', '0006_backup_restore_serveractivities'),
+        ('dbaas', '0006_backup_restore_serveractivities'),
     ]
 
     operations = [

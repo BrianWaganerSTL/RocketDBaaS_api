@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ng2.models2 import Cluster, Server, ApplicationContact
+from dbaas.models import Cluster, Server, ApplicationContact
 
 class ClusterDetailsSerializer(serializers.ModelSerializer):
     class Meta:

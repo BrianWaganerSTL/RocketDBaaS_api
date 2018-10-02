@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import get_object_or_404
 
-from ng2.models2 import Cluster, Server
+from dbaas.models import Cluster, Server
 
 def overview(request):
 
