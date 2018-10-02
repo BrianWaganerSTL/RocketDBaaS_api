@@ -17,7 +17,7 @@ from django.http import  request
 from django.http.response import HttpResponseNotAllowed
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from ng.serializers import *
+from ng2.serializers import *
 from django.views.generic.base import ContextMixin
 from django.views.generic import ListView
 from django.http import HttpResponse
@@ -25,8 +25,8 @@ from django.http import HttpResponse
 #     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbms_type)
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
-from ng.models2 import PoolServer, DbmsTypeChoices, DataCenterChoices
-from ng.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer, MyPoolServersSerializer
+from ng2.models2 import PoolServer, DbmsTypeChoices, DataCenterChoices
+from ng2.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer, MyPoolServersSerializer
 
 
 def CreateDBInit(request):

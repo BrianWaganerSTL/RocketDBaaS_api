@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'ng',
+    'ng2',
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',

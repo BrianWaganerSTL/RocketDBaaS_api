@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ng.models2 import Cluster, Server, ApplicationContact
+from ng2.models2 import Cluster, Server, ApplicationContact
 
 class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:

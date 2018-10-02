@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from ng.models2 import PoolServer
-from ng.serializers.PoolServersSerializers import PoolServersSerializer
+from ng2.models2 import PoolServer
+from ng2.serializers.PoolServersSerializers import PoolServersSerializer
 
 
 def pool_servers(request):

@@ -1,9 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from ng.views import overview_view, cluster_details_view, pool_servers_views
-from ng.views.views import MyPoolServersViewSet
-from ng.views.createClusterViewSet import ClusterViewSet
+from ng2.views import overview_view, cluster_details_view, pool_servers_views
+from ng2.views.views import MyPoolServersViewSet
+from ng2.views.createClusterViewSet import ClusterViewSet
 
 router = DefaultRouter()
 router.register(r'MyPoolServers', MyPoolServersViewSet)

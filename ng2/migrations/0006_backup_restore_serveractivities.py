@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ng', '0005_auto_20180925_2155'),
+        ('ng2', '0005_auto_20180925_2155'),
     ]
 
     operations = [
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('stop_dttm', models.DateTimeField()),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, to='ng.Cluster')),
+                ('cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, to='ng2.Cluster')),
             ],
             options={
                 'db_table': 'backup',
@@ -40,8 +40,8 @@ class Migration(migrations.Migration):
                 ('stop_dttm', models.DateTimeField()),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('from_cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, related_name='restore_from_cluster', to='ng.Cluster')),
-                ('to_cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, related_name='restore_to_cluster', to='ng.Cluster')),
+                ('from_cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, related_name='restore_from_cluster', to='ng2.Cluster')),
+                ('to_cluster', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, related_name='restore_to_cluster', to='ng2.Cluster')),
             ],
             options={
                 'db_table': 'restore',
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('stop_dttm', models.DateTimeField()),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('server', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, to='ng.Server')),
+                ('server', models.ForeignKey(null=True, on_delete=django.db.models.deletion.ProtectedError, to='ng2.Server')),
             ],
             options={
                 'db_table': 'server_activities',

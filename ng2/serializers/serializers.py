@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ng.models2 import (
+from ng2.models2 import (
     PoolServer
 )
 

@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('active_sw', models.BooleanField(default=True)),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng.Application')),
+                ('application', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng2.Application')),
             ],
             options={
                 'db_table': 'application_contact',
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('eff_dttm', models.DateTimeField(default=django.utils.timezone.now)),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('application', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng.Application')),
+                ('application', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng2.Application')),
             ],
             options={
                 'db_table': 'cluster',
@@ -116,7 +116,7 @@ class Migration(migrations.Migration):
                 ('active_sw', models.BooleanField(default=True)),
                 ('created_dttm', models.DateTimeField(auto_now_add=True)),
                 ('updated_dttm', models.DateTimeField(auto_now=True)),
-                ('cluster', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng.Cluster')),
+                ('cluster', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng2.Cluster')),
             ],
             options={
                 'db_table': 'server',
@@ -125,6 +125,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='applicationcontact',
             name='contact',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng.Contact'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='ng2.Contact'),
         ),
     ]
