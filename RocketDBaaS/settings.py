@@ -123,10 +123,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-STATIC_ROOT = 'C:\Git_Repos\Django\statics'  # Should not have pre slashes
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'staticfiles'), ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Should not have pre slashes
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 MEDIA_URL = '/images/'
