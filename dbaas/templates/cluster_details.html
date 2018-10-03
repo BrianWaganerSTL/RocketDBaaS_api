@@ -19,6 +19,8 @@
                 <th scope="col">RAM (GB)</th>
                 <th scope="col">DB GB</th>
                 <th scope="col">Health</th>
+                <th scope="col">R/W Port</th>
+                <th scope="col">R/O Port</th>
             </tr>
             </thead>
             <tbody>
@@ -30,6 +32,8 @@
                 <td>{{ cluster.requested_mem_gb }}</td>
                 <td>{{ cluster.requested_db_gb|intcomma }}</td>
                 <td>{{ cluster.cluster_health }}</td>
+                <td>{{ cluster.read_write_port }}</td>
+                <td>{{ cluster.read_only_port }}</td>
             </tr>
 
             </tbody>
@@ -41,6 +45,8 @@
             <thead>
             <tr style="background-color: #28a745">
                 <th scope="col">DC</th>
+                <th scope="col">Server Name</th>
+                <th scope="col">IP Address</th>
                 <th scope="col">Role</th>
                 <th scope="col">Health</th>
                 <th scope="col">Alerts</th>
@@ -49,7 +55,6 @@
                 <th scope="col">DB GB</th>
                 <th scope="col">OS Ver</th>
                 <th scope="col">DB Ver</th>
-                <th scope="col">IP Address</th>
                 <th scope="col">Pending Restart</th>
             </tr>
             </thead>
@@ -57,17 +62,16 @@
             {% for s in servers %}
                 <tr>
                     <th>{{ s.data_center }}</th>
+                    <td>{{ s.server_name }}</td>
+                    <td>{{ s.server_ip }}</td>
                     <td>{{ s.node_role }}</td>
-                    <td>???</td>
+                    <td>{{ s.s }}</td>
                     <td>???</td>
                     <td>{{ s.cpu }}</td>
                     <td>{{ s.mem_gb }}</td>
-                    {# https://stackoverflow.com/questions/44773579/django-template-nested-for-loop#}
                     <td>{{ s.db_gb }}</td>
                     <td>{{ s.os_version }}</td>
                     <td>{{ s.db_version }}</td>
-
-                    <td>{{ s.server_ip }}</td>
                     <td>{{ s.pending_restart_sw }}</td>
                 </tr>
             {% endfor %}
@@ -147,7 +151,7 @@
                 {% for contact in contacts %}
                     <tr>
                         <td>{{ contact.contact_name }}</td>
-                        <td>contact.contact_email</td>
+                        <td>{{ contact.contact_email }}</td>
                         <td>{{ contact.contact_phone }}</td>
                         <td>{{ contact.contact_type }}</td>
                     </tr>

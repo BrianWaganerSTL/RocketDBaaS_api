@@ -46,6 +46,14 @@ class ServerActivityTypeChoices(DjangoChoices):
     DemomoteDB = ChoiceItem("DemoteDB", "Demote Database", 6)
 
 
+class ServerHealthChoices(DjangoChoices):
+    ServerConfiguring = ChoiceItem("ServerConfig", "Server Configuring", 1)
+    ServerUp = ChoiceItem("ServerUp","Server Up and Healthy", 2)
+    ServerUpWithIssues = ChoiceItem("ServerUpWithIssues","Server is Up but something is Not Healthy", 3)
+    ServerDown = ChoiceItem("ServerDown", "Server is Down", 4)
+    ServerOnLineMaint = ChoiceItem("ServerOnLineMaint","Server On-Line Maintenance", 5)
+
+
 class PoolServer(Model):
     class Meta:
         db_table = "pool_server"
@@ -65,6 +73,21 @@ class PoolServer(Model):
     data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     status_in_pool = CharField(max_length=20, null=False, blank=True, choices=StatusInPoolChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
+
+
+class ServerPort(Model):
+    class Meta:
+        db_table = "server_port"
+
+    class PortStatusChoices(DjangoChoices):
+        Free = ChoiceItem("Free", "Free", 1)
+        Used = ChoiceItem("Used", "Used", 2)
+        Hidden = ChoiceItem("Hidden", "Hidden", 3)
+
+    port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)], primary_key=True)
+    port_status = CharField(max_length=10, choices=PortStatusChoices.choices, null=True)
+    port_notes = CharField(max_length=100, null=False)
     updated_dttm = DateTimeField(auto_now=True)
 
 
@@ -120,7 +143,8 @@ class Cluster(Model):
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False)
     requested_mem_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False)
-    haproxy_port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)])
+    read_write_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=True, related_name='read_write_port_id')
+    read_only_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=True, related_name='read_only_port_id')
     tls_enabled_sw = BooleanField(null=False)
     backup_retention_days = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], null=False)
     cluster_health = CharField(max_length=30, null=False, choices=ClusterHealthChoices.choices, default=ClusterHealthChoices.ClusterConfiguring)
@@ -152,6 +176,7 @@ class Server(Model):
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
     data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, blank=True)
+    server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=True, blank=True)
     os_version = CharField(max_length=30)
     db_version = CharField(max_length=30)
     pending_restart_sw = BooleanField(null=False, default=False)
@@ -202,8 +227,7 @@ class Restore(models.Model):
 
     from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True, related_name='restore_from_cluster')
     to_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True, related_name='restore_to_cluster')
-    backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices,
-                            default=BackupTypeChoices.BackupFull)
+    restore_type = CharField(max_length=10, null=True, choices=RestoreTypeChoices.choices)
     restore_to_dttm = DateTimeField(editable=True)
     restore_status = CharField(max_length=15, null=True)
     start_dttm = DateTimeField(editable=True)
@@ -236,6 +260,7 @@ class ApplicationContactsDetailsView(models.Model):
     contact_name = CharField(max_length=60)
     contact_type = CharField(max_length=30)
     contact_phone = CharField(max_length=15)
+    contact_email = EmailField(blank=True, null=True)
     active_sw = BooleanField(null=False, default=True)
 
 

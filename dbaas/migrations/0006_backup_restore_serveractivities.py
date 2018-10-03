@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL("create or replace view application_contacts_details_view as "
                           "  select a.id, c.id as contact_id, "
-                          "  a.application_name, c.contact_name, c.contact_type, c.contact_phone, c.active_sw "
+                          "  a.application_name, c.contact_name, c.contact_type, c.contact_phone, c.contact_email, c.active_sw "
                           "  from application_contact ac, application a, contact c "
                           "  where ac.application_id = a.id "
                           "  and ac.contact_id = c.id "

@@ -18,6 +18,8 @@
             <th scope="col">RAM (GB)</th>
             <th scope="col">DB GB</th>
             <th scope="col">Health</th>
+            <th scope="col">R/W Port</th>
+            <th scope="col">R/O Port</th>
         </tr>
         </thead>
         <tbody>
@@ -35,6 +37,8 @@
                 <td>{{ c.requested_mem_gb }}</td>
                 <td>{{ c.requested_db_gb|intcomma }}</td>
                 <td>{{ c.cluster_health }}</td>
+                <td>{{ c.read_write_port }}</td>
+                <td>{{ c.read_only_port }}</td>
             </tr>
             {% for s in c.server_set.all %}
                 <tr id="{{ c.cluster_name }}" style="height: 30px" class="collapse in">
@@ -45,7 +49,7 @@
                         <td style="font-size: .8rem; padding:.25rem; text-align:right" >
                             <img class="img-responsive" src="{% static 'icons/secondary.jpg' %}" height="20px"></td>
                     {% endif %}
-                    <td style="font-size: .8rem; padding:.25rem">{{ s.data_center }} : {{ s.server_name }}</td>
+                    <td style="font-size: .8rem; padding:.25rem">{{ s.data_center }} : {{ s.server_name }} : {{ s.ip_address }} : {{ s.role }} : {{ s.health}} : {{ s.pending_restart }}</td>
                 </tr>
             {% endfor %}
         {% endfor %}
