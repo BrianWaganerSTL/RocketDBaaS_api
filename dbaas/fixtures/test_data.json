@@ -1,0 +1,229 @@
+[
+{
+  "model": "dbaas.poolserver",
+  "pk": 1,
+  "fields": {
+    "environment": "SBX",
+    "server_name": "DrugCh03001",
+    "server_ip": "100.0.0.103",
+    "dbms_type": "PostgreSQL",
+    "cpu": "4.0",
+    "mem_gb": "8.0",
+    "db_gb": "20.00",
+    "data_center": "CH",
+    "status_in_pool": "Available",
+    "created_dttm": "2018-10-02T07:05:37.773Z",
+    "updated_dttm": "2018-10-02T07:05:37.773Z"
+  }
+},
+{
+  "model": "dbaas.contact",
+  "pk": 1,
+  "fields": {
+    "contact_name": "Joker, Jr",
+    "contact_type": "Person",
+    "contact_email": "JJ@Gmail.com",
+    "contact_phone": "636-699-3458",
+    "active_sw": true,
+    "created_dttm": "2018-10-02T07:04:50.493Z",
+    "updated_dttm": "2018-10-02T07:04:50.493Z"
+  }
+},
+{
+  "model": "dbaas.contact",
+  "pk": 2,
+  "fields": {
+    "contact_name": "Rocket Man",
+    "contact_type": "Person",
+    "contact_email": "SmallFuse@gmail.com",
+    "contact_phone": "543-655-4535",
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:28:47.095Z",
+    "updated_dttm": "2018-10-03T02:29:01.867Z"
+  }
+},
+{
+  "model": "dbaas.contact",
+  "pk": 3,
+  "fields": {
+    "contact_name": "Batman",
+    "contact_type": "Person",
+    "contact_email": "IDigBatGirl@gmail.com",
+    "contact_phone": "911-911-1111",
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:30:01.744Z",
+    "updated_dttm": "2018-10-03T02:30:01.744Z"
+  }
+},
+{
+  "model": "dbaas.application",
+  "pk": 1,
+  "fields": {
+    "application_name": "Secret Crime Fighting Items",
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:30:49.290Z",
+    "updated_dttm": "2018-10-03T02:30:49.290Z"
+  }
+},
+{
+  "model": "dbaas.application",
+  "pk": 2,
+  "fields": {
+    "application_name": "Villon's PlayGround",
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:31:22.375Z",
+    "updated_dttm": "2018-10-03T02:31:22.375Z"
+  }
+},
+{
+  "model": "dbaas.cluster",
+  "pk": 1,
+  "fields": {
+    "cluster_name": "ClusterOfBats",
+    "dbms_type": "MongoDB",
+    "application": 1,
+    "environment": "SBX",
+    "requested_cpu": 4,
+    "requested_mem_gb": 8,
+    "requested_db_gb": 100,
+    "read_write_port": null,
+    "read_only_port": null,
+    "tls_enabled_sw": true,
+    "backup_retention_days": 14,
+    "cluster_health": "ClusterConfig",
+    "active_sw": true,
+    "eff_dttm": "2018-10-03T02:31:46Z",
+    "created_dttm": "2018-10-03T02:33:14.070Z",
+    "updated_dttm": "2018-10-03T02:33:14.070Z"
+  }
+},
+{
+  "model": "dbaas.cluster",
+  "pk": 2,
+  "fields": {
+    "cluster_name": "CrimeTargets",
+    "dbms_type": "PostgreSQL",
+    "application": 2,
+    "environment": "SBX",
+    "requested_cpu": 6,
+    "requested_mem_gb": 8,
+    "requested_db_gb": 50,
+    "read_write_port": null,
+    "read_only_port": null,
+    "tls_enabled_sw": true,
+    "backup_retention_days": 3,
+    "cluster_health": "ClusterConfig",
+    "active_sw": true,
+    "eff_dttm": "2018-10-03T02:34:17Z",
+    "created_dttm": "2018-10-03T02:35:21.101Z",
+    "updated_dttm": "2018-10-03T02:38:09.437Z"
+  }
+},
+{
+  "model": "dbaas.server",
+  "pk": 1,
+  "fields": {
+    "cluster": 1,
+    "server_name": "Bat1",
+    "server_ip": "1.1.100.100",
+    "cpu": "4.0",
+    "mem_gb": "6.0",
+    "db_gb": "100.00",
+    "data_center": "STL",
+    "node_role": "Primary",
+    "server_health": null,
+    "os_version": "RHEL 7",
+    "db_version": "10.1",
+    "pending_restart_sw": false,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:34:10.780Z",
+    "updated_dttm": "2018-10-03T02:34:10.780Z"
+  }
+},
+{
+  "model": "dbaas.server",
+  "pk": 2,
+  "fields": {
+    "cluster": 2,
+    "server_name": "Joker1",
+    "server_ip": "100.100.9.9",
+    "cpu": "6.0",
+    "mem_gb": "6.0",
+    "db_gb": "30.00",
+    "data_center": "CH",
+    "node_role": "Primary",
+    "server_health": null,
+    "os_version": "RHEL 7",
+    "db_version": "10.1",
+    "pending_restart_sw": true,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:36:28.828Z",
+    "updated_dttm": "2018-10-03T02:43:24.228Z"
+  }
+},
+{
+  "model": "dbaas.server",
+  "pk": 3,
+  "fields": {
+    "cluster": 2,
+    "server_name": "Joker2",
+    "server_ip": "100.100.1.2",
+    "cpu": "1.0",
+    "mem_gb": "1.0",
+    "db_gb": "10.00",
+    "data_center": "CH",
+    "node_role": "Primary",
+    "server_health": null,
+    "os_version": "RHEL 7",
+    "db_version": "10.1",
+    "pending_restart_sw": false,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:43:16.465Z",
+    "updated_dttm": "2018-10-03T02:43:16.465Z"
+  }
+},
+{
+  "model": "dbaas.applicationcontact",
+  "pk": 1,
+  "fields": {
+    "application": 1,
+    "contact": 2,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:51:34.685Z",
+    "updated_dttm": "2018-10-03T02:51:34.685Z"
+  }
+},
+{
+  "model": "dbaas.applicationcontact",
+  "pk": 2,
+  "fields": {
+    "application": 2,
+    "contact": 2,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:51:47.310Z",
+    "updated_dttm": "2018-10-03T02:51:47.310Z"
+  }
+},
+{
+  "model": "dbaas.applicationcontact",
+  "pk": 3,
+  "fields": {
+    "application": 1,
+    "contact": 1,
+    "active_sw": true,
+    "created_dttm": "2018-10-03T02:51:58.572Z",
+    "updated_dttm": "2018-10-03T02:51:58.572Z"
+  }
+},
+{
+  "model": "dbaas.clusternote",
+  "pk": 1,
+  "fields": {
+    "cluster": 2,
+    "title": "411 on Crime Targets",
+    "note": "As stores move so must the crime.  We have to be agile in our method of picking stores.",
+    "created_dttm": "2018-10-04T04:07:18.675Z",
+    "updated_dttm": "2018-10-04T04:07:18.675Z"
+  }
+}
+]

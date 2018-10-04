@@ -127,15 +127,41 @@
                 skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings
                 gentrify squid 8-bit cred pitchfork.</p>
         </div>
+
+
         <div class="tab-pane fade" id="Notes">
-            <h3>Notes</h3>
-            <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master
-                cleanse
-                gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore
-                wolf
-                cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out
-                farm-to-table VHS viral locavore cosby sweater.</p>
+            <div class="album py-5 bg-light">
+                <div class="container">
+                    <p class="lead text-md-left">Latest Notes</p>
+                    <div class="row">
+                        {% for note in cluster.clusternote_set.all %}
+                            <div class="col-md-6">
+                                <div class="card m-2 shadow-sm">
+                                    <div class="card-body card bg-secondary text-white text-center p-1 pb-0">
+                                        <h3 class="card-text text-md-center font-weight-bold">
+                                            <button href="#Note{{ note.id }}" class="btn btn-info btn-sm" data-toggle="collapse">+</button>
+                                            {{ note.title }}
+                                        </h3>
+                                        <p class="small text-sm-left p-0">{{ note.prettyNoteCreateDate }}</p>
+                                    </div>
+                                    <div class="card-text m-2">
+{#                                        <div id="Note{{ note.id }}" aria-expanded="true" class="collapse.show">#}
+{#                                            <p style="height: 30px" >{{ note.shortNote }}</p>#}
+{#                                        </div>#}
+                                        <div id="Note{{ note.id }}" class="collapse in">
+                                            <p style="height: 30px" >{{ note.note }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
+
+
         <div class="tab-pane fade" id="Contacts">
             <h3>Contacts</h3>
             <table class="table table-hover">

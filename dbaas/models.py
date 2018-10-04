@@ -1,3 +1,5 @@
+import textwrap
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion
@@ -250,10 +252,29 @@ class ServerActivities(models.Model):
     updated_dttm = DateTimeField(auto_now=True)
 
 
+class ClusterNote(models.Model):
+    class Meta:
+        db_table = "cluster_note"
+        ordering = ['created_dttm']
+
+    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True)
+    title = CharField(max_length=50)
+    note = CharField(max_length=2048)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
+
+    def shortNote(self):
+        return textwrap.shorten(self.note, width=100, placeholder="...")
+
+    def prettyNoteCreateDate(self):
+        return self.created_dttm.strftime('%b %e, %Y')
+
+
 class ApplicationContactsDetailsView(models.Model):
     class Meta:
         db_table = "application_contacts_details_view"
         managed = False
+
 
     application_id = IntegerField
     contact_id = IntegerField

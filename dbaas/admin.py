@@ -74,6 +74,11 @@ class ServerActivities(admin.ModelAdmin):
     list_select_related = ('server',)
     list_display_links = ('server',)
 
+@admin.register(ClusterNote)
+class ClusterNotes(admin.ModelAdmin):
+    list_display = ('cluster', 'title', 'note', 'created_dttm', 'updated_dttm')
+    list_select_related = ('cluster',)
+    list_display_links = ('cluster',)
 
 
 AdminSite.site_title="Rocket DBaaS"
