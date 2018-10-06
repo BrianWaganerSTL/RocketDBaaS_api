@@ -11,14 +11,14 @@ class ClusterSerializer(serializers.ModelSerializer):
         model = Cluster
         fields = ('id', 'cluster_name', 'dbms_type', 'application', 'environment', 'requested_cpu', 'requested_mem_gb', 'requested_db_gb',
                   'haproxy_port', 'tls_enabled_sw', 'backup_retention_days')
-
+        depth = 5
 
 class ServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Server
-        fields = ('id', 'cluster', 'server_name', 'server_ip', 'cpu', 'mem_gb', 'db_gb', 'data_center', 'node_role')
-#        serializers.ModelSerializer.build_nested_field(ClusterSerializer, 'cluster', reverse_related.ForeignObjectRel, 2)
-
+        fields = '__all__'
+        #serializers.ModelSerializer.build_nested_field(ClusterSerializer, 'cluster', reverse_related.ForeignObjectRel, 2)
+        depth = 5
 
 class PoolServerSerializer(serializers.ModelSerializer):
     class Meta:

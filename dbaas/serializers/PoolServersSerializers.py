@@ -6,6 +6,6 @@ class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cluster
         fields = '__all__'
-        depth = 3
+        depth = 5
 
 

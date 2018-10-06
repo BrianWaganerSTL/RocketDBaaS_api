@@ -56,6 +56,25 @@ class ServerHealthChoices(DjangoChoices):
     ServerOnLineMaint = ChoiceItem("ServerOnLineMaint","Server On-Line Maintenance", 5)
 
 
+class ColorChoices(DjangoChoices):
+    Primary = ChoiceItem("primary", "Primary", 1)
+    Secondary = ChoiceItem("secondary", "Secondary", 2)
+    Success = ChoiceItem("success", "Success", 3)
+    Danger = ChoiceItem("danger", "Danger", 4)
+    Warning = ChoiceItem("warning", "Warning", 5)
+    Info = ChoiceItem("info", "Info", 6)
+    Light = ChoiceItem("light", "Light", 7)
+    Dark = ChoiceItem("dark", "Dark", 8)
+
+
+class ActivitiesStatusChoices(DjangoChoices):
+    Queued = ChoiceItem("Queued","Queued",1)
+    PendingRestart = ChoiceItem("PendingRestart",'PendingRestart',2)
+    Processing = ChoiceItem("Processing","Processing",3)
+    Successful = ChoiceItem("Successful","Successful",4)
+    Failed = ChoiceItem("Failed","Failed")
+
+
 class PoolServer(Model):
     class Meta:
         db_table = "pool_server"
@@ -84,8 +103,9 @@ class ServerPort(Model):
 
     class PortStatusChoices(DjangoChoices):
         Free = ChoiceItem("Free", "Free", 1)
-        Used = ChoiceItem("Used", "Used", 2)
-        Hidden = ChoiceItem("Hidden", "Hidden", 3)
+        Locked = ChoiceItem("Locked", "Locked", 2)
+        Used = ChoiceItem("Used", "Used", 3)
+        Hidden = ChoiceItem("Hidden", "Hidden", 4)
 
     port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)], primary_key=True)
     port_status = CharField(max_length=10, choices=PortStatusChoices.choices, null=True)
@@ -118,18 +138,22 @@ class Application(Model):
     class Meta:
         db_table = "application"
 
+    def __str__(self):
+        return self.application_name
+
     application_name = CharField(max_length=40, null=False)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.application_name
 
 
 class Cluster(Model):
     class Meta:
         db_table = "cluster"
+
+    def __str__(self):
+        return self.cluster_name
 
     class ClusterHealthChoices(DjangoChoices):
         ClusterConfiguring = ChoiceItem("ClusterConfig", "Cluster Configuring", 1)
@@ -145,7 +169,7 @@ class Cluster(Model):
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False)
     requested_mem_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False)
-    read_write_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=True, related_name='read_write_port_id')
+    read_write_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, related_name='read_write_port_id')
     read_only_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=True, related_name='read_only_port_id')
     tls_enabled_sw = BooleanField(null=False)
     backup_retention_days = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], null=False)
@@ -156,13 +180,14 @@ class Cluster(Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.cluster_name
 
 
 class Server(Model):
     class Meta:
         db_table="server"
+
+    def __str__(self):
+        return self.server_name
 
     class NodeRoleChoices(DjangoChoices):
         Primary = ChoiceItem("Primary", "Primary Node",1)
@@ -212,7 +237,7 @@ class Backup (models.Model):
     class Meta:
         db_table = "backup"
 
-    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True)
+    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BackupFull)
     backup_status = CharField(max_length=15, null=True)
     db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True)
@@ -227,8 +252,8 @@ class Restore(models.Model):
     class Meta:
         db_table="restore"
 
-    from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True, related_name='restore_from_cluster')
-    to_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True, related_name='restore_to_cluster')
+    from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_from_cluster')
+    to_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_to_cluster')
     restore_type = CharField(max_length=10, null=True, choices=RestoreTypeChoices.choices)
     restore_to_dttm = DateTimeField(editable=True)
     restore_status = CharField(max_length=15, null=True)
@@ -241,13 +266,14 @@ class Restore(models.Model):
 class ServerActivities(models.Model):
     class Meta:
         db_table = "server_activities"
+        ordering = ['created_dttm']
 
-    server = ForeignKey(Server, on_delete=deletion.ProtectedError, null=True)
+    server = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
     server_activity = CharField(max_length=20, null=False, choices=ServerActivityTypeChoices.choices,
                                 default=ServerActivityTypeChoices.RestartDB)
-    activity_status = CharField(max_length=15, null=True)
-    start_dttm = DateTimeField(editable=True)
-    stop_dttm = DateTimeField(editable=True)
+    activity_status = CharField(max_length=15, null=True, choices=ActivitiesStatusChoices.choices)
+    start_dttm = DateTimeField(editable=True, null=True, blank=True)
+    stop_dttm = DateTimeField(editable=True, null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -257,9 +283,11 @@ class ClusterNote(models.Model):
         db_table = "cluster_note"
         ordering = ['created_dttm']
 
-    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=True)
+    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     title = CharField(max_length=50)
     note = CharField(max_length=2048)
+    created_by = CharField(max_length=30, null=True)
+    note_color = CharField(max_length=15, null=True, choices=ColorChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -274,7 +302,6 @@ class ApplicationContactsDetailsView(models.Model):
     class Meta:
         db_table = "application_contacts_details_view"
         managed = False
-
 
     application_id = IntegerField
     contact_id = IntegerField

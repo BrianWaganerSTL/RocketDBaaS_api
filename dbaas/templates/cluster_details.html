@@ -7,7 +7,7 @@
 {% block title %}Rocket DBaaS - Cluster Details{% endblock %}
 
 {% block main_content %}
-    <div class="card-title">{{ cluster.application.application_name }} </div>
+    <div class="card-title" xmlns="http://www.w3.org/1999/html">{{ cluster.application.application_name }} </div>
     <div>
         <table class="table table-hover" style="background-color: #eaf8ff">
             <thead>
@@ -111,6 +111,8 @@
                 placeat
                 salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
         </div>
+
+
         <div class="tab-pane fade" id="Backups">
             <h3>Backups</h3>
             <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
@@ -119,44 +121,65 @@
                 twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
                 cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
         </div>
+
+
         <div class="tab-pane fade" id="Restores">
             <h3>Restores</h3>
-            <p>Restores:Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo
-                retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer,
-                iphone
-                skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings
-                gentrify squid 8-bit cred pitchfork.</p>
+            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
+                labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft
+                beer
+                twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+                cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+        </div>
+
+
+        <div class="tab-pane fade" id="Activities">
+            <div class="album py-1 bg-light">
+                <div class="container">
+                    <h3 class="lead text-md-left font-weight-bold">Latest Server Activities</h3>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr style="background-color: #28a745">
+                            <th scope="col">Server</th>
+                            <th scope="col">Activity</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Start</th>
+                            <th scope="col">Stop</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for sa in server_activities %}
+                            <tr>
+                                <td>{{ sa.server.server_name }}</td>
+                                <td>{{ sa.server_activity }}</td>
+                                <td>{{ sa.activity_status }}</td>
+                                <td>{{ sa.start_dttm }}</td>
+                                <td>{{ sa.stop_dttm }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
 
         <div class="tab-pane fade" id="Notes">
-            <div class="album py-5 bg-light">
+            <div class="album py-1 bg-light">
                 <div class="container">
-                    <p class="lead text-md-left">Latest Notes</p>
-                    <div class="row">
-                        {% for note in cluster.clusternote_set.all %}
-                            <div class="col-md-6">
-                                <div class="card m-2 shadow-sm">
-                                    <div class="card-body card bg-secondary text-white text-center p-1 pb-0">
-                                        <h3 class="card-text text-md-center font-weight-bold">
-                                            <button href="#Note{{ note.id }}" class="btn btn-info btn-sm" data-toggle="collapse">+</button>
-                                            {{ note.title }}
-                                        </h3>
-                                        <p class="small text-sm-left p-0">{{ note.prettyNoteCreateDate }}</p>
-                                    </div>
-                                    <div class="card-text m-2">
-{#                                        <div id="Note{{ note.id }}" aria-expanded="true" class="collapse.show">#}
-{#                                            <p style="height: 30px" >{{ note.shortNote }}</p>#}
-{#                                        </div>#}
-                                        <div id="Note{{ note.id }}" class="collapse in">
-                                            <p style="height: 30px" >{{ note.note }}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                    <h3 class="lead text-md-left font-weight-bold">Latest Notes</h3>
+                    {% for note in cluster.clusternote_set.all %}
+                        <div class="card border-{{ note.note_color }}">
+                            <div class="card-header bg-{{ note.note_color }}">
+                                <span style="font-size: large; font-weight: bold">{{ note.title }}</span>
+                                <div></div>
+                                <span style="font-size: small; font-weight: bold"> {{ note.created_by }} - {{ note.prettyNoteCreateDate }}</span>
                             </div>
-
-                        {% endfor %}
-                    </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ note.note }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

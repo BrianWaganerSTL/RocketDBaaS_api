@@ -39,21 +39,6 @@ class ApplicationContact(admin.ModelAdmin):
     list_display_links = ('id',)
 
 
-@admin.register(Cluster)
-class Cluster(admin.ModelAdmin):
-    list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
-                    'read_write_port','read_only_port')
-    list_select_related = ('application',)
-    list_display_links = ('cluster_name',)
-
-
-@admin.register(Server)
-class Server(admin.ModelAdmin):
-    list_display = ('cluster', 'server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','os_version',
-                    'db_version','pending_restart_sw','active_sw')
-    list_select_related = ('cluster',)
-    list_display_links = ('server_name',)
-
 @admin.register(Backup)
 class Backup(admin.ModelAdmin):
     list_display = ('cluster', 'backup_type','backup_status','db_size_gb','backup_size_gb')
@@ -74,11 +59,29 @@ class ServerActivities(admin.ModelAdmin):
     list_select_related = ('server',)
     list_display_links = ('server',)
 
+
 @admin.register(ClusterNote)
 class ClusterNotes(admin.ModelAdmin):
     list_display = ('cluster', 'title', 'note', 'created_dttm', 'updated_dttm')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)
+
+
+@admin.register(Cluster)
+class Cluster(admin.ModelAdmin):
+    list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
+                    'read_write_port','read_only_port')
+    list_select_related = ('application',)
+    list_display_links = ('cluster_name',)
+
+
+@admin.register(Server)
+class Server(admin.ModelAdmin):
+    list_display = ('cluster', 'server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','os_version',
+                    'db_version','pending_restart_sw','active_sw')
+    list_select_related = ('server_name',)
+    list_display_links = ('server_name',)
+
 
 
 AdminSite.site_title="Rocket DBaaS"

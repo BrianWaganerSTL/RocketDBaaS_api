@@ -70,5 +70,7 @@ class Migration(migrations.Migration):
                           "  where ac.application_id = a.id "
                           "  and ac.contact_id = c.id "
                           "  and ac.active_sw = TRUE",
-                          "drop view application_contacts_details_view",)
+                          "drop view application_contacts_details_view",),
+        migrations.RunSQL(
+            "Insert into server_port SELECT 1024+generate_series(1, 65535-1024)-1, 'Free', 'Never Used', now()"),
     ]
