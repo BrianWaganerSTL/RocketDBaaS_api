@@ -7,6 +7,7 @@
 {% block title %}Rocket DBaaS{% endblock %}
 
 {% block main_content %}
+    <h2 class="card-title" xmlns="http://www.w3.org/1999/html">Overview</h2>
     <table class="table table-hover" style="background-color: #eaf8ff">
         <thead>
         <tr style="background-color: #79aec8">
@@ -25,10 +26,10 @@
         <tbody>
         {% for c in clusters %}
             <tr>
-                    <th>
-                        <button href="#{{ c.cluster_name }}" class="btn btn-info btn-sm" data-toggle="collapse">+</button>
-                        <a href="{% url 'cluster_details' c.id %}">{{ c.cluster_name }}</a>
-                    </th>
+                <th>
+                    <button href="#{{ c.cluster_name }}" class="btn btn-info btn-sm" data-toggle="collapse">+</button>
+                    <a href="{% url 'cluster_details' c.id %}">{{ c.cluster_name }}</a>
+                </th>
                 <td>{{ c.dbms_type }}</td>
                 <td>{{ c.application }}</td>
                 <td>{{ c.server_set.all|length }}</td>
@@ -37,22 +38,23 @@
                 <td>{{ c.requested_mem_gb }}</td>
                 <td>{{ c.requested_db_gb|intcomma }}</td>
                 <td>{{ c.cluster_health }}</td>
-                <td>{{ c.read_write_port }}</td>
-                <td>{{ c.read_only_port }}</td>
+                <td>{{ c.read_write_port_id }}</td>
+                <td>{{ c.read_only_port_id }}</td>
             </tr>
             {% for s in c.server_set.all %}
                 <tr id="{{ c.cluster_name }}" style="height: 30px" class="collapse in">
                     {% if s.node_role == 'Primary' %}
-                        <td style="font-size: .8rem; padding:.25rem; text-align:right" >
+                        <td style="font-size: .8rem; padding:.25rem; text-align:right">
                             <img class="img-responsive" src="{% static 'icons/primary.jpg' %}" height="20px"></td>
                     {% else %}
-                        <td style="font-size: .8rem; padding:.25rem; text-align:right" >
+                        <td style="font-size: .8rem; padding:.25rem; text-align:right">
                             <img class="img-responsive" src="{% static 'icons/secondary.jpg' %}" height="20px"></td>
                     {% endif %}
-                    <td style="font-size: .8rem; padding:.25rem">{{ s.data_center }} : {{ s.server_name }} : {{ s.ip_address }} : {{ s.role }} : {{ s.health}} : {{ s.pending_restart }}</td>
+                    <td style="font-size: .8rem; padding:.25rem">{{ s.data_center }} : {{ s.server_name }}
+                        : {{ s.ip_address }} : {{ s.role }} : {{ s.health }} : {{ s.pending_restart }}</td>
                 </tr>
             {% endfor %}
         {% endfor %}
         </tbody>
     </table>
-{%  endblock %}
+{% endblock %}

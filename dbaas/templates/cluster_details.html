@@ -7,7 +7,7 @@
 {% block title %}Rocket DBaaS - Cluster Details{% endblock %}
 
 {% block main_content %}
-    <div class="card-title" xmlns="http://www.w3.org/1999/html">{{ cluster.application.application_name }} </div>
+    <h2 class="card-title" xmlns="http://www.w3.org/1999/html">{{ cluster.application.application_name }} </h2>
     <div>
         <table class="table table-hover" style="background-color: #eaf8ff">
             <thead>
@@ -31,16 +31,18 @@
                 <td>{{ cluster.requested_cpu }}</td>
                 <td>{{ cluster.requested_mem_gb }}</td>
                 <td>{{ cluster.requested_db_gb|intcomma }}</td>
-                <td>{{ cluster.cluster_health }}</td>
-                <td>{{ cluster.read_write_port }}</td>
-                <td>{{ cluster.read_only_port }}</td>
+                <td {% if cluster.cluster_health != "ClusterUp" %}
+                    class="bg-warning" {% endif %}>
+                    {{ cluster.cluster_health }}</td>
+                <td>{{ cluster.read_write_port_id }}</td>
+                <td>{{ cluster.read_only_port_id }}</td>
             </tr>
 
             </tbody>
         </table>
     </div>
 
-    <div style="background-color: #b1dfbb">
+    <div style="background-color: #e6ffe5">
         <table class="table table-hover">
             <thead>
             <tr style="background-color: #28a745">
@@ -65,8 +67,9 @@
                     <td>{{ s.server_name }}</td>
                     <td>{{ s.server_ip }}</td>
                     <td>{{ s.node_role }}</td>
-                    <td>{{ s.s }}</td>
-                    <td>???</td>
+                    <td {% if s.server_health != "ServerUp" %}
+                        class="bg-warning" {% endif %}>{{ s.server_health }}</td>
+                    <td></td>
                     <td>{{ s.cpu }}</td>
                     <td>{{ s.mem_gb }}</td>
                     <td>{{ s.db_gb }}</td>
@@ -95,119 +98,188 @@
             <a class="nav-link" data-toggle="tab" href="#Activities">Activities</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#Notes">Notes</a>
+            <a class="nav-link" data-toggle="tab" href="#Issues">Issues</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#Contacts">Contacts</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Notes">Notes</a>
+        </li>
     </ul>
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade show active" id="Graphs">
-            <h3>Graphs</h3>
-            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
-                synth
-                master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro
-                keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
-                placeat
-                salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-        </div>
-
-
-        <div class="tab-pane fade" id="Backups">
-            <h3>Backups</h3>
-            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
-                labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft
-                beer
-                twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
-                cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
-        </div>
-
-
-        <div class="tab-pane fade" id="Restores">
-            <h3>Restores</h3>
-            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
-                labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft
-                beer
-                twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
-                cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
-        </div>
-
-
-        <div class="tab-pane fade" id="Activities">
-            <div class="album py-1 bg-light">
-                <div class="container">
-                    <h3 class="lead text-md-left font-weight-bold">Latest Server Activities</h3>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr style="background-color: #28a745">
-                            <th scope="col">Server</th>
-                            <th scope="col">Activity</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Start</th>
-                            <th scope="col">Stop</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for sa in server_activities %}
-                            <tr>
-                                <td>{{ sa.server.server_name }}</td>
-                                <td>{{ sa.server_activity }}</td>
-                                <td>{{ sa.activity_status }}</td>
-                                <td>{{ sa.start_dttm }}</td>
-                                <td>{{ sa.stop_dttm }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="album">
+                <h3>Graphs</h3>
+                <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
+                    retro
+                    synth
+                    master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
+                    retro
+                    keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
+                    placeat
+                    salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
             </div>
         </div>
 
 
-        <div class="tab-pane fade" id="Notes">
-            <div class="album py-1 bg-light">
-                <div class="container">
-                    <h3 class="lead text-md-left font-weight-bold">Latest Notes</h3>
-                    {% for note in cluster.clusternote_set.all %}
-                        <div class="card border-{{ note.note_color }}">
-                            <div class="card-header bg-{{ note.note_color }}">
-                                <span style="font-size: large; font-weight: bold">{{ note.title }}</span>
-                                <div></div>
-                                <span style="font-size: small; font-weight: bold"> {{ note.created_by }} - {{ note.prettyNoteCreateDate }}</span>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">{{ note.note }}</p>
-                            </div>
-                        </div>
+        <div class="tab-pane fade" id="Backups">
+            <div class="album">
+                <h4>Latest Backups</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr style="background-color: #28a745">
+                        <th scope="col">Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Started</th>
+                        <th scope="col">Stopped</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">DB (GB)</th>
+                        <th scope="col">Backup (GB)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for b in cluster.backup_set.all %}
+                        <tr {% if b.backup_status == "Failed" %} class="bg-warning" {% endif %}>
+                            <td>{{ b.backup_type }}</td>
+                            <td>{{ b.backup_status }}</td>
+                            <td>{{ b.start_dttm }}</td>
+                            <td>{{ b.stop_dttm }}</td>
+                            <td>{{ b.duration }}</td>
+                            <td>{{ b.db_size_gb }}</td>
+                            <td>{{ b.backup_size_gb }}</td>
+                        </tr>
                     {% endfor %}
-                </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="Restores">
+            <div class="album">
+                <h4>Latest Restores</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">From Cluster</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Restored To</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Started</th>
+                        <th scope="col">Stopped</th>
+                        <th scope="col">Duration</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for r in cluster.restore_to_cluster.all %}
+                        <tr {% if r.restore_status == "Failed" %}
+                            class="bg-danger"
+                        {% else %}
+                            class="bg-warning"
+                        {% endif %}>
+                            <td>{{ r.from_cluster }}</td>
+                            <td>{{ r.restore_type }}</td>
+                            <td>{{ r.restore_to_dttm }}</td>
+                            <td>{{ r.restore_status }}</td>
+                            <td>{{ r.start_dttm }}</td>
+                            <td>{{ r.stop_dttm }}</td>
+                            <td>{{ r.duration }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="Activities">
+            <div class="album">
+                <h4>Latest Server Activities</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr style="background-color: #28a745">
+                        <th scope="col">Server</th>
+                        <th scope="col">Activity</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Start</th>
+                        <th scope="col">Stop</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sa in server_activities %}
+                        <tr>
+                            <td>{{ sa.server.server_name }}</td>
+                            <td>{{ sa.server_activity }}</td>
+                            <td>{{ sa.activity_status }}</td>
+                            <td>{{ sa.start_dttm }}</td>
+                            <td>{{ sa.stop_dttm }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="Issues">
+            <div class="album">
+                <h4>Latest Issues</h4>
+                <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
+                    retro
+                    synth
+                    master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
+                    retro
+                    keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip
+                    placeat
+                    salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
             </div>
         </div>
 
 
         <div class="tab-pane fade" id="Contacts">
-            <h3>Contacts</h3>
-            <table class="table table-hover">
-                <thead>
-                <tr style="background-color: #28a745">
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Type</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for contact in contacts %}
-                    <tr>
-                        <td>{{ contact.contact_name }}</td>
-                        <td>{{ contact.contact_email }}</td>
-                        <td>{{ contact.contact_phone }}</td>
-                        <td>{{ contact.contact_type }}</td>
+            <div class="album">
+                <h4>Contacts</h4>
+                <table class="table table-hover">
+                    <thead>
+                    <tr style="background-color: #28a745">
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Type</th>
                     </tr>
+                    </thead>
+                    <tbody>
+                    {% for contact in contacts %}
+                        <tr>
+                            <td>{{ contact.contact_name }}</td>
+                            <td>{{ contact.contact_email }}</td>
+                            <td>{{ contact.contact_phone }}</td>
+                            <td>{{ contact.contact_type }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="Notes">
+            <div class="album">
+                <h4>Latest Notes</h4>
+                {% for note in cluster.clusternote_set.all %}
+                    <div class="card border-{{ note.note_color }}">
+                        <div class="card-header bg-{{ note.note_color }}">
+                            <span style="font-size: large; font-weight: bold">{{ note.title }}</span>
+                            <div></div>
+                            <span style="font-size: small; font-weight: bold"> {{ note.created_by }} - {{ note.prettyNoteCreateDate }}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ note.note }}</p>
+                        </div>
+                    </div>
                 {% endfor %}
-                </tbody>
-            </table>
+            </div>
         </div>
     </div>
-
 {% endblock %}

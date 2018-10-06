@@ -28,15 +28,26 @@ class DataCenterChoices(DjangoChoices):
 
 
 class BackupTypeChoices(DjangoChoices):
-    BackupFull = ChoiceItem("Full", "Incremental", 1)
+    BackupFull = ChoiceItem("Full", "Full", 1)
     BackupIncremental = ChoiceItem("Incr","Incremental", 2)
     BackupDifferential = ChoiceItem("Diff", "Differential", 3)
+
+
+class BackupStatusChoices(DjangoChoices):
+    Running = ChoiceItem("Running","Running",1)
+    Failed = ChoiceItem("Failed",'Failed',2)
+    Successful = ChoiceItem("Successful","Successful",3)
 
 
 class RestoreTypeChoices(DjangoChoices):
     RestoreFull = ChoiceItem("Full", "Restore Full", 1)
     RestoreDB = ChoiceItem("DB","Restore Database", 2)
     RestoreTable = ChoiceItem("Table", "Restore Table", 3)
+
+class RestoreStatusChoices(DjangoChoices):
+    Running = ChoiceItem("Running","Running",1)
+    Failed = ChoiceItem("Failed",'Failed',2)
+    Successful = ChoiceItem("Successful","Successful",3)
 
 
 class ServerActivityTypeChoices(DjangoChoices):
@@ -236,10 +247,11 @@ class CreateDBInit(models.Model):
 class Backup (models.Model):
     class Meta:
         db_table = "backup"
+        ordering = ['start_dttm']
 
     cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BackupFull)
-    backup_status = CharField(max_length=15, null=True)
+    backup_status = CharField(max_length=15, choices=BackupStatusChoices.choices)
     db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True)
     backup_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True)
     start_dttm = DateTimeField(editable=True)
@@ -247,6 +259,8 @@ class Backup (models.Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
+    def duration(self):
+        return self.stop_dttm-self.start_dttm
 
 class Restore(models.Model):
     class Meta:
@@ -256,12 +270,14 @@ class Restore(models.Model):
     to_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_to_cluster')
     restore_type = CharField(max_length=10, null=True, choices=RestoreTypeChoices.choices)
     restore_to_dttm = DateTimeField(editable=True)
-    restore_status = CharField(max_length=15, null=True)
+    restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices)
     start_dttm = DateTimeField(editable=True)
     stop_dttm = DateTimeField(editable=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
+    def duration(self):
+        return self.stop_dttm-self.start_dttm
 
 class ServerActivities(models.Model):
     class Meta:
