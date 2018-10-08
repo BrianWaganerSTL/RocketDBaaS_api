@@ -118,10 +118,18 @@ class ServerPort(Model):
         Used = ChoiceItem("Used", "Used", 3)
         Hidden = ChoiceItem("Hidden", "Hidden", 4)
 
-    port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)], primary_key=True)
+    def __str__(self):
+        return str(self.port)
+
+    port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)], primary_key=True, unique=True)
     port_status = CharField(max_length=10, choices=PortStatusChoices.choices, null=True)
     port_notes = CharField(max_length=100, null=False)
     updated_dttm = DateTimeField(auto_now=True)
+
+    def NextOpenPort(self):
+        serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).last()
+        serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed.port).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+        return serverPort__NextPort.pk
 
 
 class Contact(Model):
@@ -133,7 +141,7 @@ class Contact(Model):
         Group = ChoiceItem("Distro","Email Group Distro",2)
         API = ChoiceItem("API","API Endpoint",3)
 
-    contact_name = CharField(max_length=60, null=False)
+    contact_name = CharField(max_length=60, unique=True, null=False)
     contact_type = CharField(max_length=30, choices=ContactTypeChoices.choices, null=True)
     contact_email = EmailField(blank=True, null=True)
     contact_phone = CharField(max_length=15)
@@ -152,7 +160,7 @@ class Application(Model):
     def __str__(self):
         return self.application_name
 
-    application_name = CharField(max_length=40, null=False)
+    application_name = CharField(max_length=40, unique=True, null=False)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -173,7 +181,7 @@ class Cluster(Model):
         ClusterDown = ChoiceItem("ClusterDown", "Cluster is Down", 4)
         ClusterOnLineMaint = ChoiceItem("ClusterOnLineMaint","On-Line Maintenance", 5)
 
-    cluster_name = CharField(max_length=30, null=False)
+    cluster_name = CharField(max_length=30, unique=True, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
     environment = CharField(choices=EnvironmentChoices.choices, max_length=20, null=False, blank=True)

@@ -55,31 +55,45 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'overview' %}">Overview</a>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="Click on the Application->Cluster Name">
+            <li class="nav-item" data-toggle="tooltip" data-placement="bottom"
+                title="Click on the Application->Cluster Name">
                 <a class="nav-link disabled" href="#">Details</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{%  url 'pool_servers' %}">Pool Servers</a>
+                <a class="nav-link" href="{% url 'pool_servers' %}">Pool Servers</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdownCreate" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">Create ...</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" href="/admin/dbaas/contact/add/">Create Contact</a>
-                    <a class="dropdown-item" href="/admin/dbaas/application/add">Create Application</a>
-                    <a class="dropdown-item" href="/admin/dbaas/application/add">Create Application</a>
-                    <a class="dropdown-item" href="/admin/dbaas/applicationcontact/add">Create Application Contacts</a>
-                    <a class="dropdown-item" href="#">Create Alert Triggers</a>
-                    <a class="dropdown-item" href="/admin/dbaas/cluster/add">Create Cluster</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownCreate">
+                    <a class="dropdown-item" href="/dbaas/cluster/create">Create Cluster</a>
+                    <a class="dropdown-item disabled" href="#">Create Alert Triggers</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdownAdmin" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Admin ...</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownAdmin">
+                    <a class="dropdown-item" href="/admin/dbaas/applicationcontact">Application Contact</a>
+                    <a class="dropdown-item" href="/admin/dbaas/application">Application</a>
+                    <a class="dropdown-item" href="/admin/dbaas/backup">Backups</a>
+                    <a class="dropdown-item" href="/admin/dbaas/clusternote">Cluster Notes</a>
+                    <a class="dropdown-item" href="/admin/dbaas/cluster">Cluster</a>
+                    <a class="dropdown-item" href="/admin/dbaas/contact">Contacts</a>
+                    <a class="dropdown-item" href="/admin/dbaas/poolserver">Pool Servers</a>
+                    <a class="dropdown-item" href="/admin/dbaas/restore">Restores</a>
+                    <a class="dropdown-item" href="/admin/dbaas/serveractivities">Server Activities</a>
+                    <a class="dropdown-item" href="/admin/dbaas/serverport">Server Ports</a>
+                    <a class="dropdown-item" href="/admin/dbaas/servers">Servers</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdownReports" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">Reports ...</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown01">
-                    <a class="dropdown-item" href="#">Cluster, Servers, & Contacts</a>
-                    <a class="dropdown-item" href="#" disabled="">Outages</a>
-                    <a class="dropdown-item" href="#" disabled="yes">FailOvers</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownReports">
+                    <a class="dropdown-item disabled" href="#">Cluster, Servers, & Contacts</a>
+                    <a class="dropdown-item disabled" href="#">Outages</a>
+                    <a class="dropdown-item disabled" href="#">FailOvers</a>
                 </div>
             </li>
         </ul>
@@ -91,8 +105,8 @@
 </nav>
 
 <main role="main" class="container">
-{% block main_content %}
-{% endblock %}
+    {% block main_content %}
+    {% endblock %}
 </main><!-- /.container -->
 
 <!-- Bootstrap core JavaScript

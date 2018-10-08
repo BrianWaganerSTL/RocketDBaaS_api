@@ -1,0 +1,93 @@
+{% extends "master_template.html" %}
+
+{% load static %}
+{% load humanize %}
+{% load i18n %}
+
+{% block title %}Rocket DBaaS - Create Cluster{% endblock %}
+
+{% block main_content %}
+    <h2 class="card-title" xmlns="http://www.w3.org/1999/html">Create Cluster</h2>
+    <form method="post" action="{% url 'cluster/create.html' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="card" style="width: 25rem; margin: 10px">
+                <div class="card-header">Application Name</div>
+                <div class="card-body">
+                    <input type="text" name="application_name" id="application_name__text" class="w-100">
+                </div>
+            </div>
+
+            <div class="card" style="width: 25rem; margin: 10px">
+                <div class="card-header">Cluster</div>
+                <div class="card-body">
+                    <label for="cluster_name__text">Cluster Name: </label>
+                    <input type="text" name="cluster_name" id="cluster_name__text" class="w-100">
+                    <br><br>
+
+                    <label for="dbms_type__select">DBMS: </label>
+                    <select class="form-control select2-dropdown w-50" style="display: inline-flex" name="dbms_type"
+                            id="dbms_type__select">
+                        <option value="PostgreSQL">PostgreSQL</option>
+                        <option value="MongoDB">MongoDB</option>
+                    </select>
+                    &nbsp;&nbsp;
+                    <label class="form-check-label" for="tls_enabled_sw">TLS: </label>
+                    <input type="checkbox" value="True" id="tls_enabled_sw" name="tls_enabled_sw"
+                           class="checkbox-inline" checked="checked">
+                    <br><br>
+
+                    <label for="backup_retention_days">Backup Retention (Days): </label>
+                    <input type="text" name="backup_retention_days" id="backup_retention_days">
+                </div>
+            </div>
+
+            <div class="card" style="width: 25rem; margin: 10px">
+                <div class="card-header">Server Resources</div>
+                <div class="card-body">
+                    <label for="requested_cpu__text">CPUs: </label>
+                    <input type="text" name="requested_cpu" id="requested_cpu__text">
+                    <br><br>
+
+                    <label for="requested_mem_gb__text">RAM (GB): </label>
+                    <input type="text" name="requested_mem_gb" id="requested_mem_gb__text">
+                    <br><br>
+
+                    <label for="requested_db_gb">DB (GB): </label>
+                    <input type="text" name="requested_db_gb" id="requested_db_gb__text">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card" style="width: 50rem; margin: 10px">
+                <div class="card-header">Primary DataCenter Servers</div>
+                <div class="card-body">
+                    <label for="PrimaryDCServer1__text">Server 1: </label>
+                    <input type="text" name="PrimaryDCServer1" id="PrimaryDCServer1__text" class="w-100">
+                </div>
+                <div class="card-body">
+                    <label for="PrimaryDCServer2__text">Server 2: </label>
+                    <input type="text" name="PrimaryDCServer2" id="PrimaryDCServer2__text" class="w-100">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card" style="width: 50rem; margin: 10px">
+                <div class="card-header">Secondary DataCenter Servers</div>
+                <div class="card-body">
+                    <label for="PrimaryDCServer1__text">Server 1: </label>
+                    <input type="text" name="SeconaryDCServer1" id="SeconaryDCServer1__text" class="w-100">
+                </div>
+                <div class="card-body">
+                    <label for="SeconaryDCServer2">Server 2: </label>
+                    <input type="text" name="SeconaryDCServer2" id="SeconaryDCServer2__text" class="w-100">
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Cluster</button>
+
+    </form>
+{% endblock %}

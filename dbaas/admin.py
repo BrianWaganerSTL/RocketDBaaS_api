@@ -15,8 +15,8 @@ class PoolServer(admin.ModelAdmin):
 @admin.register(ServerPort)
 class ServerPort(admin.ModelAdmin):
     list_display = ('port', 'port_status','port_notes','updated_dttm')
-    list_select_related = ('port',)
     list_display_links = ('port',)
+    ordering = [ 'port']
 
 
 @admin.register(Application)
@@ -43,8 +43,8 @@ class ApplicationContact(admin.ModelAdmin):
 class Cluster(admin.ModelAdmin):
     list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
                     'read_write_port','read_only_port')
-    list_select_related = ('cluster_name',)
-    list_display_links = ('cluster_name',)
+
+
 
 
 @admin.register(Server)

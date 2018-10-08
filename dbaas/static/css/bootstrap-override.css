@@ -11,6 +11,11 @@
     background-color: #e0615b !important;
 }
 
+.dropdown-item .disabled, .dropdown-item:disabled {
+    color: red;
+    cursor: not-allowed!important;
+    background-color: #818182;
+}
 .navbar-dark .navbar-nav .active > .nav-link, .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .nav-link.show, .navbar-dark .navbar-nav .show > .nav-link {
     color: #80bdff;
 }
@@ -24,6 +29,10 @@
 }
 
 
+
+.form-check-input {
+    margin-left: 0rem!important;
+}
 
 .tab-content .tab-pane {
     border-color: #28a745;
