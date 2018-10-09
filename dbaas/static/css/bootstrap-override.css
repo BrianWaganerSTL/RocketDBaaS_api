@@ -4,18 +4,38 @@
     padding-top: inherit;
 }
 
-.bg-warning {
-    background-color: #fbff6b !important;
+.card-header {
+    background-color: rgba(135, 183, 255, 0.90) !important;
+    font-weight: 500 !important;
 }
+
+.bg-warning {
+    background-color: #f9ff99 !important;
+}
+
 .bg-danger {
     background-color: #e0615b !important;
 }
 
+input {
+    padding-left: 5px;
+    margin-right: -5px;
+}
+
+.normal-size {
+    height: 1.75rem !important;
+    display: inline-flex !important;
+    padding: 0px !important;
+    padding-right: .5rem !important;
+    margin: 0px;
+}
+
 .dropdown-item .disabled, .dropdown-item:disabled {
     color: red;
-    cursor: not-allowed!important;
+    cursor: not-allowed !important;
     background-color: #818182;
 }
+
 .navbar-dark .navbar-nav .active > .nav-link, .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .nav-link.show, .navbar-dark .navbar-nav .show > .nav-link {
     color: #80bdff;
 }
@@ -28,10 +48,8 @@
     color: #d58512
 }
 
-
-
 .form-check-input {
-    margin-left: 0rem!important;
+    margin-left: 0rem !important;
 }
 
 .tab-content .tab-pane {
@@ -42,8 +60,8 @@
 }
 
 .tab-content .album {
-    padding: .8rem!important;
-    background-color: #f8f9fa!important;
+    padding: .8rem !important;
+    background-color: #f8f9fa !important;
     padding: 5px 0;
 }
 
@@ -51,11 +69,10 @@
     background: #74579d;
     color: #ffffff;
 }
+
 .tab-content table {
     margin: 0rem;
 }
-
-
 
 .nav-tabs {
     border-bottom: 2px solid #DDD;
@@ -90,7 +107,7 @@
 }
 
 /*.nav-tabs > li.active > a::after, .nav-tabs > li:hover > a::after {*/
-    /*transform: scale(1);*/
+/*transform: scale(1);*/
 /*}*/
 
 .tab-nav > li > a::after {

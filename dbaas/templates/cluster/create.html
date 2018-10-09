@@ -39,7 +39,7 @@
                     <br><br>
 
                     <label for="backup_retention_days">Backup Retention (Days): </label>
-                    <input type="text" name="backup_retention_days" id="backup_retention_days">
+                    <input type="text" name="backup_retention_days" id="backup_retention_days" value="14">
                 </div>
             </div>
 
@@ -47,22 +47,36 @@
                 <div class="card-header">Server Resources</div>
                 <div class="card-body">
                     <label for="requested_cpu__text">CPUs: </label>
-                    <input type="text" name="requested_cpu" id="requested_cpu__text">
+                    <input type="text" name="requested_cpu" id="requested_cpu__text" value="2">
                     <br><br>
 
                     <label for="requested_mem_gb__text">RAM (GB): </label>
-                    <input type="text" name="requested_mem_gb" id="requested_mem_gb__text">
+                    <input type="text" name="requested_mem_gb" id="requested_mem_gb__text" value="4">
                     <br><br>
 
                     <label for="requested_db_gb">DB (GB): </label>
-                    <input type="text" name="requested_db_gb" id="requested_db_gb__text">
+                    <input type="text" name="requested_db_gb" id="requested_db_gb__text" value="10">
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="card" style="width: 50rem; margin: 10px">
-                <div class="card-header">Primary DataCenter Servers</div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-8">
+                            Primary DataCenter Servers
+                        </div>
+                        <div class="col-4 row">
+                            <label for="datacenter_name__select" class="normal-size">DataCenter: </label>
+                            <select class="form-control normal-size" style="width: 4rem;" name="datacenter_name" id="datacenter_name__select">
+                                <option value="STL">STL</option>
+                                <option value="CH" selected>CH</option>
+                                <option value="PA">PA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <label for="PrimaryDCServer1__text">Server 1: </label>
                     <input type="text" name="PrimaryDCServer1" id="PrimaryDCServer1__text" class="w-100">
@@ -76,12 +90,25 @@
 
         <div class="row">
             <div class="card" style="width: 50rem; margin: 10px">
-                <div class="card-header">Secondary DataCenter Servers</div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-9">
+                            Secondary DataCenter Servers
+                        </div>
+                        <div class="col-3 row">
+                            <label for="datacenter_name__select" class="normal-size">DataCenter: </label>
+                            <select class="form-control normal-size" style="width:4rem" name="datacenter_name" id="datacenter_name__select">
+                                <option value="STL">STL</option>
+                                <option value="CH">CH</option>
+                                <option value="PA" selected>PA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <label for="PrimaryDCServer1__text">Server 1: </label>
                     <input type="text" name="SeconaryDCServer1" id="SeconaryDCServer1__text" class="w-100">
-                </div>
-                <div class="card-body">
+                    <br>
                     <label for="SeconaryDCServer2">Server 2: </label>
                     <input type="text" name="SeconaryDCServer2" id="SeconaryDCServer2__text" class="w-100">
                 </div>
