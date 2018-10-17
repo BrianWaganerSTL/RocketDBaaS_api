@@ -64,15 +64,15 @@
             <div class="card" style="width: 50rem; margin: 10px">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-9">
                             Primary DataCenter Servers
                         </div>
-                        <div class="col-4 row">
-                            <label for="datacenter_name__select" class="normal-size">DataCenter: </label>
-                            <select class="form-control normal-size" style="width: 4rem;" name="datacenter_name" id="datacenter_name__select">
-                                <option value="STL">STL</option>
-                                <option value="CH" selected>CH</option>
-                                <option value="PA">PA</option>
+                        <div class="col-3 row">
+                            <label for="PrimaryDcName__select" class="normal-size">DataCenter: </label>
+                            <select class="form-control normal-size" style="width: 4rem" name="PrimaryDcName" id="PrimaryDcName__select">
+                                {% for dc in dataCenterChoicesDict %}
+                                    <option value="{{ dc }}" {% if dc == "PA" %} selected {% endif %} >{{ dc }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -96,21 +96,34 @@
                             Secondary DataCenter Servers
                         </div>
                         <div class="col-3 row">
-                            <label for="datacenter_name__select" class="normal-size">DataCenter: </label>
-                            <select class="form-control normal-size" style="width:4rem" name="datacenter_name" id="datacenter_name__select">
-                                <option value="STL">STL</option>
-                                <option value="CH">CH</option>
-                                <option value="PA" selected>PA</option>
+                            <label for="SecondaryDcName__select" class="normal-size">DataCenter: </label>
+                            <select class="form-control normal-size" style="width: 4rem" name="SecondaryDcName" id="SecondaryDcName__select">
+                                {% for dc in dataCenterChoicesDict %}
+                                    <option value="{{ dc }}" {% if dc == "CH" %} selected {% endif %} >{{ dc }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <label for="PrimaryDCServer1__text">Server 1: </label>
-                    <input type="text" name="SeconaryDCServer1" id="SeconaryDCServer1__text" class="w-100">
+                    {% for p in poolServers %}
+                        {% if p.data_center == SecondaryDcName__select.value %}
+                            <select class="form-control normal-size" style="width: 30rem;" name="SeconaryDCServer1" id="SeconaryDCServer1__select">
+                                <option value="ps.id">{{ p.server_name }} CPU:{{ p.cpu }} RAM:{{ p.mem_gb }} DB:{{ p.db_gb }} Status:{{ p.status_in_pool }}</option>
+                            </select>
+                        {% endif %}
+                    {% endfor %}
                     <br>
-                    <label for="SeconaryDCServer2">Server 2: </label>
-                    <input type="text" name="SeconaryDCServer2" id="SeconaryDCServer2__text" class="w-100">
+                    <label for="PrimaryDCServer2__text">Server 2: </label>
+                    {% for p in poolServers %}
+                        {% if p.data_center == SecondaryDcName__select.value %}
+                            <select class="form-control normal-size" style="width: 30rem;" name="SeconaryDCServer2" id="SeconaryDCServer2__select">
+                                <option value="ps.id">{{ p.server_name }} CPU:{{ p.cpu }} RAM:{{ p.mem_gb }} DB:{{ p.db_gb }} Status:{{ p.status_in_pool }}</option>
+                            </select>
+                        {% endif %}
+                    {% endfor %}
+                    <br>
                 </div>
             </div>
         </div>

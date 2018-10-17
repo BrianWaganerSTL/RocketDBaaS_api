@@ -1,10 +1,19 @@
 from django.shortcuts import render, redirect
 from rest_framework.generics import get_object_or_404
+
 from dbaas import models
-from dbaas.models import Cluster, Application, ApplicationContactsDetailsView, ServerActivities, ServerPort
+from dbaas.models import Cluster, Application, ServerPort, PoolServer, DataCenterChoices
 
 
 def create_cluster(request):
+    if request.method == 'GET':
+        poolServers = PoolServer.objects.exclude(status_in_pool=PoolServer.StatusInPoolChoices.Used)
+        dataCenterChoicesDict = dict(DataCenterChoices.choices)
+        return render(request, 'cluster/create.html',
+                      {'poolServers': poolServers,
+                      'dataCenterChoicesDict': dataCenterChoicesDict })
+
+
     if request.method == 'POST':
         if request.POST['application_name'] and \
                 request.POST['cluster_name'] and \

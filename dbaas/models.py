@@ -26,7 +26,6 @@ class DataCenterChoices(DjangoChoices):
     CH = ChoiceItem("CH", "Chicago", 2)
     PA = ChoiceItem("PA", "Piscataway", 3)
 
-
 class BackupTypeChoices(DjangoChoices):
     BackupFull = ChoiceItem("Full", "Full", 1)
     BackupIncremental = ChoiceItem("Incr","Incremental", 2)

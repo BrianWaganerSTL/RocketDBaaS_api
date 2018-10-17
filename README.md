@@ -1,8 +1,50 @@
-<h1>RocketDBaaS Database UI & API / EPICs</h1>
+<h1>Rocket DBaaS</h1>
 
+This is a project to create a DBaaS template that others might find useful.  
 
-URL Base: http://RocketDBaaS.??????.com
+But really I'm doing it to see if I can do it.  I'm learning basically very thing I'm using to put this together as I go.  I'm sure I will change course and stumble but I hope I will not fail.
 
+<h2>Components:</h2>
+
+* Database: PostgreSQL 10
+
+* Backend: Python
+
+* Backend API: Django 2 Rest Framework
+
+* Backend UI: Django 2 Templates
+
+* (Might be changing to Angular 2,6 or maybe Vue to enable a more dynamic website)
+
+<h2> What is currently working <h2>
+   
+* Database
+   * Tables & Indexes 85% designed and implemented
+   * Test Data is part of the Django application for most tables
+
+* Backend: Python
+   * Not much business logic written
+   
+* Backend API: Django 2 Rest Framework
+   * Admin API: Working
+   * UI API's: Multiple APIs are written and working with Django Templates
+
+* Backend UI: Django 2 Templates
+   * Templates working for the Overview pages
+      * Navigation panel
+      * Clusters, Servers in the clusters
+
+<h2>Images of what I have so far</h2>
+
+!{}(dbaas/static/images/RocketDBaaS-Overview.JPG)
+
+!{}(dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG)
+
+!{}(dbaas/static/images/RocketDBaaS-ClusterDtl-Notes.JPG)
+
+!{}(dbaas/static/images/RocketDBaaS-PoolServers.JPG)
+
+!{}(dbaas/static/images/RocketDBaaS-CreateCluster.JPG)
 
 <h2> What do I need to be able to do</h2>
 
@@ -25,7 +67,6 @@ URL Base: http://RocketDBaaS.??????.com
     * POST: /api/{dbmsType}/Cluster
 * Get details on a Cluster
     * GET: /api/{dbmsType}/Cluster/{ClusterName}
-    
     
 <h2> What do I want </h2>
 
@@ -55,7 +96,7 @@ URL Base: http://RocketDBaaS.??????.com
 
 * Webpage for the intake form so we can use and referrence it easier
 
-<h2> Future Goals <h2>
+<h2> Future Goals </h2>
 
 * Produce a few reports or website, probably broken down by database type
     * Number of DBs
