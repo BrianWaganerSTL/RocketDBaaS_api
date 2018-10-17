@@ -16,7 +16,7 @@ But really I'm doing it to see if I can do it.  I'm learning basically very thin
 
 * (Might be changing to Angular 2,6 or maybe Vue to enable a more dynamic website)
 
-<h2> What is currently working <h2>
+<h2> What is currently working </h2>
    
 * Database
    * Tables & Indexes 85% designed and implemented
@@ -36,20 +36,19 @@ But really I'm doing it to see if I can do it.  I'm learning basically very thin
 
 <h2>Images of what I have so far</h2>
 
-!{}(dbaas/static/images/RocketDBaaS-Overview.JPG)
-
-!{}(dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG)
-
-!{}(dbaas/static/images/RocketDBaaS-ClusterDtl-Notes.JPG)
-
-!{}(dbaas/static/images/RocketDBaaS-PoolServers.JPG)
-
-!{}(dbaas/static/images/RocketDBaaS-CreateCluster.JPG)
+<img src='dbaas/static/images/RocketDBaaS-Overview.JPG'>
+<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG'>
+<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Notes.JPG'>
+<img src='dbaas/static/images/RocketDBaaS-PoolServers.JPG'>
+<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG'>
+<img src='dbaas/static/images/RocketDBaaS-CreateCluster.JPG'>
 
 <h2> What do I need to be able to do</h2>
 
+<h5><span style='color:green;'>The API paths are just general guide lines at this point, so I could get a grasp of things</span></h5>
+
 * Pushing out changes to all PostgreSQL or MongoDB servers.  
-    * So I need a list of all Active & PostgreSQL 
+    * So I need a list of all Active PostgreSQL or MongoDB Servers 
     * GET: /api/{dbmsType}/clustersServers/
     * POST: /api/{dbmsType}/clustersServers/
     
