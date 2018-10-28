@@ -6,6 +6,7 @@ dj-static==0.0.6
 Django==2.1.1
 django-choices==1.6.1
 django-core==1.4.1
+django-cors-headers==2.4.0
 django-filter==2.0.0
 django-test==0.4030
 djangorestframework==3.8.2

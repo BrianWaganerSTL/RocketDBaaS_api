@@ -47,6 +47,7 @@ class Cluster(admin.ModelAdmin):
 
 
 
+
 @admin.register(Server)
 class Server(admin.ModelAdmin):
     list_display = ('cluster', 'server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','os_version',

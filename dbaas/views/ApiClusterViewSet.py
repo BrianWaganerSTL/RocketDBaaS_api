@@ -8,12 +8,13 @@ from dbaas.serializers.CreateClusterSerializer import ClusterSerializer, ServerS
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.response import Response
-
+from rest_framework.authentication import TokenAuthentication
 
 class ClusterViewSet(ModelViewSet):
-    serializer_class = ClusterSerializer
     queryset = Cluster.objects.all()
+    serializer_class = ClusterSerializer
     permission_classes = [AllowAny,]
+    authentication_classes = [TokenAuthentication,]
 
     #lookup_field = 'cluster_name'
 

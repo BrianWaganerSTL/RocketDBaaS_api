@@ -52,3 +52,8 @@ Username:  RocketDBaaS
 Email address:
 Password:  RocketDBaaS
 ```
+
+<h3>If you add more pip packages save your new Requirements</h3>
+```angular2html
+pip freeze > requirements.txt
+```
