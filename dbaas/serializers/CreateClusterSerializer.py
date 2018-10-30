@@ -12,7 +12,7 @@ class ClusterSerializer(serializers.ModelSerializer):
         fields = ('id', 'cluster_name', 'dbms_type', 'application', 'environment', 'requested_cpu', 'requested_mem_gb',
                   'requested_db_gb', 'read_write_port', 'read_only_port', 'tls_enabled_sw', 'backup_retention_days',
                    'cluster_health', 'active_sw', 'eff_dttm', 'exp_dttm', 'created_dttm', 'updated_dttm')
-        depth = 1
+        depth = 3
 
 class ServerSerializer(serializers.ModelSerializer):
     class Meta:
