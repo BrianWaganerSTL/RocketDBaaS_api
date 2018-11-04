@@ -35,12 +35,12 @@ class Clusters(ModelViewSet):
     authentication_classes = [TokenAuthentication,]
     lookup_field = 'cluster_name'
 
-    # def get_queryset(self):
-    #     clusters = Cluster.objects.all()
-    #     queryClusterName = self.request.GET.get('cluster_name')
-    #     if queryClusterName is not None:
-    #         clusters = clusters.filter(cluster_name__icontains=queryClusterName)
-    #     return clusters
+    def get_queryset(self):
+        clusters = Cluster.objects.all()
+        queryClusterName = self.request.GET.get('cluster_name')
+        if queryClusterName is not None:
+            clusters = clusters.filter(cluster_name__icontains=queryClusterName)
+        return clusters
 
 
 # class ClusterServers(ModelViewSet):
