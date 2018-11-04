@@ -174,7 +174,6 @@ class Application(Model):
     updated_dttm = DateTimeField(auto_now=True)
 
 
-
 class Cluster(Model):
     class Meta:
         db_table = "cluster"
@@ -223,7 +222,7 @@ class Server(Model):
         SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",3)
         Arbiter = ChoiceItem("Arbiter", "Arbiter Node",4)
 
-    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
+    cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.ProtectedError, null=False)
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)

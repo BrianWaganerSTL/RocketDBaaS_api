@@ -48,7 +48,7 @@ But really I'm doing it to see if I can do it.  I'm learning basically very thin
 <h5><span style='color:green;'>The API paths are just general guide lines at this point, so I could get a grasp of things</span></h5>
 
 * Pushing out changes to all PostgreSQL or MongoDB servers.  
-    * So I need a list of all Active PostgreSQL or MongoDB Servers 
+    * So I need a list of all Active PostgreSQL or MongoDB Servers
     * GET: /api/{dbmsType}/clustersServers/
     * POST: /api/{dbmsType}/clustersServers/
     

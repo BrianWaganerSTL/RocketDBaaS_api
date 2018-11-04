@@ -17,7 +17,7 @@ from dbaas.serializers.serializers import LockPoolServers2Serializer
 #         # lockedPoolServers = PoolServer.objects.all()
 #         # return Response(lockedPoolServers)
 #     serializer_class = LockPoolServers2Serializer(queryset)
-#     # return HttpResponse('<h1>Locked {} Servers</h1>'.format(NeededServers))
+#     # return HttpResponse('<h1>Locked {} ServersMVS</h1>'.format(NeededServers))
 #     # return render(request,{'lockedPoolServers':lockedPoolServers})
 #     return 'hi'
 
