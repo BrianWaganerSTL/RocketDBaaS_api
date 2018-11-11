@@ -1,4 +1,4 @@
-
+import order as order
 from django.template import RequestContext
 from django_filters import rest_framework
 from django_filters.rest_framework import filters
@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser,)
-from dbaas.models import PoolServer, Cluster, Server
-from dbaas.serializers.ApiSerializers import ClusterSerializer, PoolServerSerializer, ServersSerializer
+from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Alert
+from dbaas.serializers.ApiSerializers import ClusterSerializer, PoolServerSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
+    NotesSerializer, AlertsSerializer
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -33,50 +34,65 @@ class Clusters(ModelViewSet):
     serializer_class = ClusterSerializer
     permission_classes = [AllowAny,]
     authentication_classes = [TokenAuthentication,]
-    lookup_field = 'cluster_name'
+
+# TODO: Need to refactor since with this committed out I can't do partial name searches from the UI
+    # def get_queryset(self):
+    #     clusters = Cluster.objects.all()
+    #     queryClusterName = self.request.GET.get('cluster_name')
+    #     if queryClusterName is not None:
+    #         clusters = clusters.filter(cluster_name__icontains=queryClusterName)
+    #     return clusters
+
+class BackupsList(generics.ListAPIView):
+    serializer_class = BackupsSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vClusterId'
 
     def get_queryset(self):
-        clusters = Cluster.objects.all()
-        queryClusterName = self.request.GET.get('cluster_name')
-        if queryClusterName is not None:
-            clusters = clusters.filter(cluster_name__icontains=queryClusterName)
-        return clusters
+        vClusterId = self.kwargs['vClusterId']
+        return Backup.objects.filter(cluster_id=vClusterId).order_by('-start_dttm')
 
+class RestoresList(generics.ListAPIView):
+    serializer_class = RestoresSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vClusterId'
 
-# class ClusterServers(ModelViewSet):
-#     queryset = Server.objects.all()
-#     serializer_class = ClusterServersSerializer
-#     permission_classes = [AllowAny, ]
-#     authentication_classes = [TokenAuthentication, ]
-#     lookup_url_kwarg = "clusterId" # search item name in url
-#     lookup_field = "cluster"       # search item name in model
+    def get_queryset(self):
+        vClusterId = self.kwargs['vClusterId']
+        return Restore.objects.filter(to_cluster_id=vClusterId).order_by('-start_dttm')
 
-    # def get_queryset(self):
-    #     queryClusterId = self.kwargs['clusterId']
-    #     # queryClusterId = self.request.query_params.get('clusterId', None)
-    #     if queryClusterId is not None:
-    #         queryset = self.queryset.filter(cluster_id=queryClusterId)
-    #     return queryset
+class ActivitiesList(generics.ListAPIView):
+    serializer_class = ServerActivitiesSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vClusterId'
 
+    def get_queryset(self):
+        vClusterId = self.kwargs['vClusterId']
+        return ServerActivity.objects.filter(server__cluster_id=vClusterId).order_by('-start_dttm')
 
-# def ClusterServers(request):
-#     queryClusterId = request.content_params.get('clusterId')
-#     servers = Server.objects.filter(active_sw=True).filter(cluster_id=queryClusterId)
-#     return { 'servers': servers }
-# class ClusterServersView(APIView):
-#     authentication_classes = [TokenAuthentication, ]
-#     permission_classes = [AllowAny, ]
-#     renderer_classes = (JSONRenderer,)
-#
-#     def get(self, request, _cluster_id):
-#         queryset = Server.objects.\
-#             filter(active_sw=True).\
-#             filter(cluster_id=_cluster_id)
-#
-#         serializer_class = ClusterServersSerializer(data=queryset)
-#         print('serializer:' + serializer_class.initial_data)
-#
-#         return Response({'servers': serializer_class.data})
+class NotesList(generics.ListAPIView):
+    serializer_class = NotesSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vClusterId'
+
+    def get_queryset(self):
+        vClusterId = self.kwargs['vClusterId']
+        return ClusterNote.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
+
+class AlertsList(generics.ListAPIView):
+    serializer_class = AlertsSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vClusterId'
+
+    def get_queryset(self):
+        vClusterId = self.kwargs['vClusterId']
+        return Alert.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
+
 
 class PoolServerViewSet(ModelViewSet):
     queryset = PoolServer.objects.all()

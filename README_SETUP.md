@@ -30,27 +30,42 @@ Password:  RocketDBaaS
 <h3>Dump the current database if you want that to be test data for later</h3>
 manage.py 
 ```
-  dumpdata --indent 2 -o dbaas/fixtures/test_data.json --exclude dbaas.ApplicationContactsDetailsView dbaas
+dumpdata --indent 2 -o dbaas/fixtures/test_data.json --exclude dbaas.ApplicationContactsDetailsView dbaas
 ```
 
-<h3>Clear the tables data</h3>
+<h2>Clear just the data in the tables</h2>
+<h4>Clear the tables data</h4>
 
 This whips out your data for the application and your web users and roles.  Users and Roles are not part of the load data.
 ```
 flush
 ```
 
-<h3>Import your test data</h3>
+<h4>Import your test data</h4>
 ```
-    loaddata --app dbaas dbaas/fixtures/test_data.json
+loaddata --app dbaas dbaas/fixtures/test_data.json
 ```
 
-<h3>Create a Application User so you can login</h3>
+<h4>Create a Application User so you can login</h4>
 ```
 manage.py@RocketDBaaS > createsuperuser
 Username:  RocketDBaaS
 Email address:
 Password:  RocketDBaaS
+```
+
+<h2>If you need to drop the tables and start over</h2>
+
+<h4>Run the following to show you what table to drop</h4>
+
+```
+
+- drop all your views and tables in the schema that you have models for via pgAdmin
+makemigrations
+- copy the fixtures/CreateViews.py to /migrations/0002_CreateViews
+migrate --fake-initial
+migrate
+loaddata --app dbaas dbaas/fixtures/test_data.json
 ```
 
 <h3>If you add more pip packages save your new Requirements</h3>

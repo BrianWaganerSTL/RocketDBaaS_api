@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import fields
 from django.db.models.fields import reverse_related
 from rest_framework import serializers
-# from rest_framework.serializers.ModelSerializer import build
-from dbaas.models import Cluster, Server, PoolServer
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert
+
 
 class ServersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,40 @@ class ServersSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 0
 
+class BackupsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Backup
+        fields = '__all__'
+        depth = 0
+        sorted('created_dttm', reverse=True)
+
+class RestoresSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restore
+        fields = '__all__'
+        depth = 1
+        sorted('created_dttm', reverse=True)
+
+class ServerActivitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServerActivity
+        fields = '__all__'
+        depth = 1
+        sorted('created_dttm', reverse=True)
+
+class NotesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClusterNote
+        fields = '__all__'
+        depth = 0
+        sorted('created_dttm', reverse=True)
+
+class AlertsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Alert
+        fields = '__all__'
+        depth = 0
+        sorted('created_dttm', reverse=True)
 
 class ClusterSerializer(serializers.ModelSerializer):
     class Meta:

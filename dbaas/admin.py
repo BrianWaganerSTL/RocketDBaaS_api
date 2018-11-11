@@ -18,6 +18,11 @@ class ServerPort(admin.ModelAdmin):
     list_display_links = ('port',)
     ordering = [ 'port']
 
+@admin.register(Alert)
+class Alert(admin.ModelAdmin):
+    list_display = ('id','alert','server_name')
+    list_display_links = ('alert',)
+
 
 @admin.register(Application)
 class Application(admin.ModelAdmin):
@@ -56,15 +61,15 @@ class Server(admin.ModelAdmin):
     list_display_links = ('cluster',)
 
 
-@admin.register(ServerActivities)
-class ServerActivities(admin.ModelAdmin):
+@admin.register(ServerActivity)
+class ServerActivity(admin.ModelAdmin):
     list_display = ('server', 'server_activity','activity_status','start_dttm')
     list_select_related = ('server',)
     list_display_links = ('server',)
 
 
 @admin.register(ClusterNote)
-class ClusterNotes(admin.ModelAdmin):
+class ClusterNote(admin.ModelAdmin):
     list_display = ('cluster', 'title', 'note', 'created_dttm', 'updated_dttm')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)

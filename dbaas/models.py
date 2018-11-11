@@ -260,6 +260,8 @@ class CreateDBInit(models.Model):
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False)
 
 
+
+
 class Backup (models.Model):
     class Meta:
         db_table = "backup"
@@ -272,11 +274,20 @@ class Backup (models.Model):
     backup_size_gb = DecimalField(decimal_places=2, max_digits=5, null=False, default=0)
     start_dttm = DateTimeField(editable=True, default=INFINITY)
     stop_dttm = DateTimeField(editable=True, default=INFINITY)
+    deleted_dttm = DateTimeField(editable=True, default=INFINITY)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
-    def duration(self):
+    @property
+    def _duration(self):
         return self.stop_dttm-self.start_dttm
+    duration = property(_duration)
+
+    @property
+    def _deleted_sw(self):
+        return (self.deleted_dttm < datetime.date.now())
+    deleted_sw = property(_deleted_sw)
+
 
 class Restore(models.Model):
     class Meta:
@@ -287,6 +298,8 @@ class Restore(models.Model):
     restore_type = CharField(max_length=10, null=False, default='', choices=RestoreTypeChoices.choices)
     restore_to_dttm = DateTimeField(editable=True)
     restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices)
+    restore_by = CharField(max_length=30, null=False, default='')
+    ticket = CharField(max_length=30, null=False, default='')
     start_dttm = DateTimeField(editable=True, default=INFINITY)
     stop_dttm = DateTimeField(editable=True, default=INFINITY)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
@@ -295,7 +308,7 @@ class Restore(models.Model):
     def duration(self):
         return self.stop_dttm-self.start_dttm
 
-class ServerActivities(models.Model):
+class ServerActivity(models.Model):
     class Meta:
         db_table = "server_activities"
         ordering = ['created_dttm']
@@ -306,6 +319,7 @@ class ServerActivities(models.Model):
     activity_status = CharField(max_length=15, null=False, default='Queued', choices=ActivitiesStatusChoices.choices)
     start_dttm = DateTimeField(editable=True, null=False, default=INFINITY)
     stop_dttm = DateTimeField(editable=True, null=False, default=INFINITY)
+    activity_by = CharField(max_length=30, null=False, default='')
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -318,6 +332,7 @@ class ClusterNote(models.Model):
     cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     title = CharField(max_length=50)
     note = CharField(max_length=2048)
+    ticket = CharField(max_length=30, null=False, default='')
     created_by = CharField(max_length=30, null=False, default='')
     note_color = CharField(max_length=15, null=False, default='', choices=ColorChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
@@ -342,6 +357,25 @@ class ApplicationContactsDetailsView(models.Model):
     contact_phone = CharField(max_length=15)
     contact_email = EmailField(null=False, default='default@email.com')
     active_sw = BooleanField(null=False, default=True)
+
+
+class Alert(models.Model):
+    class Meta:
+        db_table = 'alert'
+        ordering = ['-start_dttm']
+
+    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
+    server_name = CharField(max_length=30, null=False, default='')
+    alert = CharField(max_length=2048, null=False, default='')
+    alert_cleared_sw = BooleanField(null=False, default=False)
+    start_dttm = DateTimeField(auto_now=True, editable=True)
+    sent_notification_sw = BooleanField(null=False, default=False)
+    note = CharField(max_length=2048)
+    note_by = CharField(max_length=30, null=False, default='')
+    note_color = CharField(max_length=15, null=False, default='', choices=ColorChoices.choices)
+    ticket = CharField(max_length=30, null=False, default='')
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
