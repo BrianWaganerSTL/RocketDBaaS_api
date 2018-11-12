@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser,)
-from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Alert
+from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact, ApplicationContactsView
 from dbaas.serializers.ApiSerializers import ClusterSerializer, PoolServerSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, AlertsSerializer
+    NotesSerializer, AlertsSerializer, ApplicationContactsSerializer, ApplicationContactsViewSerializer
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -93,6 +93,28 @@ class AlertsList(generics.ListAPIView):
         vClusterId = self.kwargs['vClusterId']
         return Alert.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
 
+class ApplicationContactsList(generics.ListAPIView):
+    serializer_class = ApplicationContactsSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vApplicationId'
+
+    def get_queryset(self):
+        vApplicationId = self.kwargs['vApplicationId']
+        return ApplicationContact.objects.filter(application__exact=vApplicationId).filter(active_sw=True)
+
+class ApplicationContactsViewList(generics.ListAPIView):
+    serializer_class = ApplicationContactsViewSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+    lookup_field = 'vApplicationId'
+
+    def get_queryset(self):
+        vApplicationId = self.kwargs['vApplicationId']
+        return ApplicationContactsView.objects.\
+            filter(application_id=vApplicationId).\
+            filter(active_sw=True).\
+            order_by('contact_name')
 
 class PoolServerViewSet(ModelViewSet):
     queryset = PoolServer.objects.all()

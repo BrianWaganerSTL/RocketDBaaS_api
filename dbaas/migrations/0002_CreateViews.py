@@ -17,12 +17,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL("create or replace view application_contacts_details_view as "
-                          "  select a.id, c.id as contact_id, "
-                          "  a.application_name, c.contact_name, c.contact_type, c.contact_phone, c.contact_email, c.active_sw "
+        migrations.RunSQL("create or replace view application_contacts_view as "
+                          "  select (a.id*100000)+c.id as id, "
+                          "    a.id as application_id, a.application_name,"
+                          "    c.id as contact_id, c.contact_name, c.contact_type, c.contact_phone, c.contact_email, c.active_sw "
                           "  from application_contact ac, application a, contact c "
                           "  where ac.application_id = a.id "
                           "  and ac.contact_id = c.id "
                           "  and ac.active_sw = TRUE",
-                          "drop view application_contacts_details_view", ),
+                          "drop view application_contacts_view", ),
     ]

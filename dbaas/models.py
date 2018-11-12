@@ -345,13 +345,14 @@ class ClusterNote(models.Model):
         return self.created_dttm.strftime('%b %e, %Y')
 
 
-class ApplicationContactsDetailsView(models.Model):
+class ApplicationContactsView(models.Model):
     class Meta:
-        db_table = "application_contacts_details_view"
+        db_table = "application_contacts_view"
         managed = False
 
-    application_id = IntegerField
-    contact_id = IntegerField
+    application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
+    application_name = CharField(max_length=60)
+    contact = ForeignKey(Contact, on_delete=deletion.ProtectedError, null=False)
     contact_name = CharField(max_length=60)
     contact_type = CharField(max_length=30)
     contact_phone = CharField(max_length=15)

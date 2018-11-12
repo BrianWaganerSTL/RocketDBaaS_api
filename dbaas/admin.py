@@ -39,9 +39,13 @@ class Contact(admin.ModelAdmin):
 
 @admin.register(ApplicationContact)
 class ApplicationContact(admin.ModelAdmin):
-    list_display = ('id','application','contact')
-    list_select_related = ('application','contact',)
+    list_display = ('id','application_id','contact_id','active_sw')
     list_display_links = ('id',)
+
+# @admin.register(ApplicationContactsView)
+# class ApplicationContactsView(admin.ModelAdmin):
+#     list_display = ('application_name','contact_name','contact_type','contact_phone','contact_email','active_sw')
+#     list_display_links = ('id',)
 
 
 @admin.register(Cluster)

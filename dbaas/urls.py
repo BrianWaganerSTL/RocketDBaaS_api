@@ -12,15 +12,18 @@ router.register(r'MyPoolServers', MyPoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
 
 urlpatterns = [
-    path('servers/<vClusterId>/', ApiViews.ServersList.as_view()),
+    path('clusters/<vClusterId>/servers/', ApiViews.ServersList.as_view()),
     path('overview/', overview_view.overview, name='overview'),
     path('cluster_details/<_cluster_id>', cluster_details_view.cluster_details, name='cluster_details'),
-    path('cluster/<vClusterId>/backups/', ApiViews.BackupsList.as_view()),
-    path('cluster/<vClusterId>/restores/', ApiViews.RestoresList.as_view()),
-    path('cluster/<vClusterId>/activities/', ApiViews.ActivitiesList.as_view()),
-    path('cluster/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
-    path('cluster/<vClusterId>/alerts/', ApiViews.AlertsList.as_view()),
-    # path('clusterServers/<_cluster_id>/', ApiViews.ClusterServersView.as_view()),
+
+    path('clusters/<vClusterId>/backups/', ApiViews.BackupsList.as_view()),
+    path('clusters/<vClusterId>/restores/', ApiViews.RestoresList.as_view()),
+    path('clusters/<vClusterId>/activities/', ApiViews.ActivitiesList.as_view()),
+    path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
+    path('clusters/<vClusterId>/alerts/', ApiViews.AlertsList.as_view()),
+    path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
+    path('applications/<vApplicationId>/contactsView/', ApiViews.ApplicationContactsViewList.as_view()),
+
     path('pool_servers/', pool_servers_views.pool_servers, name='pool_servers'),
     path('cluster/create', create_cluster_view.create_cluster, name='cluster/create.html'),
     path('', overview_view.overview, name='overview'),
