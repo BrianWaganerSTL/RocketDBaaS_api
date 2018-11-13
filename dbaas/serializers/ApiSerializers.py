@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import fields
 from django.db.models.fields import reverse_related
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContactsView, ApplicationContact
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact
 
 
 class ServersSerializer(serializers.ModelSerializer):
@@ -51,14 +51,6 @@ class ApplicationContactsSerializer(serializers.ModelSerializer):
         model = ApplicationContact
         fields = '__all__'
         depth = 1
-
-
-class ApplicationContactsViewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ApplicationContactsView
-        fields = '__all__'
-        depth = 1
-        sorted('contact_name')
 
 class ClusterSerializer(serializers.ModelSerializer):
     class Meta:

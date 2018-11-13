@@ -91,7 +91,16 @@ class ActivitiesStatusChoices(DjangoChoices):
     PendingRestart = ChoiceItem("PendingRestart",'PendingRestart',2)
     Processing = ChoiceItem("Processing","Processing",3)
     Successful = ChoiceItem("Successful","Successful",4)
-    Failed = ChoiceItem("Failed","Failed")
+    Failed = ChoiceItem("Failed","Failed", 5)
+
+
+class AlertStatusChoices(DjangoChoices):
+    Normal = ChoiceItem("Normal","Normal",1)
+    Warning = ChoiceItem("Warning",'Warning',2)
+    Critical = ChoiceItem("Critical","Critical",3)
+    Blackout = ChoiceItem("Blackout","Blackout",4)
+    Info = ChoiceItem("Normal", "Normal", 5)
+    Unknown = ChoiceItem("Unknown","Unknown", 6)
 
 
 class PoolServer(Model):
@@ -345,21 +354,6 @@ class ClusterNote(models.Model):
         return self.created_dttm.strftime('%b %e, %Y')
 
 
-class ApplicationContactsView(models.Model):
-    class Meta:
-        db_table = "application_contacts_view"
-        managed = False
-
-    application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
-    application_name = CharField(max_length=60)
-    contact = ForeignKey(Contact, on_delete=deletion.ProtectedError, null=False)
-    contact_name = CharField(max_length=60)
-    contact_type = CharField(max_length=30)
-    contact_phone = CharField(max_length=15)
-    contact_email = EmailField(null=False, default='default@email.com')
-    active_sw = BooleanField(null=False, default=True)
-
-
 class Alert(models.Model):
     class Meta:
         db_table = 'alert'
@@ -368,6 +362,7 @@ class Alert(models.Model):
     cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
     server_name = CharField(max_length=30, null=False, default='')
     alert = CharField(max_length=2048, null=False, default='')
+    alert_status = CharField(max_length=15, null=False, default='', choices=AlertStatusChoices.choices)
     alert_cleared_sw = BooleanField(null=False, default=False)
     start_dttm = DateTimeField(auto_now=True, editable=True)
     sent_notification_sw = BooleanField(null=False, default=False)

@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dbaas', '0002_CreateViews'),
+        ('dbaas', '0001_initial'),
     ]
 
     operations = [

@@ -22,7 +22,6 @@ urlpatterns = [
     path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
     path('clusters/<vClusterId>/alerts/', ApiViews.AlertsList.as_view()),
     path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
-    path('applications/<vApplicationId>/contactsView/', ApiViews.ApplicationContactsViewList.as_view()),
 
     path('pool_servers/', pool_servers_views.pool_servers, name='pool_servers'),
     path('cluster/create', create_cluster_view.create_cluster, name='cluster/create.html'),

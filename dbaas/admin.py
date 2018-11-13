@@ -42,11 +42,6 @@ class ApplicationContact(admin.ModelAdmin):
     list_display = ('id','application_id','contact_id','active_sw')
     list_display_links = ('id',)
 
-# @admin.register(ApplicationContactsView)
-# class ApplicationContactsView(admin.ModelAdmin):
-#     list_display = ('application_name','contact_name','contact_type','contact_phone','contact_email','active_sw')
-#     list_display_links = ('id',)
-
 
 @admin.register(Cluster)
 class Cluster(admin.ModelAdmin):

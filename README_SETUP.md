@@ -30,7 +30,7 @@ Password:  RocketDBaaS
 <h3>Dump the current database if you want that to be test data for later</h3>
 manage.py 
 ```
-dumpdata --indent 2 -o dbaas/fixtures/test_data.json --exclude dbaas.ApplicationContactsView dbaas
+dumpdata --indent 2 -o dbaas/fixtures/test_data.json dbaas
 ```
 
 <h2>Clear just the data in the tables</h2>
