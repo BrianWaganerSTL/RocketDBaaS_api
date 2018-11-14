@@ -20,10 +20,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 
 from rest_framework import routers
-# from dbaas.views import *
 from dbaas.views import overview_view
 from dbaas.controllers import *
-from dbaas import urls
 from rest_framework.authtoken import views
 
 # router = routers.DefaultRouter()

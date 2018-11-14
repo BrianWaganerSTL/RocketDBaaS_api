@@ -48,10 +48,6 @@ class Cluster(admin.ModelAdmin):
     list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
                     'read_write_port','read_only_port')
 
-
-
-
-
 @admin.register(Server)
 class Server(admin.ModelAdmin):
     list_display = ('cluster', 'server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','os_version',

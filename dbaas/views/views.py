@@ -26,7 +26,7 @@ from django.http import HttpResponse
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
 from dbaas.models import PoolServer, DbmsTypeChoices, DataCenterChoices
-from dbaas.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer, MyPoolServersSerializer
+from dbaas.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer
 
 
 def CreateDBInit(request):
@@ -92,10 +92,10 @@ class LockPoolServersViewSet(ModelViewSet):
       # poolServers = self.request.query_params.items() #.get('status_in_pool', PoolServer.StatusInPoolChoices.AVAILABLE)
       # return poolServers
 
-class MyPoolServersViewSet(ModelViewSet):
-    queryset = PoolServer.objects.all()
-    serializer_class = MyPoolServersSerializer
-    permission_classes = [AllowAny, ]
+# class MyPoolServersViewSet(ModelViewSet):
+#     queryset = PoolServer.objects.all()
+#     serializer_class = MyPoolServersSerializer
+#     permission_classes = [AllowAny, ]
 
     # def createDB(request):
     #     # poolServer = get_object_or_404(PoolServer)

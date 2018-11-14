@@ -62,19 +62,11 @@ class ClusterSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-# class ClusterServersSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Server
-#         fields = ('id','cluster_id','server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','server_health','os_version','db_version','pending_restart_sw','active_sw','created_dttm','updated_dttm')
-#         depth = 0
-
-
-
-class PoolServerSerializer(serializers.ModelSerializer):
+class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('id','environment', 'server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb', 'data_center', 'status_in_pool')
-
+        fields = '__all__'
+        depth = 0
 
 # def create(self, validated_data):
 #     tmp_post = validated_data

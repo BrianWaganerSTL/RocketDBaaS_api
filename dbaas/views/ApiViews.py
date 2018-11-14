@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser,)
 from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact
-from dbaas.serializers.ApiSerializers import ClusterSerializer, PoolServerSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, AlertsSerializer, ApplicationContactsSerializer
+from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
+    NotesSerializer, AlertsSerializer, ApplicationContactsSerializer, PoolServersSerializer
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -103,10 +103,14 @@ class ApplicationContactsList(generics.ListAPIView):
         vApplicationId = self.kwargs['vApplicationId']
         return ApplicationContact.objects.filter(application__exact=vApplicationId).filter(active_sw=True)
 
-class PoolServerViewSet(ModelViewSet):
+# class PoolServerList(ModelViewSet):
+#     # queryset = PoolServer.objects.filter(status_in_pool__in={'Available', 'Locked'})
+#     queryset = PoolServer.objects
+#     serializer_class = PoolServerSerializer
+#     permission_classes = [AllowAny, ]
+#     authentication_classes = [TokenAuthentication, ]
+
+class PoolServersViewSet(ModelViewSet):
     queryset = PoolServer.objects.all()
-    serializer_class = PoolServerSerializer
+    serializer_class = PoolServersSerializer
     permission_classes = [AllowAny, ]
-
-
-
