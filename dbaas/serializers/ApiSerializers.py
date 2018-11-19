@@ -61,7 +61,6 @@ class ClusterSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         depth = 1
 
-
 class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer

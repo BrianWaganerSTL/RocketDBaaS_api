@@ -7,7 +7,7 @@ from .models import *
 
 @admin.register(PoolServer)
 class PoolServer(admin.ModelAdmin):
-    list_display = ('id','status_in_pool', 'dbms_type', 'server_name', 'cpu', 'mem_gb', 'db_gb')
+    list_display = ('id','status_in_pool', 'environment', 'data_center', 'dbms_type', 'server_name', 'cpu', 'mem_gb', 'db_gb')
     list_editable = ('status_in_pool',)
     list_display_links = ('id',)
 

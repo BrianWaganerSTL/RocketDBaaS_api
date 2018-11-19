@@ -114,3 +114,32 @@ class PoolServersViewSet(ModelViewSet):
     queryset = PoolServer.objects.all()
     serializer_class = PoolServersSerializer
     permission_classes = [AllowAny, ]
+
+    def get_queryset(self):
+        queryset = PoolServer.objects.all().order_by('environment','data_center','dbms_type','-created_dttm')
+
+        env = self.request.query_params.get('env', None)
+        if env is not None:
+            queryset = queryset.filter(environment__iexact = env)
+
+        dbms = self.request.query_params.get('dbms', None)
+        if dbms is not None:
+            queryset = queryset.filter(dbms_type__iexact = dbms)
+
+        req_cpu = self.request.query_params.get('req_cpu', None)
+        if req_cpu is not None:
+            queryset = queryset.filter(cpu__gte = req_cpu)
+
+        req_mem_gb = self.request.query_params.get('req_mem_gb', None)
+        if req_mem_gb is not None:
+            queryset = queryset.filter(mem_gb__gte = req_mem_gb)
+
+        req_db_gb = self.request.query_params.get('req_db_gb', None)
+        if req_db_gb is not None:
+            queryset = queryset.filter(db_gb__gte = req_db_gb)
+
+        statusInPool = self.request.query_params.get('status_in_pool', None)
+        if statusInPool is not None:
+            queryset = queryset.filter(status_in_pool__iexact = statusInPool)
+
+        return queryset
