@@ -378,3 +378,52 @@ class Alert(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+# =========================================================================================
+#      METRICS models
+# =========================================================================================
+class MetricsCPU(models.Model):
+    class Meta:
+        db_table = 'metrics_cpu'
+
+    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    cpu_idle_pct = DecimalField(decimal_places=1, max_digits=3, null=False)
+    cpu_user_pct = DecimalField(decimal_places=1, max_digits=3, null=False)
+    cpu_system_pct = DecimalField(decimal_places=1, max_digits=3, null=False)
+    cpu_wait_pct = DecimalField(decimal_places=1, max_digits=3, null=False)
+    cpu_steal_pct = DecimalField(decimal_places=1, max_digits=3, null=False)
+
+
+class MetricsMountPoint(models.Model):
+    class Meta:
+        db_table = 'metrics_mountpoint'
+
+    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    mount_point = CharField(max_length=30, null=False, default='')
+    allocated_gb = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+    used_gb = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+    used_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+
+class MetricsLoad(models.Model):
+    class Meta:
+        db_table = 'metrics_load'
+
+    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    load_1min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+    load_5min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+    load_15min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+
+class MetricsDbPing(models.Model):
+    class Meta:
+        db_table = 'metrics_db_ping'
+
+    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    db_ping_status = CharField(max_length=30, null=False, default='')
+    db_ping_response_ms = IntegerField(null=False, default=0)
+
+# TODO: MetricsDbTopSql
