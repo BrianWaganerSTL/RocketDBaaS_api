@@ -15,7 +15,7 @@ CTRL+ALT+s
 ```
 
 * Add Django
-  * Set Settings to the settings.py in the RocketDBaaS/RocketDBaaS directory
+  * Set Settings to the settings.py in the RocketDBaaS_api/RocketDBaaS directory
 
 * Add venv
 

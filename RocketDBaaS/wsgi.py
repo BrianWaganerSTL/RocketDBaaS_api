@@ -1,5 +1,5 @@
 """
-WSGI config for RocketDBaaS project.
+WSGI config for RocketDBaaS_api project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
