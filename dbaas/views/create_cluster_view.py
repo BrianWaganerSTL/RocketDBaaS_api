@@ -20,7 +20,7 @@ def create_cluster(request):
                 request.POST['dbms_type'] and \
                 request.POST['cluster_name'] and \
                 request.POST['requested_cpu'] and \
-                request.POST['requested_mem_gb'] and \
+                request.POST['requested_ram_gb'] and \
                 request.POST['requested_db_gb'] and \
                 request.POST['tls_enabled_sw'] and \
                 request.POST['backup_retention_days']:
@@ -39,7 +39,7 @@ def create_cluster(request):
             cluster.dbms_type = 'PostgreSQL'  # request.POST['dbms_type']
             cluster.cluster_name = request.POST['cluster_name']
             cluster.requested_cpu = request.POST['requested_cpu']
-            cluster.requested_mem_gb = request.POST['requested_mem_gb']
+            cluster.requested_ram_gb = request.POST['requested_ram_gb']
             cluster.requested_db_gb = request.POST['requested_db_gb']
             cluster.tls_enabled_sw = request.POST['tls_enabled_sw']
             cluster.backup_retention_days = request.POST['backup_retention_days']

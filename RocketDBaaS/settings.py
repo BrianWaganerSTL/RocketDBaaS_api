@@ -25,6 +25,8 @@ SECRET_KEY = 'PutInLocalSetting.pyFile'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOGGING_CONFIG = None
+
 ALLOWED_HOSTS = []
 
 CORS_ORIGIN_WHITELIST = (

@@ -7,7 +7,7 @@ from .models import *
 
 @admin.register(PoolServer)
 class PoolServer(admin.ModelAdmin):
-    list_display = ('id','status_in_pool', 'environment', 'data_center', 'dbms_type', 'server_name', 'cpu', 'mem_gb', 'db_gb')
+    list_display = ('id','status_in_pool', 'environment', 'data_center', 'dbms_type', 'server_name', 'cpu', 'ram_gb', 'db_gb')
     list_editable = ('status_in_pool',)
     list_display_links = ('id',)
 
@@ -27,7 +27,7 @@ class Alert(admin.ModelAdmin):
 @admin.register(Application)
 class Application(admin.ModelAdmin):
     list_display = ('id','application_name', 'active_sw')
-    list_editable = ('application_name', 'application_name')
+    list_editable = ('application_name', )
     list_display_links = ('id',)
 
 
@@ -50,7 +50,7 @@ class Cluster(admin.ModelAdmin):
 
 @admin.register(Server)
 class Server(admin.ModelAdmin):
-    list_display = ('cluster', 'server_name','server_ip','cpu','mem_gb','db_gb','data_center','node_role','os_version',
+    list_display = ('cluster', 'server_name','server_ip','cpu','ram_gb','db_gb','data_center','node_role','os_version',
                     'db_version','pending_restart_sw','active_sw')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)
@@ -82,7 +82,25 @@ class Restore(admin.ModelAdmin):
     list_select_related = ('from_cluster','to_cluster',)
     list_display_links = ('from_cluster',)
 
+# ====================================================================
+@admin.register(MetricsCPU)
+class MetricsCPU(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricsCPU._meta.fields]
 
+@admin.register(MetricsMountPoint)
+class MetricsMountPoint(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricsMountPoint._meta.fields]
+
+@admin.register(MetricsLoad)
+class MetricsLoad(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricsLoad._meta.fields]
+
+@admin.register(MetricsDbPing)
+class MetricsDbPing(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricsDbPing._meta.fields]
+
+
+# ====================================================================
 AdminSite.site_title="Rocket DBaaS"
 AdminSite.site_header = 'Rocket DBaaS Administration'
 

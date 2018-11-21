@@ -24,7 +24,7 @@ from rest_framework.authtoken import views
 urlpatterns = [
   path('api/', include('dbaas.urls')),
   path('admin/', admin.site.urls),
-  path('', admin.site.urls, name='admin'),
+  # path('', admin.site.urls, name='home'),
   url(r'^api-token-auth/', views.obtain_auth_token),
   path('api-auth/', include('rest_framework.urls')),
   # path('auth_api/', include('auth_api.urls'))

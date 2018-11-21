@@ -6,7 +6,7 @@ from dbaas.models import (
 class LockPoolServersSerializer (serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb',
+        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'ram_gb', 'db_gb',
                   'data_center', 'status_in_pool', 'created_dttm', 'updated_dttm' )
         extra_kwargs = {
             'url': {'lookup_field': 'dbms_type'}},
@@ -15,7 +15,7 @@ class LockPoolServersSerializer (serializers.ModelSerializer):
 class LockPoolServers2Serializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
-        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb',
+        fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'ram_gb', 'db_gb',
                   'data_center', 'status_in_pool', 'created_dttm', 'updated_dttm')
         extra_kwargs = {
             'url': {'lookup_field': 'needed_servers'}}
@@ -23,4 +23,4 @@ class LockPoolServers2Serializer(serializers.ModelSerializer):
 # class MyPoolServersSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = PoolServer
-#         fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'mem_gb', 'db_gb', 'data_center', 'status_in_pool', 'cluster')
+#         fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'ram_gb', 'db_gb', 'data_center', 'status_in_pool', 'cluster')

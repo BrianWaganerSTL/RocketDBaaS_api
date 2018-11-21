@@ -130,9 +130,9 @@ class PoolServersViewSet(ModelViewSet):
         if req_cpu is not None:
             queryset = queryset.filter(cpu__gte = req_cpu)
 
-        req_mem_gb = self.request.query_params.get('req_mem_gb', None)
-        if req_mem_gb is not None:
-            queryset = queryset.filter(mem_gb__gte = req_mem_gb)
+        req_ram_gb = self.request.query_params.get('req_ram_gb', None)
+        if req_ram_gb is not None:
+            queryset = queryset.filter(ram_gb__gte = req_ram_gb)
 
         req_db_gb = self.request.query_params.get('req_db_gb', None)
         if req_db_gb is not None:

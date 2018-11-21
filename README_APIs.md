@@ -11,4 +11,4 @@ http://localhost:8000/api/clusters/2/alerts/
 http://localhost:8000/api/clusters/2/notes/
 http://localhost:8000/api/applications/1/contacts/
 http://localhost:8000/api/poolservers/
-http://localhost:8000/api/poolservers/?dbms=PostgreSQL&env=SBX&req_cpu=2&req_mem_gb=8&req_mem_gb=8&status_in_pool=Available
+http://localhost:8000/api/poolservers/?dbms=PostgreSQL&env=SBX&req_cpu=2&req_ram_gb=8&req_ram_gb=8&status_in_pool=Available

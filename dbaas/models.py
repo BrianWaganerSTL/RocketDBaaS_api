@@ -117,7 +117,7 @@ class PoolServer(Model):
     server_ip = CharField(max_length=14, null=False)
     dbms_type = CharField(max_length=10, null=False, default='', choices=DbmsTypeChoices.choices)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-    mem_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
+    ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
     data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     status_in_pool = CharField(max_length=20, null=False, default='', choices=StatusInPoolChoices.choices)
@@ -203,7 +203,7 @@ class Cluster(Model):
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
     environment = CharField(choices=EnvironmentChoices.choices, max_length=20, null=False, default='')
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False, default=0)
-    requested_mem_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
+    requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False, default=0)
     read_write_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, default=65535, related_name='read_write_port_id')
     read_only_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, default=65535, related_name='read_only_port_id')
@@ -235,7 +235,7 @@ class Server(Model):
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-    mem_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
+    ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
     data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
@@ -265,7 +265,7 @@ class CreateDBInit(models.Model):
     dbms_types = DbmsTypeChoices
     data_centers = DataCenterChoices.labels
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False)
-    requested_mem_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False)
+    requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False)
 
 
