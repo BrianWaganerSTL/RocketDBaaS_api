@@ -383,7 +383,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 # =========================================================================================
 #      METRICS models
 # =========================================================================================
-class MetricsCPU(models.Model):
+class MetricsCpu(models.Model):
     class Meta:
         db_table = 'metrics_cpu'
 

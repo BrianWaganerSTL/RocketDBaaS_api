@@ -83,9 +83,9 @@ class Restore(admin.ModelAdmin):
     list_display_links = ('from_cluster',)
 
 # ====================================================================
-@admin.register(MetricsCPU)
+@admin.register(MetricsCpu)
 class MetricsCPU(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsCPU._meta.fields]
+    list_display = [field.attname for field in MetricsCpu._meta.fields]
 
 @admin.register(MetricsMountPoint)
 class MetricsMountPoint(admin.ModelAdmin):

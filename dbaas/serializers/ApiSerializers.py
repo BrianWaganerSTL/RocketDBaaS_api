@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import fields
 from django.db.models.fields import reverse_related
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact, MetricsCpu
 
 
 class ServersSerializer(serializers.ModelSerializer):
@@ -67,6 +67,11 @@ class PoolServersSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 0
 
+class MetricsCpuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetricsCpu
+        fields = '__all__'
+        depth = 0
 # def create(self, validated_data):
 #     tmp_post = validated_data
 #     user = None
