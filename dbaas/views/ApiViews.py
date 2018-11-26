@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact, MetricsCpu
+from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Issue, ApplicationContact, MetricsCpu
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, AlertsSerializer, ApplicationContactsSerializer, PoolServersSerializer, MetricsCpuSerializer
+    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer, MetricsCpuSerializer, IssuesSerializer
 from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -26,7 +26,8 @@ class ServersList(generics.ListAPIView):
 
     def get_queryset(self):
         vClusterId = self.kwargs['vClusterId']
-        return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId)
+        return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId)\
+            .order_by('server_name')
 
 
 class Clusters(ModelViewSet):
@@ -88,15 +89,15 @@ class NotesList(generics.ListAPIView):
         return ClusterNote.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
 
 
-class AlertsList(generics.ListAPIView):
-    serializer_class = AlertsSerializer
+class IssuesList(generics.ListAPIView):
+    serializer_class = IssuesSerializer
     permission_classes = [AllowAny, ]
     authentication_classes = [TokenAuthentication, ]
-    lookup_field = 'vClusterId'
+    lookup_field = 'vServerId'
 
     def get_queryset(self):
-        vClusterId = self.kwargs['vClusterId']
-        return Alert.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
+        vServerId = self.kwargs['vServerId']
+        return Issue.objects.filter(server_id=vServerId).order_by('-created_dttm')
 
 
 class ApplicationContactsList(generics.ListAPIView):
@@ -148,10 +149,25 @@ class PoolServersViewSet(ModelViewSet):
         statusInPool = self.request.query_params.get('status_in_pool', None)
         if statusInPool is not None:
             queryset = queryset.filter(status_in_pool__iexact=statusInPool)
-
         return queryset
 
-class MetricsCpuViewSet(ModelViewSet):
-    queryset = MetricsCpu.objects.all()
-    serializer_class = MetricsCpuSerializer
-    permission_classes = [AllowAny, ]
+
+class ServerMetricsCpuList(generics.ListAPIView):
+        queryset = MetricsCpu.objects.all()
+        serializer_class = MetricsCpuSerializer
+        permission_classes = [AllowAny, ]
+
+        def get_queryset(self):
+            vServerId = self.kwargs['vServerId']
+            return MetricsCpu.objects.filter(server_id=vServerId).order_by('-created_dttm')
+
+
+# class ServersList(generics.ListAPIView):
+#     serializer_class = ServersSerializer
+#     permission_classes = [AllowAny, ]
+#     authentication_classes = [TokenAuthentication, ]
+#     lookup_field = '_cluster_id'
+#
+#     def get_queryset(self):
+#         vClusterId = self.kwargs['vClusterId']
+#         return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId)

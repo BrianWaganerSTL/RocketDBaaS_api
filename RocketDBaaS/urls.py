@@ -21,6 +21,8 @@ from django.urls import path, include
 from dbaas.controllers import *
 from rest_framework.authtoken import views
 
+
+
 urlpatterns = [
   path('api/', include('dbaas.urls')),
   path('admin/', admin.site.urls),
@@ -35,3 +37,5 @@ urlpatterns = [
   path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+

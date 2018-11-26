@@ -19,7 +19,7 @@ But really I'm doing it to see if I can do it.  I'm learning basically very thin
 <h2> What is currently working </h2>
    
 * Database
-   * Tables & Indexes 85% designed and implemented
+   * Tables & Indexes 90% designed and implemented
    * Test Data is part of the Django application for most tables
 
 * Backend: Python
@@ -27,21 +27,8 @@ But really I'm doing it to see if I can do it.  I'm learning basically very thin
    
 * Backend API: Django 2 Rest Framework
    * Admin API: Working
-   * UI API's: Multiple APIs are written and working with Django Templates
-
-* Backend UI: Django 2 Templates
-   * Templates working for the Overview pages
-      * Navigation panel
-      * Clusters, Servers in the clusters
-
-<h2>Images of what I have so far</h2>
-
-<img src='dbaas/static/images/RocketDBaaS-Overview.JPG'>
-<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG'>
-<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Notes.JPG'>
-<img src='dbaas/static/images/RocketDBaaS-PoolServers.JPG'>
-<img src='dbaas/static/images/RocketDBaaS-ClusterDtl-Backups.JPG'>
-<img src='dbaas/static/images/RocketDBaaS-CreateCluster.JPG'>
+   * UI API's: Multiple APIs are written. Mostly just gets right now.
+   * Read the README_APIs for list of APIs
 
 <h2> What do I need to be able to do</h2>
 

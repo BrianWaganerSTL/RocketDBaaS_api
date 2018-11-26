@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import fields
 from django.db.models.fields import reverse_related
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, Alert, ApplicationContact, MetricsCpu
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, MetricsCpu, Issue
 
 
 class ServersSerializer(serializers.ModelSerializer):
@@ -39,13 +39,6 @@ class NotesSerializer(serializers.ModelSerializer):
         depth = 0
         sorted('created_dttm', reverse=True)
 
-class AlertsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Alert
-        fields = '__all__'
-        depth = 0
-        sorted('created_dttm', reverse=True)
-
 class ApplicationContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicationContact
@@ -72,6 +65,15 @@ class MetricsCpuSerializer(serializers.ModelSerializer):
         model = MetricsCpu
         fields = '__all__'
         depth = 0
+
+class IssuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = '__all__'
+        depth = 2
+        sorted('created_dttm', reverse=True)
+
+
 # def create(self, validated_data):
 #     tmp_post = validated_data
 #     user = None

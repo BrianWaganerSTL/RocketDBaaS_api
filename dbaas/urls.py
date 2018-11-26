@@ -8,18 +8,18 @@ router = DefaultRouter()
 router.register(r'poolservers', ApiViews.PoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
 # TODO: Chage the below to servers/<vServerId>/metrics/cpu
-router.register(r'clusters/metrics/cpu', ApiViews.MetricsCpuViewSet)
+#router.register(r'servers/metrics/cpu', ApiViews.MetricsCpuViewSet)
 
 urlpatterns = [
     path('clusters/<vClusterId>/servers/', ApiViews.ServersList.as_view()),
-    # path('cluster_details/<_cluster_id>', cluster_details_view.cluster_details, name='cluster_details'),
-
     path('clusters/<vClusterId>/backups/', ApiViews.BackupsList.as_view()),
     path('clusters/<vClusterId>/restores/', ApiViews.RestoresList.as_view()),
     path('clusters/<vClusterId>/activities/', ApiViews.ActivitiesList.as_view()),
     path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
-    path('clusters/<vClusterId>/alerts/', ApiViews.AlertsList.as_view()),
+    path('servers/<vServerId>/metrics/cpu/', ApiViews.ServerMetricsCpuList.as_view()),
+    path('servers/<vServerId>/issues/', ApiViews.IssuesList.as_view()),
     path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
 ]
 
 urlpatterns += router.urls
+

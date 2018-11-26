@@ -18,11 +18,6 @@ class ServerPort(admin.ModelAdmin):
     list_display_links = ('port',)
     ordering = [ 'port']
 
-@admin.register(Alert)
-class Alert(admin.ModelAdmin):
-    list_display = ('id','alert','server_name')
-    list_display_links = ('alert',)
-
 
 @admin.register(Application)
 class Application(admin.ModelAdmin):
@@ -48,10 +43,11 @@ class Cluster(admin.ModelAdmin):
     list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
                     'read_write_port','read_only_port')
 
+
 @admin.register(Server)
 class Server(admin.ModelAdmin):
     list_display = ('cluster', 'server_name','server_ip','cpu','ram_gb','db_gb','data_center','node_role','os_version',
-                    'db_version','pending_restart_sw','active_sw')
+                    'db_version','pending_restart_sw','metrics_sw','active_sw')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)
 
@@ -69,6 +65,7 @@ class ClusterNote(admin.ModelAdmin):
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)
 
+
 @admin.register(Backup)
 class Backup(admin.ModelAdmin):
     list_display = ('cluster', 'backup_type','backup_status','db_size_gb','backup_size_gb')
@@ -83,17 +80,41 @@ class Restore(admin.ModelAdmin):
     list_display_links = ('from_cluster',)
 
 # ====================================================================
+@admin.register(Issue)
+class Issue(admin.ModelAdmin):
+    list_display = [field.attname for field in Issue._meta.fields]
+
+
+@admin.register(IssueDetail)
+class IssueDetail(admin.ModelAdmin):
+    list_display = [field.attname for field in IssueDetail._meta.fields]
+
+
+@admin.register(IssueNotification)
+class IssueNotification(admin.ModelAdmin):
+    list_display = [field.attname for field in IssueNotification._meta.fields]
+
+
+@admin.register(MetricThreshold)
+class MetricThreshold(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricThreshold._meta.fields]
+
+
+# ====================================================================
 @admin.register(MetricsCpu)
 class MetricsCPU(admin.ModelAdmin):
     list_display = [field.attname for field in MetricsCpu._meta.fields]
+
 
 @admin.register(MetricsMountPoint)
 class MetricsMountPoint(admin.ModelAdmin):
     list_display = [field.attname for field in MetricsMountPoint._meta.fields]
 
+
 @admin.register(MetricsLoad)
 class MetricsLoad(admin.ModelAdmin):
     list_display = [field.attname for field in MetricsLoad._meta.fields]
+
 
 @admin.register(MetricsDbPing)
 class MetricsDbPing(admin.ModelAdmin):

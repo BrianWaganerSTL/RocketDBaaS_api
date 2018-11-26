@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('cpu_idle_pct', models.DecimalField(decimal_places=1, max_digits=3)),
                 ('cpu_user_pct', models.DecimalField(decimal_places=1, max_digits=3)),
                 ('cpu_system_pct', models.DecimalField(decimal_places=1, max_digits=3)),
-                ('cpu_wait_pct', models.DecimalField(decimal_places=1, max_digits=3)),
+                ('cpu_iowait_pct', models.DecimalField(decimal_places=1, max_digits=3)),
                 ('cpu_steal_pct', models.DecimalField(decimal_places=1, max_digits=3)),
                 ('server_id', models.ForeignKey(on_delete=django.db.models.deletion.ProtectedError, to='dbaas.Server')),
             ],
