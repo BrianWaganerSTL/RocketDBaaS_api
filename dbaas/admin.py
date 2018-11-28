@@ -117,8 +117,13 @@ class MetricsLoad(admin.ModelAdmin):
 
 
 @admin.register(MetricsDbPing)
-class MetricsDbPing(admin.ModelAdmin):
+class MetricsServerbPing(admin.ModelAdmin):
     list_display = [field.attname for field in MetricsDbPing._meta.fields]
+
+
+@admin.register(MetricsServerPing)
+class MetricsServerPing(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricsServerPing._meta.fields]
 
 
 # ====================================================================

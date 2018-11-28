@@ -102,6 +102,10 @@ class IssueStatusChoices(DjangoChoices):
     Info = ChoiceItem("Normal", "Normal", 5)
     Unknown = ChoiceItem("Unknown","Unknown", 6)
 
+class PingStatusChoices(DjangoChoices):
+    Normal = ChoiceItem("Normal","Normal",1)
+    Critical = ChoiceItem("Critical","Critical",2)
+    Blackout = ChoiceItem("Blackout","Blackout",3)
 
 class PoolServer(Model):
     class Meta:
@@ -463,13 +467,24 @@ class MetricsLoad(models.Model):
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 
+class MetricsServerPing(models.Model):
+    class Meta:
+        db_table = 'metrics_serverm_ping'
+
+    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
+    ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
+    ping_response_ms = IntegerField(null=False, default=0)
+    error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
+    error_msg = CharField(max_length=500, null=False, default='')
+
 class MetricsDbPing(models.Model):
     class Meta:
         db_table = 'metrics_db_ping'
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    db_ping_status = CharField(max_length=30, null=False, default='')
+    db_ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
     db_ping_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
