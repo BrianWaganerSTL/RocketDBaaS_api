@@ -1,20 +1,10 @@
-import order as order
-from django.template import RequestContext
-from django_filters import rest_framework
-from django_filters.rest_framework import filters
 from rest_framework import authentication, permissions, generics
-from rest_framework.decorators import action
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Issue, ApplicationContact, MetricsCpu
+from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, Issue, ApplicationContact, MetricsCpu, MetricsPingServer
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer, MetricsCpuSerializer, IssuesSerializer
-from django.http import HttpResponse
-from django.shortcuts import render
-from rest_framework.response import Response
+    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer, IssuesSerializer
+
 from rest_framework.authentication import TokenAuthentication
 
 
@@ -26,7 +16,7 @@ class ServersList(generics.ListAPIView):
 
     def get_queryset(self):
         vClusterId = self.kwargs['vClusterId']
-        return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId)\
+        return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId) \
             .order_by('server_name')
 
 
@@ -150,24 +140,3 @@ class PoolServersViewSet(ModelViewSet):
         if statusInPool is not None:
             queryset = queryset.filter(status_in_pool__iexact=statusInPool)
         return queryset
-
-
-class ServerMetricsCpuList(generics.ListAPIView):
-        queryset = MetricsCpu.objects.all()
-        serializer_class = MetricsCpuSerializer
-        permission_classes = [AllowAny, ]
-
-        def get_queryset(self):
-            vServerId = self.kwargs['vServerId']
-            return MetricsCpu.objects.filter(server_id=vServerId).order_by('-created_dttm')
-
-
-# class ServersList(generics.ListAPIView):
-#     serializer_class = ServersSerializer
-#     permission_classes = [AllowAny, ]
-#     authentication_classes = [TokenAuthentication, ]
-#     lookup_field = '_cluster_id'
-#
-#     def get_queryset(self):
-#         vClusterId = self.kwargs['vClusterId']
-#         return Server.objects.filter(active_sw=True).filter(cluster_id=vClusterId)

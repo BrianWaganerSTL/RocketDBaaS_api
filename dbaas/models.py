@@ -35,6 +35,7 @@ class DataCenterChoices(DjangoChoices):
     CH = ChoiceItem("CH", "Chicago", 2)
     PA = ChoiceItem("PA", "Piscataway", 3)
 
+
 class BackupTypeChoices(DjangoChoices):
     BackupFull = ChoiceItem("Full", "Full", 1)
     BackupIncremental = ChoiceItem("Incr","Incremental", 2)
@@ -430,7 +431,7 @@ class MetricsCpu(models.Model):
         db_table = 'metrics_cpu'
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
-    created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
+    created_dttm = DateTimeField(editable=False, null=False)
     cpu_idle_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
     cpu_user_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
     cpu_system_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
@@ -444,10 +445,10 @@ class MetricsCpu(models.Model):
 
 class MetricsMountPoint(models.Model):
     class Meta:
-        db_table = 'metrics_mountpoint'
+        db_table = 'metrics_mount_point'
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
-    created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
+    created_dttm = DateTimeField(editable=False, null=False)
     mount_point = CharField(max_length=30, null=False, default='')
     allocated_gb = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
     used_gb = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
@@ -461,15 +462,15 @@ class MetricsLoad(models.Model):
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    load_1min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
-    load_5min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
-    load_15min = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
+    load_1min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
+    load_5min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
+    load_15min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 
-class MetricsServerPing(models.Model):
+class MetricsPingServer(models.Model):
     class Meta:
-        db_table = 'metrics_serverm_ping'
+        db_table = 'metrics_ping_server'
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
@@ -478,14 +479,14 @@ class MetricsServerPing(models.Model):
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 
-class MetricsDbPing(models.Model):
+class MetricsPingDb(models.Model):
     class Meta:
-        db_table = 'metrics_db_ping'
+        db_table = 'metrics_ping_db'
 
     server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    db_ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
-    db_ping_response_ms = IntegerField(null=False, default=0)
+    ping_db_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
+    ping_db_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 

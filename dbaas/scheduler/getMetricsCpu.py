@@ -1,3 +1,4 @@
+# This calls out to the server to ask for the data, then pulls it back and saves it.
 from datetime import datetime
 import time
 import os
@@ -11,24 +12,26 @@ metrics_port = 8080
 
 def GetMetricsCpu(s):
     metricsCpu = MetricsCpu()
-    url = 'http://' + s.server_ip + ':' + str(metrics_port) + '/api/metrics/cpu?server_id=' + str(s.id)
-    print('ServerNm: ' + s.server_name + ', url=' + url)
+    url = 'http://' + s.server_ip + ':' + str(metrics_port) + '/api/metrics/cpu'
+    print('Cpu: ServerNm: ' + s.server_name + ', url=' + url)
     try:
         r = requests.get(url)
         metrics = r.json()
         print(metrics)
 
         error_cnt = 0
-        error_msg = ''
         metricsCpu.server_id = s
+        metricsCpu.created_dttm = metrics['created_dttm']
         metricsCpu.cpu_idle_pct = metrics['idle']
         metricsCpu.cpu_user_pct = metrics['user']
         metricsCpu.cpu_system_pct = metrics['system']
-        metricsCpu.cpu_iowait_pct = metrics.get('cpu_iowait_pct') or 0
-        metricsCpu.cpu_irq_pct = metrics.get('cpu_irq_pct') or 0
-        metricsCpu.cpu_steal_pct = metrics.get('cpu_steal_pct') or 0
-        metricsCpu.cpu_guest_pct = metrics.get('cpu_guest_pct') or 0
-        metricsCpu.cpu_guest_nice_pct = metrics.get('cpu_guest_nice_pct') or 0
+        if 'cpu_iowait_pct' in metrics:  # These only exist in Unix/Linux
+            metricsCpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
+            metricsCpu.cpu_irq_pct = metrics['cpu_irq_pct']
+            metricsCpu.cpu_steal_pct = metrics['cpu_steal_pct']
+            if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
+                metricsCpu.cpu_guest_pct = metrics['cpu_guest_pct']
+                metricsCpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
         metricsCpu.error_cnt = error_cnt
         metricsCpu.save()
     except requests.exceptions.Timeout:

@@ -7,8 +7,9 @@ venv
 *.log
 *.pot
 __pychache__/
-local_settings.py
 
 /media
 /static
 /src
+local_files/*
+local_settings.py

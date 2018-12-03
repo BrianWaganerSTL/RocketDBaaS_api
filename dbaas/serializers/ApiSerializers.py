@@ -1,8 +1,5 @@
-from django.contrib.auth.models import User
-from django.contrib.contenttypes import fields
-from django.db.models.fields import reverse_related
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, MetricsCpu, Issue
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Issue
 
 
 class ServersSerializer(serializers.ModelSerializer):
@@ -11,12 +8,14 @@ class ServersSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 0
 
+
 class BackupsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Backup
         fields = '__all__'
         depth = 0
         sorted('created_dttm', reverse=True)
+
 
 class RestoresSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,12 +24,14 @@ class RestoresSerializer(serializers.ModelSerializer):
         depth = 1
         sorted('created_dttm', reverse=True)
 
+
 class ServerActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServerActivity
         fields = '__all__'
         depth = 1
         sorted('created_dttm', reverse=True)
+
 
 class NotesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,11 +40,13 @@ class NotesSerializer(serializers.ModelSerializer):
         depth = 0
         sorted('created_dttm', reverse=True)
 
+
 class ApplicationContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicationContact
         fields = '__all__'
         depth = 1
+
 
 class ClusterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,17 +57,13 @@ class ClusterSerializer(serializers.ModelSerializer):
         # fields = '__all__'
         depth = 1
 
+
 class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
         fields = '__all__'
         depth = 0
 
-class MetricsCpuSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MetricsCpu
-        fields = '__all__'
-        depth = 0
 
 class IssuesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,22 +71,3 @@ class IssuesSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 2
         sorted('created_dttm', reverse=True)
-
-
-# def create(self, validated_data):
-#     tmp_post = validated_data
-#     user = None
-#
-#     request = self.context.get("request")
-#     if request and hasattr(request, "user"):
-#         user = request.user
-#
-#     cluster = Cluster.objects.create(
-#         user=user,
-#         title=tmp_post['title'],
-#         text=tmp_post['text'],
-#     )
-#
-#     return cluster
-
-
