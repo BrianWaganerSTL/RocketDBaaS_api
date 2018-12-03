@@ -13,7 +13,7 @@ metrics_port = 8080
 def GetMetricsLoad(s):
     metricsLoad = MetricsLoad()
     url = 'http://' + s.server_ip + ':' + str(metrics_port) + '/api/metrics/load'
-    print('PingDb: url=' + url)
+    print('Load: url=' + url)
     try:
         r = requests.get(url)
         metrics = r.json()

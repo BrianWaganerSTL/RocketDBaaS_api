@@ -22,10 +22,10 @@ def GetMetricsMountPoints(s):
         error_cnt = 0
         metricsMountPoint.server_id = s
         metricsMountPoint.created_dttm = metrics['created_dttm']
-        metricsMountPoint.cpu_idle_pct = metrics['mount_point']
-        metricsMountPoint.cpu_user_pct = metrics['allocated_gb']
-        metricsMountPoint.cpu_system_pct = metrics['used_gb']
-        metricsMountPoint.cpu_system_pct = metrics['used_pct']
+        metricsMountPoint.mount_point = metrics['mount_point']
+        metricsMountPoint.allocated_gb = metrics['allocated_gb']
+        metricsMountPoint.used_gb = metrics['used_gb']
+        metricsMountPoint.used_pct = metrics['used_pct']
         metricsMountPoint.error_cnt = error_cnt
         metricsMountPoint.save()
     except requests.exceptions.Timeout:

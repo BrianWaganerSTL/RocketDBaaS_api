@@ -16,7 +16,7 @@ urlpatterns = [
     path('clusters/<vClusterId>/activities/', ApiViews.ActivitiesList.as_view()),
     path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
     path('servers/<vServerId>/metrics/cpu/', ApiMetricsViews.MetricsCpuList.as_view()),
-    path('servers/<vServerId>/metrics/mountpoint/', ApiMetricsViews.MetricsMountPointList.as_view()),
+    path('servers/<vServerId>/metrics/mountpoints/', ApiMetricsViews.MetricsMountPointList.as_view()),
     path('servers/<vServerId>/metrics/load/', ApiMetricsViews.MetricsLoadList.as_view()),
     path('servers/<vServerId>/metrics/pingserver/', ApiMetricsViews.MetricsPingServerList.as_view()),
     path('servers/<vServerId>/metrics/pingdb/', ApiMetricsViews.MetricsPingDbList.as_view()),
