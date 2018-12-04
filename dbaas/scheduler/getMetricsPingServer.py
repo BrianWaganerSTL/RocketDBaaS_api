@@ -1,8 +1,6 @@
-from datetime import datetime
-import time
 import os
-import requests
 from django.utils import timezone
+from sys import platform
 
 from dbaas.models import MetricsPingServer
 
@@ -11,15 +9,26 @@ metrics_port = 8080
 
 
 def GetMetricsPingServer(s):
-    metricsPingServer = MetricsPingServer()
     print('PingServer: ping')
+
+    if platform == "linux" or platform =="linux2":
+        pingCmd = 'ping -c1 -W2 ' + s.server_ip
+    elif platform == "darwin":  # Mac OS
+        pingCmd = 'ping -c1 -W2 ' + s.server_ip
+    elif platform == "win32":
+        pingCmd = 'ping -n 1 -w 2 ' + s.server_ip
+
+    metricsPingServer = MetricsPingServer()
+
     startTs = timezone.now()
-    response = os.system("ping -w 2 " + s.server_ip)
+    response = os.system(pingCmd)
     stopTs = timezone.now()
+
     if response == 0:
         errCnt[s.id] = 0
         pingStatus = 'Normal'
         errorMsg = ''
+
     else:
         errCnt[s.id] = errCnt[s.id] + 1
         pingStatus = 'Critical'
@@ -31,5 +40,4 @@ def GetMetricsPingServer(s):
     metricsPingServer.ping_response_ms = int((stopTs - startTs).total_seconds()*1000)
     metricsPingServer.error_cnt = errCnt[s.id]
     metricsPingServer.error_msg = errorMsg
-    print('ping_status=' + pingStatus + ', response_ms=' +str(int((stopTs - startTs).total_seconds()*1000)))
     metricsPingServer.save()

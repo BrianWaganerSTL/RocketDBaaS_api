@@ -6,7 +6,7 @@ from dbaas.models import MetricsCpu, MetricsPingServer, MetricsMountPoint, \
 from dbaas.serializers.ApiMetricsSerializers import MetricsMountPointSerializer, MetricsLoadSerializer, MetricsCpuSerializer, \
     MetricsPingDbSerializer, MetricsPingServerSerializer
 
-defaultMetricsMins = 20
+defaultMetricsMins = 60
 
 class MetricsCpuList(generics.ListAPIView):
     queryset = MetricsCpu.objects.all()
@@ -30,11 +30,12 @@ class MetricsMountPointList(generics.ListAPIView):
 
     def get_queryset(self):
         vServerId = self.kwargs['vServerId']
-        afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
+        afterDttm = timezone.now() - timezone.timedelta(days=30)
 
         return MetricsMountPoint.objects \
             .filter(server_id=vServerId) \
             .filter(created_dttm__gte=afterDttm) \
+            .exclude(mount_point='') \
             .order_by('-created_dttm')
 
 
