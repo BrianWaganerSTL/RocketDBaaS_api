@@ -72,3 +72,8 @@ loaddata --app dbaas dbaas/fixtures/test_data.json
 ```angular2html
 pip freeze > requirements.txt
 ```
+
+<h3>To get around the issue of not being able to do pip internet installs on servers/h3>
+```bash
+pip wheel --wheel-dir=../wheels -r requirements.txt
+```

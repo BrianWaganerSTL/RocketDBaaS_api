@@ -1,0 +1,21 @@
+<h1>Setup of the Project</h1>
+
+Don't forget to add the local_settings.py file in the local_files directory.
+
+<h3>Installs</h3>
+
+ * python36 or rh-python36
+
+ * pip3 install django
+
+ * requirements
+ 
+    * if you have internet
+        
+        pip install -r requirements
+    
+    * if you don't have internet
+        
+        pip install --no-index --find-links=../wheels -r requirements.txt
+
+ 
