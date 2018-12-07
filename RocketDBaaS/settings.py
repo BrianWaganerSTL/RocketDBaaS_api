@@ -136,6 +136,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 MEDIA_URL = '/images/'
 SRC_ROOT = os.path.join(BASE_DIR, 'static/src')
 SRC_ROOT = '/src/'
+LOGIN_REDIRECT_URL = '/admin/'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (

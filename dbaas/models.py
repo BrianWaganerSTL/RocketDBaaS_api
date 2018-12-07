@@ -3,7 +3,7 @@ import textwrap
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion
+from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion, CASCADE
 from django.utils import timezone
 from djchoices import DjangoChoices, ChoiceItem
 
@@ -108,6 +108,21 @@ class PingStatusChoices(DjangoChoices):
     Critical = ChoiceItem("Critical","Critical",2)
     Blackout = ChoiceItem("Blackout","Blackout",3)
 
+class MetricNameChoices(DjangoChoices):
+    Cpu = ChoiceItem("CPU","CPU",1)
+    Load = ChoiceItem("Load","Load",2)
+    MountPoint = ChoiceItem("MountPoint","Mount Point",3)
+    PingDb = ChoiceItem("PingDB", "Ping DB", 4)
+    PingServer = ChoiceItem("PingServer", "Ping Server", 5)
+
+class MetricThresholdPredicateTypeChoices(DjangoChoices):
+    GTE = ChoiceItem(">=",">=",1)
+    GTH = ChoiceItem(">",">",2)
+    EQ = ChoiceItem("==","==",3)
+    NE = ChoiceItem("!=","!=",4)
+    LTE = ChoiceItem("<=", "<=", 5)
+    LTH = ChoiceItem("<", "<", 6)
+
 class PoolServer(Model):
     class Meta:
         db_table = "pool_server"
@@ -205,7 +220,7 @@ class Cluster(Model):
 
     cluster_name = CharField(max_length=30, unique=True, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
-    application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
+    application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
     environment = CharField(choices=EnvironmentChoices.choices, max_length=20, null=False, default='')
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False, default=0)
     requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
@@ -236,7 +251,7 @@ class Server(Model):
         SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",3)
         Arbiter = ChoiceItem("Arbiter", "Arbiter Node",4)
 
-    cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.ProtectedError, null=False)
+    cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=False)
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
@@ -258,8 +273,8 @@ class ApplicationContact(Model):
     class Meta:
         db_table = "application_contact"
 
-    application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=False)
-    contact = ForeignKey(Contact, on_delete=deletion.ProtectedError, null=False)
+    application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
+    contact = ForeignKey(Contact, on_delete=deletion.CASCADE, null=False)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
@@ -285,7 +300,7 @@ class Backup (models.Model):
         db_table = "backup"
         ordering = ['start_dttm']
 
-    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
+    cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
     backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BackupFull)
     backup_status = CharField(max_length=15, choices=BackupStatusChoices.choices)
     db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=False, default=0)
@@ -312,7 +327,7 @@ class Restore(models.Model):
         db_table="restore"
 
     from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_from_cluster')
-    to_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_to_cluster')
+    to_cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False, related_name='restore_to_cluster')
     restore_type = CharField(max_length=10, null=False, default='', choices=RestoreTypeChoices.choices)
     restore_to_dttm = DateTimeField(editable=True)
     restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices)
@@ -331,7 +346,7 @@ class ServerActivity(models.Model):
         db_table = "server_activities"
         ordering = ['created_dttm']
 
-    server = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     server_activity = CharField(max_length=20, null=False, choices=ServerActivityTypeChoices.choices,
                                 default=ServerActivityTypeChoices.RestartDB)
     activity_status = CharField(max_length=15, null=False, default='Queued', choices=ActivitiesStatusChoices.choices)
@@ -347,7 +362,7 @@ class ClusterNote(models.Model):
         db_table = "cluster_note"
         ordering = ['created_dttm']
 
-    cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False)
+    cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
     title = CharField(max_length=50)
     note = CharField(max_length=2048)
     ticket = CharField(max_length=30, null=False, default='')
@@ -364,73 +379,13 @@ class ClusterNote(models.Model):
 
 
 # =========================================================================================
-#      Issue is when someone could be notified in some manor due to metrics passing over a threshold
-# =========================================================================================
-class Issue(models.Model):
-    class Meta:
-        db_table = 'issue'
-        ordering = ['-start_dttm']
-
-    server = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
-    issue = CharField(max_length=2048, null=False, default='')
-    start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    last_dttm = DateTimeField(auto_now=True)
-    note = CharField(max_length=2048, null=True, default='')
-    note_by = CharField(max_length=30, null=True, default='')
-    note_color = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
-    ticket = CharField(max_length=30, null=True, default='')
-    created_dttm = DateTimeField(editable=False, auto_now_add=True)
-    updated_dttm = DateTimeField(auto_now=True)
-
-
-class IssueDetail(models.Model):
-    class Meta:
-        db_table = 'issue_detail'
-
-    issue = ForeignKey(Issue, on_delete=deletion.ProtectedError, null=False)
-    issue_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
-    issue_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    sent_notification_sw = BooleanField(null=False, default=False)
-    created_dttm = DateTimeField(editable=False, auto_now_add=True)
-    updated_dttm = DateTimeField(auto_now=True)
-
-
-class IssueNotification(models.Model):
-    class Meta:
-        db_table = 'issue_notification'
-
-    application_contact = ForeignKey(ApplicationContact, on_delete=deletion.ProtectedError, null=False)
-    issue_detail = ForeignKey(IssueDetail, on_delete=deletion.ProtectedError, null=False)
-    issue_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    issue_note = CharField(max_length=10000, null=False, default='')
-    acknowledged_by = CharField(max_length=30, null=False, default='')
-    acknowledged_dttm = DateTimeField(null=False, default=INFINITY)
-    created_dttm = DateTimeField(editable=False, auto_now_add=True)
-    updated_dttm = DateTimeField(auto_now=True)
-
-
-# =========================================================================================
-#      Metric Rules
-# =========================================================================================
-class MetricThreshold(models.Model):
-    class Meta:
-        db_table = 'metric_threshold'
-
-    metric_name = CharField(max_length=50, null=False, default='')
-    metric_element = CharField(max_length=50, null=False, default='')
-    metric_clear = CharField(max_length=200, null=False, default='')    # not quite sure how to implement this yet(function, SQL, integer, string, etc) Or do I code it into the classes, I don't really like hard coding things like this.
-    metric_warning = CharField(max_length=200, null=False, default='')  # not quite sure how to implement this yet(function, SQL, integer, string, etc)
-    metric_critical = CharField(max_length=200, null=False, default='') # not quite sure how to implement this yet(function, SQL, integer, string, etc)
-
-
-# =========================================================================================
 #      METRICS models
 # =========================================================================================
 class MetricsCpu(models.Model):
     class Meta:
         db_table = 'metrics_cpu'
 
-    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server_id = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, null=False)
     cpu_idle_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
     cpu_user_pct = DecimalField(decimal_places=1, max_digits=3, null=False, default=0)
@@ -447,7 +402,7 @@ class MetricsMountPoint(models.Model):
     class Meta:
         db_table = 'metrics_mount_point'
 
-    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server_id = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, null=False)
     mount_point = CharField(max_length=30, null=False, default='')
     allocated_gb = DecimalField(decimal_places=1, max_digits=5, null=False, default=0)
@@ -460,7 +415,7 @@ class MetricsLoad(models.Model):
     class Meta:
         db_table = 'metrics_load'
 
-    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server_id = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     load_1min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     load_5min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
@@ -472,7 +427,7 @@ class MetricsPingServer(models.Model):
     class Meta:
         db_table = 'metrics_ping_server'
 
-    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server_id = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
     ping_response_ms = IntegerField(null=False, default=0)
@@ -483,7 +438,7 @@ class MetricsPingDb(models.Model):
     class Meta:
         db_table = 'metrics_ping_db'
 
-    server_id = ForeignKey(Server, on_delete=deletion.ProtectedError, null=False)
+    server_id = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     ping_db_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
     ping_db_response_ms = IntegerField(null=False, default=0)
@@ -491,6 +446,84 @@ class MetricsPingDb(models.Model):
     error_msg = CharField(max_length=500, null=False, default='')
 
 # TODO: MetricsDbTopSql
+
+
+# =========================================================================================
+#      Metric Rules
+# =========================================================================================
+class MetricCheck(models.Model):
+    class Meta:
+        db_table = 'metric_check'
+
+    def __str__(self):
+        return self.metric_name +' (' + self.metric_element + ')'
+
+    metric_name = CharField(max_length=15, null=False, default='', choices=MetricNameChoices.choices)
+    metric_element = CharField(max_length=50, null=False, default='')
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
+    active_sw = BooleanField(default=True, null=False)
+
+
+class MetricThreshold(models.Model):
+    class Meta:
+        db_table = 'metric_threshold'
+
+    metric_check = ForeignKey(MetricCheck, on_delete=CASCADE, default='')
+    server_override = ForeignKey(Server, on_delete=CASCADE, null=True, blank=True)
+    normal_ticks = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)], null=False, default=3)
+    normal_predicate_type = CharField(max_length=15, null=False, default='<', choices=MetricThresholdPredicateTypeChoices.choices)
+    normal_value = CharField(max_length=200, null=False, default='')
+    warning_ticks = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=False, default=3)
+    warning_predicate_type = CharField(max_length=15, null=False, default='>=', choices=MetricThresholdPredicateTypeChoices.choices)
+    warning_value = CharField(max_length=200, null=False, default='')
+    critical_ticks = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=False, default=3)
+    critical_predicate_type = CharField(max_length=15, null=False, default='>=', choices=MetricThresholdPredicateTypeChoices.choices)
+    critical_value = CharField(max_length=200, null=False, default='')
+    active_sw = BooleanField(default=True, null=False)
+
+
+
+# =========================================================================================
+#      Issue is when someone could be notified in some manor due to metrics passing over a threshold
+# =========================================================================================
+class IssueTracker(models.Model):
+    class Meta:
+        db_table = 'issue_tracker'
+        ordering = ['-start_dttm']
+
+    server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
+    metric_threshold = ForeignKey(MetricThreshold, on_delete=deletion.ProtectedError, null=False, default='')
+    start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
+    last_dttm = DateTimeField(auto_now=True)
+    closed_sw = BooleanField(default=False)
+    last_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
+    current_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
+    element_details = CharField(max_length=25, null=False, default='')
+    critical_ticks = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(3)], null=False, default=0)
+    warning_ticks = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(3)], null=False, default=0)
+    normal_ticks = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(3)], null=False, default=0)
+    note = CharField(max_length=2048, null=True, default='')
+    note_by = CharField(max_length=30, null=True, default='')
+    ticket = CharField(max_length=30, null=True, default='')
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
+
+
+class IssueNotification(models.Model):
+    class Meta:
+        db_table = 'issue_notification'
+
+    issue_tracker = ForeignKey(IssueTracker, on_delete=deletion.CASCADE, null=True)
+    notification_dttm = DateTimeField(editable=False, auto_now_add=True)
+    notification_subject = CharField(max_length=500, null=False, default='')
+    notification_body = CharField(max_length=10000, null=False, default='')
+    notification_method = CharField(max_length=30, null=False, default='')
+    application_contact = ForeignKey(ApplicationContact, on_delete=deletion.ProtectedError, null=True)
+    acknowledged_by = CharField(max_length=30, null=False, default='')
+    acknowledged_dttm = DateTimeField(null=False, default=INFINITY)
+    created_dttm = DateTimeField(editable=False, auto_now_add=True)
+    updated_dttm = DateTimeField(auto_now=True)
 
 
 

@@ -80,19 +80,20 @@ class Restore(admin.ModelAdmin):
     list_display_links = ('from_cluster',)
 
 # ====================================================================
-@admin.register(Issue)
+@admin.register(IssueTracker)
 class Issue(admin.ModelAdmin):
-    list_display = [field.attname for field in Issue._meta.fields]
-
-
-@admin.register(IssueDetail)
-class IssueDetail(admin.ModelAdmin):
-    list_display = [field.attname for field in IssueDetail._meta.fields]
+    list_display = [field.attname for field in IssueTracker._meta.fields]
 
 
 @admin.register(IssueNotification)
 class IssueNotification(admin.ModelAdmin):
     list_display = [field.attname for field in IssueNotification._meta.fields]
+
+
+# ====================================================================
+@admin.register(MetricCheck)
+class MetricCheck(admin.ModelAdmin):
+    list_display = [field.attname for field in MetricCheck._meta.fields]
 
 
 @admin.register(MetricThreshold)

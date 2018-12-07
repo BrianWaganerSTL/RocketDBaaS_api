@@ -20,7 +20,7 @@ urlpatterns = [
     path('servers/<vServerId>/metrics/load/', ApiMetricsViews.MetricsLoadList.as_view()),
     path('servers/<vServerId>/metrics/pingserver/', ApiMetricsViews.MetricsPingServerList.as_view()),
     path('servers/<vServerId>/metrics/pingdb/', ApiMetricsViews.MetricsPingDbList.as_view()),
-    path('servers/<vServerId>/issues/', ApiViews.IssuesList.as_view()),
+    path('servers/<vServerId>/issuetracker/', ApiViews.IssueTrackerList.as_view()),
     path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
 ]
 

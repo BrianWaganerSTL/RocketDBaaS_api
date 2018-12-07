@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from dbaas.models import (
-    PoolServer
-)
+    PoolServer,
+    MetricThreshold)
+
+
 
 class LockPoolServersSerializer (serializers.ModelSerializer):
     class Meta:

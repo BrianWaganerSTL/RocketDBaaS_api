@@ -4,13 +4,13 @@ chardet==3.0.4
 Click==7.0
 cluster==1.4.1.post1
 dj-static==0.0.6
-Django==2.1.1
+Django==2.1.4
 django-choices==1.6.1
 django-core==1.4.1
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-test==0.4030
-djangorestframework==3.8.2
+djangorestframework==3.9.0
 djangorestframework-filters==0.10.2
 env==0.1.0
 gunicorn==19.9.0
@@ -26,7 +26,7 @@ psycopg2==2.7.5
 pyaes==1.6.1
 python-crontab==2.3.5
 python-dateutil==2.7.5
-pytz==2018.5
+pytz==2018.7
 PyYAML==3.13
 renderer==1.0.3
 requests==2.19.1

@@ -2,9 +2,9 @@ from django.utils import timezone
 from rest_framework import authentication, permissions, generics
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
 from dbaas.models import MetricsCpu, MetricsPingServer, MetricsMountPoint, \
-    MetricsLoad, MetricsPingDb
+    MetricsLoad, MetricsPingDb, MetricThreshold
 from dbaas.serializers.ApiMetricsSerializers import MetricsMountPointSerializer, MetricsLoadSerializer, MetricsCpuSerializer, \
-    MetricsPingDbSerializer, MetricsPingServerSerializer
+    MetricsPingDbSerializer, MetricsPingServerSerializer, MetricThresholdSerializer
 
 defaultMetricsMins = 60
 
@@ -79,6 +79,20 @@ class MetricsPingDbList(generics.ListAPIView):
         afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
 
         return MetricsPingDb.objects \
+            .filter(server_id=vServerId) \
+            .filter(created_dttm__gte=afterDttm) \
+            .order_by('-created_dttm')
+
+class MetricThresholdList(generics.ListAPIView):
+    queryset = MetricThreshold.objects.all()
+    serializer_class = MetricThresholdSerializer
+    permission_classes = [AllowAny, ]
+
+    def get_queryset(self):
+        vServerId = self.kwargs['vServerId']
+        afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
+
+        return MetricThreshold.objects \
             .filter(server_id=vServerId) \
             .filter(created_dttm__gte=afterDttm) \
             .order_by('-created_dttm')

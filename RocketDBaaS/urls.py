@@ -21,12 +21,11 @@ from django.urls import path, include
 from dbaas.controllers import *
 from rest_framework.authtoken import views
 
-
+from dbaas.scheduler.masterScheduler import StartMasterScheduler
 
 urlpatterns = [
   path('api/', include('dbaas.urls')),
-  path('admin/', admin.site.urls),
-  # path('', admin.site.urls, name='home'),
+  path('', admin.site.urls),
   url(r'^api-token-auth/', views.obtain_auth_token),
   path('api-auth/', include('rest_framework.urls')),
   # path('auth_api/', include('auth_api.urls'))
@@ -35,7 +34,7 @@ urlpatterns = [
   path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done', ),
   path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
   path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
-
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+StartMasterScheduler()
 
