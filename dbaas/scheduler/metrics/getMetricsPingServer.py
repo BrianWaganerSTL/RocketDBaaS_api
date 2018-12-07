@@ -34,7 +34,7 @@ def GetMetricsPingServer(s):
         pingStatus = 'Critical'
         errorMsg = 'Server not available'
 
-    metricsPingServer.server_id = s
+    metricsPingServer.server = s
     metricsPingServer.created_dttm = timezone.now()
     metricsPingServer.ping_status = pingStatus
     metricsPingServer.ping_response_ms = int((stopTs - startTs).total_seconds()*1000)

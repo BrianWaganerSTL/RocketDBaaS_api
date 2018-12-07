@@ -60,16 +60,14 @@ Password:  RocketDBaaS
 
 ```
 
-- drop all your views and tables in the schema that you have models for via pgAdmin
+drop database "RocketDBaaS";
 makemigrations
-- copy the fixtures/CreateViews.py to /migrations/0002_CreateViews
-migrate --fake-initial
 migrate
 loaddata --app dbaas dbaas/fixtures/test_data.json
 ```
 
 <h3>If you add more pip packages save your new Requirements</h3>
-```angular2html
+```bash
 pip freeze > requirements.txt
 ```
 

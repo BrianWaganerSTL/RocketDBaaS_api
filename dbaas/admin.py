@@ -11,6 +11,9 @@ class PoolServer(admin.ModelAdmin):
     list_editable = ('status_in_pool',)
     list_display_links = ('id',)
 
+@admin.register(Environment)
+class Environment(admin.ModelAdmin):
+    list_display = [field.attname for field in Environment._meta.fields]
 
 @admin.register(ServerPort)
 class ServerPort(admin.ModelAdmin):
@@ -91,14 +94,14 @@ class IssueNotification(admin.ModelAdmin):
 
 
 # ====================================================================
-@admin.register(MetricCheck)
-class MetricCheck(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricCheck._meta.fields]
+@admin.register(CheckerBaseElement)
+class CheckerBaseElement(admin.ModelAdmin):
+    list_display = [field.attname for field in CheckerBaseElement._meta.fields]
 
 
-@admin.register(MetricThreshold)
-class MetricThreshold(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricThreshold._meta.fields]
+@admin.register(CheckerThreshold)
+class CheckerThreshold(admin.ModelAdmin):
+    list_display = [field.attname for field in CheckerThreshold._meta.fields]
 
 
 # ====================================================================

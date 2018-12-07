@@ -20,7 +20,7 @@ def GetMetricsPingDb(s):
         print(metrics)
 
         error_cnt = 0
-        metricsPingDb.server_id = s
+        metricsPingDb.server = s
         metricsPingDb.created_dttm = metrics['created_dttm']
         metricsPingDb.ping_db_status = metrics['ping_db_status']
         metricsPingDb.ping_db_response_ms = metrics['ping_db_response_ms']
@@ -28,25 +28,25 @@ def GetMetricsPingDb(s):
         metricsPingDb.save()
     except requests.exceptions.Timeout:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsPingDb.server_id = s
+        metricsPingDb.server = s
         metricsPingDb.error_cnt = errCnt[s.id]
         metricsPingDb.error_msg = 'Timeout'
         metricsPingDb.save()
     except requests.exceptions.TooManyRedirects:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsPingDb.server_id = s
+        metricsPingDb.server = s
         metricsPingDb.error_cnt = errCnt[s.id]
         metricsPingDb.error_msg = 'Bad URL'
         metricsPingDb.save()
     except requests.exceptions.RequestException as e:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsPingDb.server_id = s
+        metricsPingDb.server = s
         metricsPingDb.error_cnt = errCnt[s.id]
         metricsPingDb.error_msg = 'Catastrophic error. Bail ' + str(e)
         metricsPingDb.save()
     except requests.exceptions.HTTPError as err:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsPingDb.server_id = s
+        metricsPingDb.server = s
         metricsPingDb.error_cnt = errCnt[s.id]
         metricsPingDb.error_msg = 'Other Error ' + err
         metricsPingDb.save()

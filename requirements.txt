@@ -34,6 +34,7 @@ scinum==0.2.7
 six==1.11.0
 static3==0.7.0
 structlog==18.2.0
+switch==1.1.0
 typing==3.6.6
 tzlocal==1.5.1
 urllib3==1.23

@@ -15,4 +15,5 @@ def MetricsSlowTick():
     print('MetricsSlowTick')
     servers = Server.objects.filter(active_sw=True).filter(metrics_sw=True);
     for s in servers:
+        print('in MetricsSlowTick: s.id=' + str(s.id))
         getMetricsMountPoints.GetMetricsMountPoints(s)

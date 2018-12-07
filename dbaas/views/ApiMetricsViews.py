@@ -2,7 +2,7 @@ from django.utils import timezone
 from rest_framework import authentication, permissions, generics
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
 from dbaas.models import MetricsCpu, MetricsPingServer, MetricsMountPoint, \
-    MetricsLoad, MetricsPingDb, MetricThreshold
+    MetricsLoad, MetricsPingDb, CheckerThreshold
 from dbaas.serializers.ApiMetricsSerializers import MetricsMountPointSerializer, MetricsLoadSerializer, MetricsCpuSerializer, \
     MetricsPingDbSerializer, MetricsPingServerSerializer, MetricThresholdSerializer
 
@@ -84,7 +84,7 @@ class MetricsPingDbList(generics.ListAPIView):
             .order_by('-created_dttm')
 
 class MetricThresholdList(generics.ListAPIView):
-    queryset = MetricThreshold.objects.all()
+    queryset = CheckerThreshold.objects.all()
     serializer_class = MetricThresholdSerializer
     permission_classes = [AllowAny, ]
 
@@ -92,7 +92,7 @@ class MetricThresholdList(generics.ListAPIView):
         vServerId = self.kwargs['vServerId']
         afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
 
-        return MetricThreshold.objects \
+        return CheckerThreshold.objects \
             .filter(server_id=vServerId) \
             .filter(created_dttm__gte=afterDttm) \
             .order_by('-created_dttm')

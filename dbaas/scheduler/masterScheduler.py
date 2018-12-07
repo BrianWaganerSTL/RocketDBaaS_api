@@ -12,4 +12,4 @@ def StartMasterScheduler():
     scheduler.add_job(MetricsFastTick, 'interval', seconds=45, max_instances=10, next_run_time=timezone.now())
     scheduler.add_job(MetricsSlowTick, 'interval', seconds=10, max_instances=5, next_run_time=timezone.now())
     scheduler.add_job(IssuesFastTick, 'interval', seconds=30, max_instances=10, next_run_time=timezone.now())
-    scheduler.start()
+    # scheduler.start()

@@ -20,7 +20,7 @@ def GetMetricsLoad(s):
         print(metrics)
 
         error_cnt = 0
-        metricsLoad.server_id = s
+        metricsLoad.server = s
         metricsLoad.created_dttm = metrics['created_dttm']
         metricsLoad.load_1min = metrics['load_1min']
         metricsLoad.load_5min = metrics['load_5min']
@@ -29,25 +29,25 @@ def GetMetricsLoad(s):
         metricsLoad.save()
     except requests.exceptions.Timeout:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsLoad.server_id = s
+        metricsLoad.server = s
         metricsLoad.error_cnt = errCnt[s.id]
         metricsLoad.error_msg = 'Timeout'
         metricsLoad.save()
     except requests.exceptions.TooManyRedirects:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsLoad.server_id = s
+        metricsLoad.server = s
         metricsLoad.error_cnt = errCnt[s.id]
         metricsLoad.error_msg = 'Bad URL'
         metricsLoad.save()
     except requests.exceptions.RequestException as e:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsLoad.server_id = s
+        metricsLoad.server = s
         metricsLoad.error_cnt = errCnt[s.id]
         metricsLoad.error_msg = 'Catastrophic error. Bail ' + str(e)
         metricsLoad.save()
     except requests.exceptions.HTTPError as err:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsLoad.server_id = s
+        metricsLoad.server = s
         metricsLoad.error_cnt = errCnt[s.id]
         metricsLoad.error_msg = 'Other Error ' + err
         metricsLoad.save()
