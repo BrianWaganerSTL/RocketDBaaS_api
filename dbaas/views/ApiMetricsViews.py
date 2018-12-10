@@ -1,7 +1,7 @@
 from django.utils import timezone
 from rest_framework import authentication, permissions, generics
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import MetricsCpu, MetricsPingServer, MetricsMountPoint, \
+from dbaas.models import MetricsCpu, MetricsPingServer, Metrics_MountPoint, \
     MetricsLoad, MetricsPingDb, CheckerThreshold
 from dbaas.serializers.ApiMetricsSerializers import MetricsMountPointSerializer, MetricsLoadSerializer, MetricsCpuSerializer, \
     MetricsPingDbSerializer, MetricsPingServerSerializer, MetricThresholdSerializer
@@ -24,7 +24,7 @@ class MetricsCpuList(generics.ListAPIView):
 
 
 class MetricsMountPointList(generics.ListAPIView):
-    queryset = MetricsMountPoint.objects.all()
+    queryset = Metrics_MountPoint.objects.all()
     serializer_class = MetricsMountPointSerializer
     permission_classes = [AllowAny, ]
 
@@ -32,7 +32,7 @@ class MetricsMountPointList(generics.ListAPIView):
         vServerId = self.kwargs['vServerId']
         afterDttm = timezone.now() - timezone.timedelta(days=30)
 
-        return MetricsMountPoint.objects \
+        return Metrics_MountPoint.objects \
             .filter(server_id=vServerId) \
             .filter(created_dttm__gte=afterDttm) \
             .exclude(mount_point='') \

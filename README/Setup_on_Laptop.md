@@ -61,9 +61,17 @@ Password:  RocketDBaaS
 ```
 
 drop database "RocketDBaaS";
+create database "RocketDBaaS";
 makemigrations
 migrate
-loaddata --app dbaas dbaas/fixtures/test_data.json
+# The load takes about 1 minute
+loaddata --app dbaas dbaas/fixtures/test_data.json   
+```
+```angular2html
+createsuperuser
+    Username:  RocketDBaaS
+    Email address:
+    Password:  RocketDBaaS
 ```
 
 <h3>If you add more pip packages save your new Requirements</h3>

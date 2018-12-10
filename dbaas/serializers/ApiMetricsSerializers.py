@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dbaas.models import MetricsCpu, MetricsPingServer, MetricsMountPoint, \
+from dbaas.models import MetricsCpu, MetricsPingServer, Metrics_MountPoint, \
     MetricsLoad, MetricsPingDb, CheckerThreshold
 
 
@@ -11,7 +11,7 @@ class MetricsCpuSerializer(serializers.ModelSerializer):
 
 class MetricsMountPointSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MetricsMountPoint
+        model = Metrics_MountPoint
         fields = '__all__'
         depth = 0
 
@@ -38,4 +38,4 @@ class MetricThresholdSerializer (serializers.ModelSerializer):
     class Meta:
         model = CheckerThreshold
         fields = '__all__'
-        depth = 2
+        depth = 3

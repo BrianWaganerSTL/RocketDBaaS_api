@@ -110,9 +110,9 @@ class MetricsCPU(admin.ModelAdmin):
     list_display = [field.attname for field in MetricsCpu._meta.fields]
 
 
-@admin.register(MetricsMountPoint)
+@admin.register(Metrics_MountPoint)
 class MetricsMountPoint(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsMountPoint._meta.fields]
+    list_display = [field.attname for field in Metrics_MountPoint._meta.fields]
 
 
 @admin.register(MetricsLoad)

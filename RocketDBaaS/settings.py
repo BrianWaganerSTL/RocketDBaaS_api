@@ -19,15 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'PutInLocalSetting.pyFile'
+# SECRET_KEY = 'PutInLocalSetting.pyFile'
 # Put in local_settings.py
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-LOGGING_CONFIG = None
-
-ALLOWED_HOSTS = []
+#
+#
+# ALLOWED_HOSTS = []
 
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
@@ -136,7 +133,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images/')
 MEDIA_URL = '/images/'
 SRC_ROOT = os.path.join(BASE_DIR, 'static/src')
 SRC_ROOT = '/src/'
-LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_REDIRECT_URL = '/login/'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
@@ -151,6 +148,30 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
 }
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+# DJANGO_LOG_LEVEL=DEBUG
+# # LOGGING_CONFIG = None
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'C:/logs/RocketDBaaS_API_debug.log',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
+
 try:
     from local_files.local_settings import *
 except ImportError:

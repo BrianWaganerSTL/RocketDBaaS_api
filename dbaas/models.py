@@ -396,7 +396,7 @@ class MetricsCpu(models.Model):
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 
-class MetricsMountPoint(models.Model):
+class Metrics_MountPoint(models.Model):
     class Meta:
         db_table = 'metrics_mount_point'
 
@@ -497,7 +497,7 @@ class IssueTracker(models.Model):
     start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     last_dttm = DateTimeField(auto_now=True)
     closed_sw = BooleanField(default=False)
-    prior_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
+    pending_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
     current_status = CharField(max_length=15, null=False, default='', choices=IssueStatusChoices.choices)
     element_details = CharField(max_length=25, null=False, default='')
     critical_ticks = IntegerField(validators=[MinValueValidator(0),MaxValueValidator(3)], null=False, default=0)
