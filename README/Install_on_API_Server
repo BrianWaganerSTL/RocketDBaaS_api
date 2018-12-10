@@ -8,14 +8,79 @@ Don't forget to add the local_settings.py file in the local_files directory.
 
  * pip3 install django
 
- * requirements
- 
-    * if you have internet
-        
-        pip install -r requirements
-    
-    * if you don't have internet
-        
-        pip install --no-index --find-links=../wheels -r requirements.txt
+   * Requirements
 
+      * If you have internet
+
+          pip install -r requirements
+
+      * If you don't have internet
+
+          pip install --no-index --find-links=../wheels -r requirements.txt
+
+ * Create your local_settings.py file
  
+   * Located at "RocketDBaaS_api/local_files/local_settings.py"
+   
+     Should include setting for the following:
+     ```
+     Should include your 
+     ```
+SECRET_KEY = "????????????????????????????"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+# First connect to the database and create the user RocketDBA and database RocketDB
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'RocketDB',
+        'USER': 'RocketDBA',
+        'PASSWORD': '?????????????????',
+        'HOST':'?????????????',
+        'PORT':'?????????????',
+        'OPTIONS':  {
+            'sslmode': 'verify-ca',
+            'sslrootcert': '/opt/dbaas/ssl/pgSQL_???????????????.ca.cert',
+            'sslcert': '/opt/dbaas/ssl/pgSQL_????????????????.cert',
+            'sslkey': '/opt/dbaas/ssl/pgSQL_????????????????.key'
+            }
+    }
+}
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '111.222.333.444', 'ApiServerName', 'mywebsite.com']
+```
+
+<h3>Recreate your Database and data</h3>
+
+Connect to database
+```
+drop all tables in the RocketDBaaS database or you can drop the database
+```
+
+```
+rm /opt/dbaas/RocketDBaaS_api/dbaas/migrations/00*.py
+
+python /opt/dbaas/RocketDBaaS_api/manage.py makemigrations
+
+python /opt/dbaas/RocketDBaaS_api/manage.py migrate
+
+python /opt/dbaas/RocketDBaaS_api/manage.py createsuperuser
+  Username (leave blank to use 'dbaas'): RocketDBaaS
+  Email address:
+  Password:
+```
+
+```
+python /opt/dbaas/RocketDBaaS_api/manage.py loaddata --app dbaas dbaas/fixtures/test_data.json
+```  
+
+```
+cd /opt/dbaas/RocketDBaaS_api; . venv/bin/activate;
+# This will die when your session dies but we are just testing for now
+python /opt/dbaas/RocketDBaaS_api/manage.py runserver 0.0.0.0:8080
+```
+
+
+
