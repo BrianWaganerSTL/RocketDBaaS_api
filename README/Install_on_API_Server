@@ -24,8 +24,6 @@ Don't forget to add the local_settings.py file in the local_files directory.
    
      Should include setting for the following:
      ```
-     Should include your 
-     ```
 SECRET_KEY = "????????????????????????????"
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -83,4 +81,4 @@ python /opt/dbaas/RocketDBaaS_api/manage.py runserver 0.0.0.0:8080
 ```
 
 
-
+<h3>http://ch3xr908389:8080/</h3>
