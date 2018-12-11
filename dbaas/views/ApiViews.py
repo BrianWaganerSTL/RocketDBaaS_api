@@ -61,11 +61,11 @@ class ActivitiesList(generics.ListAPIView):
     serializer_class = ServerActivitiesSerializer
     permission_classes = [AllowAny, ]
     authentication_classes = [TokenAuthentication, ]
-    lookup_field = 'vClusterId'
+    lookup_field = 'vServerId'
 
     def get_queryset(self):
-        vClusterId = self.kwargs['vClusterId']
-        return ServerActivity.objects.filter(server__cluster_id=vClusterId).order_by('-start_dttm')
+        vServerId = self.kwargs['vServerId']
+        return ServerActivity.objects.filter(server_id=vServerId).order_by('-start_dttm')
 
 
 class NotesList(generics.ListAPIView):

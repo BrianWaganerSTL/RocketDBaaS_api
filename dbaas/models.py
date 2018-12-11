@@ -59,6 +59,8 @@ class ServerActivityTypeChoices(DjangoChoices):
     RestartDB = ChoiceItem("RestartDB", "Restart Database", 4)
     PromoteDB = ChoiceItem("PromoteDB", "Promote Database", 5)
     DemomoteDB = ChoiceItem("DemoteDB", "Demote Database", 6)
+    PatchingOS = ChoiceItem("PatchingOS", "Patching OS", 7)
+    PatchingDB = ChoiceItem("PatchingDB", "Patching DB", 8)
 
 
 class ServerHealthChoices(DjangoChoices):

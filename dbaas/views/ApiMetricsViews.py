@@ -6,7 +6,7 @@ from dbaas.models import MetricsCpu, MetricsPingServer, Metrics_MountPoint, \
 from dbaas.serializers.ApiMetricsSerializers import MetricsMountPointSerializer, MetricsLoadSerializer, MetricsCpuSerializer, \
     MetricsPingDbSerializer, MetricsPingServerSerializer, MetricThresholdSerializer
 
-defaultMetricsMins = 60
+defaultMetricsMins = 180
 
 class MetricsCpuList(generics.ListAPIView):
     queryset = MetricsCpu.objects.all()
