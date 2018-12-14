@@ -173,6 +173,6 @@ REST_FRAMEWORK = {
 # }
 
 try:
-    from local_files.local_settings import *
+    from RocketDBaaS_api_local_settings import *
 except ImportError:
     pass
