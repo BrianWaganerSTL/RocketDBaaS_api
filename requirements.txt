@@ -29,7 +29,7 @@ python-dateutil==2.7.5
 pytz==2018.7
 PyYAML==3.13
 renderer==1.0.3
-requests==2.19.1
+requests>=2.20.0
 scinum==0.2.7
 six==1.11.0
 static3==0.7.0
