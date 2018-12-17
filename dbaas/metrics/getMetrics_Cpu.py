@@ -11,16 +11,17 @@ metrics_port = 8080
 
 
 def GetMetricsCpu(s):
-    metricsCpu = MetricsCpu()
     url = 'http://' + s.server_ip + ':' + str(metrics_port) + '/api/metrics/cpu'
     print('Cpu: ServerNm: ' + s.server_name + ', url=' + url)
+
+    metricsCpu = MetricsCpu()
+    error_msg = ''
     try:
         r = requests.get(url)
         metrics = r.json()
         print(metrics)
 
-        error_cnt = 0
-        metricsCpu.server = s
+        errCnt[s.id] = errCnt[s.id] = 0
         metricsCpu.created_dttm = metrics['created_dttm']
         metricsCpu.cpu_idle_pct = metrics['idle']
         metricsCpu.cpu_user_pct = metrics['user']
@@ -32,29 +33,20 @@ def GetMetricsCpu(s):
             if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
                 metricsCpu.cpu_guest_pct = metrics['cpu_guest_pct']
                 metricsCpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
-        metricsCpu.error_cnt = error_cnt
-        metricsCpu.save()
     except requests.exceptions.Timeout:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsCpu.server = s
-        metricsCpu.error_cnt = errCnt[s.id]
-        metricsCpu.error_msg = 'Timeout'
-        metricsCpu.save()
+        error_msg = 'Timeout'
     except requests.exceptions.TooManyRedirects:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsCpu.server = s
-        metricsCpu.error_cnt = errCnt[s.id]
-        metricsCpu.error_msg = 'Bad URL'
-        metricsCpu.save()
+        error_msg = 'Bad URL'
     except requests.exceptions.RequestException as e:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsCpu.server = s
-        metricsCpu.error_cnt = errCnt[s.id]
-        metricsCpu.error_msg = 'Catastrophic error. Bail ' + str(e)
-        metricsCpu.save()
+        error_msg = 'Catastrophic error. Bail ' + str(e)
     except requests.exceptions.HTTPError as err:
         errCnt[s.id] = errCnt[s.id] + 1
-        metricsCpu.server = s
-        metricsCpu.error_cnt = errCnt[s.id]
-        metricsCpu.error_msg = 'Other Error ' + err
-        metricsCpu.save()
+        error_msg = 'Other Error ' + err
+
+    metricsCpu.error_msg = error_msg
+    metricsCpu.error_cnt = errCnt[s.id]
+    metricsCpu.server = s
+    metricsCpu.save()
