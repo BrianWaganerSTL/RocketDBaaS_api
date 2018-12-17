@@ -173,6 +173,7 @@ REST_FRAMEWORK = {
 # }
 
 try:
-    from RocketDBaaS.local_setting import *
+    from .local_settings import *
 except ImportError:
+    print('ERROR: Cannot find your local_settings.py file!  For security purposes you should always have one.')
     pass
