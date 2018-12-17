@@ -59,8 +59,6 @@ class ServerActivityTypeChoices(DjangoChoices):
     RestartDB = ChoiceItem("RestartDB", "Restart Database", 4)
     PromoteDB = ChoiceItem("PromoteDB", "Promote Database", 5)
     DemomoteDB = ChoiceItem("DemoteDB", "Demote Database", 6)
-    PatchingOS = ChoiceItem("PatchingOS", "Patching OS", 7)
-    PatchingDB = ChoiceItem("PatchingDB", "Patching DB", 8)
 
 
 class ServerHealthChoices(DjangoChoices):
@@ -417,9 +415,9 @@ class MetricsLoad(models.Model):
 
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    load_1min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
-    load_5min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
-    load_15min = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
+    load_1min = DecimalField(validators=[MinValueValidator(0)], decimal_places=1, max_digits=3, null=False, default=0)
+    load_5min = DecimalField(validators=[MinValueValidator(0)], decimal_places=1, max_digits=3, null=False, default=0)
+    load_15min = DecimalField(validators=[MinValueValidator(0)], decimal_places=1, max_digits=3, null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=500, null=False, default='')
 
