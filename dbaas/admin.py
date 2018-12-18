@@ -7,7 +7,7 @@ from .models import *
 
 @admin.register(PoolServer)
 class PoolServer(admin.ModelAdmin):
-    list_display = ('id','status_in_pool', 'environment', 'data_center', 'dbms_type', 'server_name', 'cpu', 'ram_gb', 'db_gb')
+    list_display = [field.attname for field in PoolServer._meta.fields]
     list_editable = ('status_in_pool',)
     list_display_links = ('id',)
 
@@ -43,13 +43,14 @@ class ApplicationContact(admin.ModelAdmin):
 
 @admin.register(Cluster)
 class Cluster(admin.ModelAdmin):
-    list_display = ('cluster_name','dbms_type','application','environment','cluster_health','active_sw',
-                    'read_write_port','read_only_port')
+    list_display = ('cluster_name','dbms_type','application','cluster_health','active_sw',
+                    'read_write_port','read_only_port','tls_enabled_sw','backup_retention_days','cluster_health',
+                    'active_sw','eff_dttm','exp_dttm','environment')
 
 
 @admin.register(Server)
 class Server(admin.ModelAdmin):
-    list_display = ('cluster', 'server_name','server_ip','cpu','ram_gb','db_gb','data_center','node_role','os_version',
+    list_display = ('cluster','environment','server_name','server_ip','cpu','ram_gb','db_gb','data_center','node_role','server_health','os_version',
                     'db_version','pending_restart_sw','metrics_sw','active_sw')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)
