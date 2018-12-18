@@ -119,7 +119,7 @@ class Environment(Model):
     class Meta:
         db_table = "environment"
 
-    env = CharField(max_length=10, null=False, default='')
+    env = CharField(max_length=10, null=False, default='', primary_key=True)
 
 class PoolServer(Model):
     class Meta:
@@ -130,7 +130,7 @@ class PoolServer(Model):
         Locked = ChoiceItem("Locked", "Locked for Build",2)
         Used = ChoiceItem("Used", "Used",3)
 
-    environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
+    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='SBX')
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     dbms_type = CharField(max_length=10, null=False, default='', choices=DbmsTypeChoices.choices)
@@ -219,7 +219,7 @@ class Cluster(Model):
     cluster_name = CharField(max_length=30, unique=True, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
-    environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
+    # environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False, default=0)
     requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False, default=0)
@@ -234,6 +234,8 @@ class Cluster(Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
 
+    def environment(self):
+        return Server.environment[1]
 
 
 class Server(Model):
@@ -250,6 +252,7 @@ class Server(Model):
         Arbiter = ChoiceItem("Arbiter", "Arbiter Node",4)
 
     cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=False)
+    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='SBX')
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
@@ -430,7 +433,7 @@ class MetricsPingServer(models.Model):
     ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
     ping_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
-    error_msg = CharField(max_length=500, null=False, default='')
+    error_msg = CharField(max_length=2000, null=False, default='')
 
 class MetricsPingDb(models.Model):
     class Meta:
@@ -441,7 +444,7 @@ class MetricsPingDb(models.Model):
     ping_db_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
     ping_db_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
-    error_msg = CharField(max_length=500, null=False, default='')
+    error_msg = CharField(max_length=2000, null=False, default='')
 
 # TODO: MetricsDbTopSql
 
@@ -518,7 +521,7 @@ class IssueNotification(models.Model):
     application = ForeignKey(Application, on_delete=deletion.ProtectedError, null=True)
     notification_dttm = DateTimeField(editable=False, auto_now_add=True)
     notification_method = CharField(max_length=30, null=False, default='')
-    notification_subject = CharField(max_length=500, null=False, default='')
+    notification_subject = CharField(max_length=2000, null=False, default='')
     notification_body = CharField(max_length=10000, null=False, default='')
     acknowledged_by = CharField(max_length=30, null=False, default='')
     acknowledged_dttm = DateTimeField(null=False, default=INFINITY)
