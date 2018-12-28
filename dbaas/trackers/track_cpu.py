@@ -4,6 +4,7 @@ from django.core.mail import EmailMessage
 from django.utils import timezone
 
 from dbaas.models import IssueNotification, Server, IssueTracker, IssueStatusChoices, ApplicationContact, CheckerThreshold, MetricsCpu
+from dbaas.trackers.send_notification_email import SendNotificationEmail
 from dbaas.utils.DynCompare import DynCompare
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: (%s)'
@@ -134,18 +135,4 @@ def Track_Cpu(slimServer, metrics_cpu_id):
                               notification_body=myBody)
         i.save()
 
-
-        # Send the Nofication out to the following
-        print('Notify the following contacts')
-        for ac in ApplicationContact.objects.filter(application=t.server.cluster.application, contact__active_sw=True):
-            print('  %s: email: %s, phone: %s' % (
-                ac.contact.contact_name,
-                ac.contact.contact_email,
-                ac.contact.contact_phone))
-
-            msg = EmailMessage(mySubject, myBody, 'RocketMan(NextGenDBs)<postgres@express-scripts.com>', [ac.contact.contact_email], [],
-                                connection=None, attachments=None, headers=None, cc=None, reply_to=['postgres@express-scripts.com'])
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
-
-        print('============================================\n')
+        SendNotificationEmail(i.id)

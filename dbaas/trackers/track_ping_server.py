@@ -4,6 +4,7 @@ from django.core.mail import EmailMessage
 from django.utils import timezone
 
 from dbaas.models import IssueNotification, Server, IssueTracker, IssueStatusChoices, ApplicationContact, CheckerThreshold, MetricsPingServer
+from dbaas.trackers.send_notification_email import SendNotificationEmail
 from dbaas.utils.DynCompare import DynCompare
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: (%s)'
@@ -134,28 +135,4 @@ def Track_PingServer(slimServer, metrics_ping_server_id):
                               notification_body=myBody)
         i.save()
 
-        dbmsType = t.server.cluster.dbms_type
-        if (dbmsType == 'PostgreSQL'):
-            emailFrom = 'NextGenDBaaS<DBA-PostgreSQL@express-scripts.com>'
-            emailCc = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
-            replyTo = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
-        elif (dbmsType == 'MongoDB'):
-            emailFrom = 'NextGenDBaaS<DBA-MongoDB@express-scripts.com>>'
-            emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
-            replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
-
-
-        # Send the Nofication out to the following
-        print('Notify the following contacts')
-        for ac in ApplicationContact.objects.filter(application=t.server.cluster.application, contact__active_sw=True):
-            print('  %s: email: %s, phone: %s' % (
-                ac.contact.contact_name,
-                ac.contact.contact_email,
-                ac.contact.contact_phone))
-
-            msg = EmailMessage(subject=mySubject, body=myBody, from_email=emailFrom, to=[ac.contact.contact_email], bcc=None,
-                                connection=None, attachments=None, headers=None, cc=emailCc, reply_to=replyTo)
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
-
-        print('============================================\n')
+        SendNotificationEmail(i.id)

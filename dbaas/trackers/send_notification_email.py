@@ -16,9 +16,10 @@ def SendNotificationEmail(IssueNotificationId):
         emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
         replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
 
+
     # Send the Notification out to the following
     print('Notify the following contacts')
-    for ac in ApplicationContact.objects.filter(application=t.server.cluster.application, contact__active_sw=True):
+    for ac in ApplicationContact.objects.filter(application=i.server.cluster.application, contact__active_sw=True):
         print('  %s: email: %s, phone: %s' % (
             ac.contact.contact_name,
             ac.contact.contact_email,
