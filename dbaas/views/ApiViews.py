@@ -118,7 +118,7 @@ class PoolServersViewSet(ModelViewSet):
 
         env = self.request.query_params.get('env', None)
         if env is not None:
-            queryset = queryset.filter(environment__iexact=env)
+            queryset = queryset.filter(environment__env__iexact=env)
 
         dbms = self.request.query_params.get('dbms', None)
         if dbms is not None:
