@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from django.utils import timezone
 
 from dbaas.models import IssueNotification, Server, Metrics_MountPoint, IssueTracker, IssueStatusChoices, ApplicationContact, CheckerThreshold
-from dbaas.trackers.SendNotificationEmail import send_notification_email
+from dbaas.trackers.send_notification_email import SendNotificationEmail
 from dbaas.utils.DynCompare import DynCompare
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: %s (%s)'

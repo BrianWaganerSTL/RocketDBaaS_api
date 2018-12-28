@@ -27,13 +27,12 @@ class Clusters(ModelViewSet):
     authentication_classes = [TokenAuthentication, ]
 
 
-# TODO: Need to refactor since with this committed out I can't do partial name searches from the UI
-# def get_queryset(self):
-#     clusters = Cluster.objects.all()
-#     queryClusterName = self.request.GET.get('cluster_name')
-#     if queryClusterName is not None:
-#         clusters = clusters.filter(cluster_name__icontains=queryClusterName)
-#     return clusters
+    def get_queryset(self):
+        clusters = Cluster.objects.all()
+        queryClusterName = self.request.GET.get('cluster_name')
+        if queryClusterName is not None:
+            clusters = clusters.filter(cluster_name__icontains=queryClusterName)
+        return clusters
 
 class BackupsList(generics.ListAPIView):
     serializer_class = BackupsSerializer
