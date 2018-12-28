@@ -6,8 +6,6 @@ from dbaas.views import ApiViews, ApiMetricsViews
 router = DefaultRouter()
 router.register(r'poolservers', ApiViews.PoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
-# TODO: Chage the below to servers/<vServerId>/metrics/cpu
-# router.register(r'servers/metrics/cpu', ApiViews.MetricsCpuViewSet)
 
 urlpatterns = [
     path('clusters/<vClusterId>/servers/', ApiViews.ServersList.as_view()),
