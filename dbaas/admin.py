@@ -43,9 +43,7 @@ class ApplicationContact(admin.ModelAdmin):
 
 @admin.register(Cluster)
 class Cluster(admin.ModelAdmin):
-    list_display = ('cluster_name','dbms_type','application','cluster_health','active_sw',
-                    'read_write_port','read_only_port','tls_enabled_sw','backup_retention_days','cluster_health',
-                    'active_sw','eff_dttm','exp_dttm','environment')
+    list_display = [field.attname for field in Cluster._meta.fields]
 
 
 @admin.register(Server)
