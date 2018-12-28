@@ -3,6 +3,7 @@ from django.utils import timezone
 from sys import platform
 
 from dbaas.models import MetricsPingServer
+from dbaas.trackers.track_ping_server import Track_PingServer
 
 errCnt = [0] * 1000
 metrics_port = 8080
@@ -41,3 +42,9 @@ def GetMetricsPingServer(s):
     metricsPingServer.error_cnt = errCnt[s.id]
     metricsPingServer.error_msg = errorMsg
     metricsPingServer.save()
+
+    try:
+        Track_PingServer(s, metricsPingServer.id)
+    except:
+        print('ERROR: ' + str(e))
+        pass
