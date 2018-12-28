@@ -8,7 +8,6 @@ errCnt = [0] * 1000
 metrics_port = 8080
 
 
-
 def GetMetrics_MountPoints(server):
     print('Server='+str(server)+', ServerId='+str(server.id) + ', ServerIP=' + str(server.server_ip))
 
@@ -22,9 +21,10 @@ def GetMetrics_MountPoints(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)))
+        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
         errCnt[server.id] = 0
+
     except requests.exceptions.ConnectionError:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'ConnectionRefusedError:  Make sure the Minion is up and running.'
@@ -55,12 +55,11 @@ def GetMetrics_MountPoints(server):
             metrics_MountPoint.used_pct = m['used_pct']
             metrics_MountPoint.save()
 
-            #try:
-            #     print('metrics_MountPoint.id:' + metrics_MountPoint.id)
-            #     Track_MountPoints(server, metrics_MountPoint.id)
-            # except:
-            #     print('ERROR: ' + str(e))
-            #     pass
+            try:
+                 Track_MountPoints(server, metrics_MountPoint.id)
+            except:
+                 print('ERROR: ' + str(e))
+                 pass
     else:
         metrics_MountPoint = Metrics_MountPoint()
         metrics_MountPoint.server = server
