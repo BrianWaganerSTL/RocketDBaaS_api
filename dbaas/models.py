@@ -234,8 +234,8 @@ class Cluster(Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
 
-    def environment(self):
-        return Server.environment[1]
+    #def environment(self):
+    #    return Server.environment[1]
 
 
 class Server(Model):
@@ -469,7 +469,9 @@ class CheckerBaseElement(models.Model):
 class CheckerThreshold(models.Model):
     class Meta:
         db_table = 'checker_threshold'
-
+    def __str__(self):
+        return self.checker_base_element
+    
     checker_base_element = ForeignKey(CheckerBaseElement, on_delete=CASCADE, default='')
     server_override = ForeignKey(Server, on_delete=CASCADE, null=True, blank=True)
     normal_ticks = IntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)], null=False, default=3)
