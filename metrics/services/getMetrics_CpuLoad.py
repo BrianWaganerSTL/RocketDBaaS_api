@@ -60,6 +60,11 @@ def GetMetrics_Load(server):
             metrics_CpuLoad.save()
 
             try:
+                 MetricThresholdTest(server, 'CpuLoad', 'load_1min', metrics_CpuLoad.load_1min, '')
+            except:
+                 print('ERROR: ' + str(e))
+                 pass
+            try:
                  MetricThresholdTest(server, 'CpuLoad', 'load_5min', metrics_CpuLoad.load_5min, '')
             except:
                  print('ERROR: ' + str(e))

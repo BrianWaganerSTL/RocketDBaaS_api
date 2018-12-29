@@ -3,7 +3,7 @@ import logging
 from django.utils import timezone
 
 from dbaas.models import Server
-from monitor.models import ThresholdTest, IssueStatusChoices, Incident, IncidentNotification
+from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, IncidentNotification
 from dbaas.utils.DynCompare import DynCompare
 
 def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, detail_element):
@@ -17,13 +17,13 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         return
     else:
         if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value):
-            pendingThresholdLevel = IssueStatusChoices.Critical
+            pendingThresholdLevel = IncidentStatusChoices.Critical
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value)
         elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value):
-            pendingThresholdLevel = IssueStatusChoices.Warning
+            pendingThresholdLevel = IncidentStatusChoices.Warning
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
         else:
-            pendingThresholdLevel = IssueStatusChoices.Normal
+            pendingThresholdLevel = IncidentStatusChoices.Normal
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.normal_predicate_type, thresholdTest.normal_value)
 
         print('Pending %s Threshold' % pendingThresholdLevel)
@@ -60,7 +60,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
             if (i.pending_status != i.current_status):
                 twerkIt = True
                 i.current_status = i.pending_status
-            i.pending_status = IssueStatusChoices.Critical
+            i.pending_status = IncidentStatusChoices.Critical
 
     elif pendingThresholdLevel == 'Warning':
         i.critical_ticks = max(i.critical_ticks - 1, 0)
@@ -71,7 +71,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
             if (i.pending_status != i.current_status):
                 twerkIt = True
                 i.current_status = i.pending_status
-            i.current_status = IssueStatusChoices.Warning
+            i.current_status = IncidentStatusChoices.Warning
 
     elif pendingThresholdLevel == 'Normal':
         i.critical_ticks = max(i.critical_ticks - 1, 0)
@@ -84,7 +84,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
                 i.current_status = i.pending_status
                 i.closed_dttm = timezone.now()
                 i.closed_sw = True
-            i.current_status = IssueStatusChoices.Normal
+            i.current_status = IncidentStatusChoices.Normal
     i.save()
 
     if (twerkIt):

@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from monitor.models import Incident, IssueStatusChoices
+from monitor.models import Incident, IncidentStatusChoices
 from monitor.services.send_notification_email import SendNotificationEmail
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: %s (%s)'
@@ -25,11 +25,11 @@ def IncidentNotification(incidentId):
     print('============================================')
     print('Create a new Issue Notification and TwerkIt!')
 
-    if (i.current_status == IssueStatusChoices.Critical):
+    if (i.current_status == IncidentStatusChoices.Critical):
         headerColor = 'background-color:red'
-    elif (i.current_status == IssueStatusChoices.Warning):
+    elif (i.current_status == IncidentStatusChoices.Warning):
         headerColor = 'background-color:orange'
-    elif (i.current_status == IssueStatusChoices.Normal):
+    elif (i.current_status == IncidentStatusChoices.Normal):
         headerColor = 'background-color:green'
 
     mySubject = mySubjectTemplate % (

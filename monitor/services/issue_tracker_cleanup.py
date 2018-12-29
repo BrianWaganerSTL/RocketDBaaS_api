@@ -3,7 +3,7 @@ import datetime
 from django.utils import timezone
 
 from dbaas.models import ApplicationContact
-from monitor.models import IssueStatusChoices, Incident, IncidentNotification
+from monitor.models import IncidentStatusChoices, Incident, IncidentNotification
 
 
 def IssueTrackerCleanup():
@@ -12,8 +12,8 @@ def IssueTrackerCleanup():
     for i in issueTracker:
         i.closed_sw = True
         lastDttm = i.last_dttm
-        i.current_status = IssueStatusChoices.Unknown
-        i.pending_status = IssueStatusChoices.Unknown
+        i.current_status = IncidentStatusChoices.Unknown
+        i.pending_status = IncidentStatusChoices.Unknown
         i.save()
         print('Closing Issue: %d, No activity for the last day.  Assuming something has changed.', i.id)
 

@@ -22,12 +22,6 @@ class DbmsTypeChoices(DjangoChoices):
     MongoDB = ChoiceItem()
 
 
-class DataCenterChoices(DjangoChoices):
-    STL = ChoiceItem("STL", "Saint Louis", 1)
-    CH = ChoiceItem("CH", "Chicago", 2)
-    PA = ChoiceItem("PA", "Piscataway", 3)
-
-
 class BackupTypeChoices(DjangoChoices):
     BackupFull = ChoiceItem("Full", "Full", 1)
     BackupIncremental = ChoiceItem("Incr","Incremental", 2)
@@ -87,11 +81,23 @@ class ActivitiesStatusChoices(DjangoChoices):
     Successful = ChoiceItem("Successful","Successful",4)
     Failed = ChoiceItem("Failed","Failed", 5)
 
+
 class Environment(Model):
     class Meta:
         db_table = "environment"
 
-    env = CharField(max_length=10, null=False, default='', primary_key=True)
+    env_name = CharField(max_length=10, null=False, default='', primary_key=True)
+    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1, unique=True)
+
+
+class DataCenter(Model):
+    class Meta:
+        db_table = "data_center"
+
+    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='')
+    data_center = CharField(max_length=15, null=False, default='', primary_key=True)
+    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], unique=True)
+
 
 class PoolServer(Model):
     class Meta:
@@ -102,14 +108,14 @@ class PoolServer(Model):
         Locked = ChoiceItem("Locked", "Locked for Build",2)
         Used = ChoiceItem("Used", "Used",3)
 
-    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='SBX')
+    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='')
     server_name = CharField(max_length=30, null=False)
     server_ip = CharField(max_length=14, null=False)
     dbms_type = CharField(max_length=10, null=False, default='', choices=DbmsTypeChoices.choices)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
+    data_center = ForeignKey(DataCenter, on_delete=deletion.CASCADE, null=False, default='')
     status_in_pool = CharField(max_length=20, null=False, default='', choices=StatusInPoolChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -191,7 +197,7 @@ class Cluster(Model):
     cluster_name = CharField(max_length=30, unique=True, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
-    # environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
+    environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
     requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False, default=0)
     requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
     requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False, default=0)
@@ -205,9 +211,6 @@ class Cluster(Model):
     exp_dttm = DateTimeField(null=False, default=INFINITY)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
-
-    #def environment(self):
-    #    return Server.environment[1]
 
 
 class Server(Model):
@@ -230,7 +233,7 @@ class Server(Model):
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = CharField(max_length=20, null=False, choices=DataCenterChoices.choices)
+    data_center = ForeignKey(DataCenter, on_delete=deletion.CASCADE, null=False, default='')
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
     server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=False, default='')
     os_version = CharField(max_length=30)

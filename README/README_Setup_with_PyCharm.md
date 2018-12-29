@@ -31,6 +31,7 @@ Password:  RocketDBaaS
 manage.py 
 ```
 dumpdata --indent 2 -o dbaas/fixtures/test_data.json dbaas
+dumpdata --indent 2 -o monitor/fixtures/test_data.json monitor
 ```
 
 <h2>Clear just the data in the tables</h2>
@@ -44,6 +45,7 @@ flush
 <h4>Import your test data</h4>
 ```
 loaddata --app dbaas dbaas/fixtures/test_data.json
+loaddata --app monitor monitor/fixtures/test_data.json
 ```
 
 <h4>Create a Application User so you can login</h4>
@@ -66,6 +68,7 @@ makemigrations
 migrate --fake-initial
 migrate
 loaddata --app dbaas dbaas/fixtures/test_data.json
+loaddata --app monitor monitor/fixtures/test_data.json
 ```
 
 <h3>If you add more pip packages save your new Requirements</h3>
