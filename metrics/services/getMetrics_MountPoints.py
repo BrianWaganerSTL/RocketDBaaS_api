@@ -1,8 +1,8 @@
 import requests
 from django.utils import timezone
 
-from dbaas.models import Metrics_MountPoint
-from dbaas.trackers.track_mountpoints import Track_MountPoints
+from metrics.models import Metrics_MountPoint
+from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
 metrics_port = 8080
@@ -11,7 +11,7 @@ metrics_port = 8080
 def GetMetrics_MountPoints(server):
     print('Server='+str(server)+', ServerId='+str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints'
+    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics_temp/mountpoints'
     print('Check: MountPoints, ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''
@@ -21,7 +21,7 @@ def GetMetrics_MountPoints(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print("metrics_temp" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
@@ -56,7 +56,7 @@ def GetMetrics_MountPoints(server):
             metrics_MountPoint.save()
 
             try:
-                 Track_MountPoints(server, metrics_MountPoint.id)
+                 MetricThresholdTest(server, 'MountPoint', 'used_pct', metrics_MountPoint.used_pct, metrics_MountPoint.mount_point)
             except:
                  print('ERROR: ' + str(e))
                  pass

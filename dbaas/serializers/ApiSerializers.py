@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, IssueTracker, Contact
+from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact
 
 
 class ServersSerializer(serializers.ModelSerializer):
@@ -69,9 +69,4 @@ class PoolServersSerializer(serializers.ModelSerializer):
         depth = 0
 
 
-class IssuesTrackerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueTracker
-        fields = '__all__'
-        depth = 2
-        sorted('created_dttm', reverse=True)
+

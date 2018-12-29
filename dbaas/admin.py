@@ -1,9 +1,7 @@
 from django.contrib import admin
-
 from django.contrib.admin.sites import AdminSite
 
 from .models import *
-
 
 @admin.register(PoolServer)
 class PoolServer(admin.ModelAdmin):
@@ -80,53 +78,6 @@ class Restore(admin.ModelAdmin):
     list_display = ('from_cluster', 'to_cluster','restore_type','restore_to_dttm','restore_status','start_dttm')
     list_select_related = ('from_cluster','to_cluster',)
     list_display_links = ('from_cluster',)
-
-# ====================================================================
-@admin.register(IssueTracker)
-class Issue(admin.ModelAdmin):
-    list_display = [field.attname for field in IssueTracker._meta.fields]
-
-
-@admin.register(IssueNotification)
-class IssueNotification(admin.ModelAdmin):
-    list_display = [field.attname for field in IssueNotification._meta.fields]
-
-
-# ====================================================================
-@admin.register(CheckerBaseElement)
-class CheckerBaseElement(admin.ModelAdmin):
-    list_display = [field.attname for field in CheckerBaseElement._meta.fields]
-
-
-@admin.register(CheckerThreshold)
-class CheckerThreshold(admin.ModelAdmin):
-    list_display = [field.attname for field in CheckerThreshold._meta.fields]
-
-
-# ====================================================================
-@admin.register(MetricsCpu)
-class MetricsCPU(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsCpu._meta.fields]
-
-
-@admin.register(Metrics_MountPoint)
-class MetricsMountPoint(admin.ModelAdmin):
-    list_display = [field.attname for field in Metrics_MountPoint._meta.fields]
-
-
-@admin.register(MetricsLoad)
-class MetricsLoad(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsLoad._meta.fields]
-
-
-@admin.register(MetricsPingDb)
-class MetricsPingDb(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsPingDb._meta.fields]
-
-
-@admin.register(MetricsPingServer)
-class MetricsServerPing(admin.ModelAdmin):
-    list_display = [field.attname for field in MetricsPingServer._meta.fields]
 
 
 # ====================================================================

@@ -2,13 +2,13 @@ import datetime
 
 from django.utils import timezone
 
-from dbaas.models import IssueTracker, IssueStatusChoices, IssueNotification, ApplicationContact
-
+from dbaas.models import ApplicationContact
+from monitor.models import IssueStatusChoices, Incident, IncidentNotification
 
 
 def IssueTrackerCleanup():
     headerColor = 'color:lightorange'
-    issueTracker = IssueTracker.objects.filter(closed_sw=False, last_dttm__lte=timezone.now()-datetime.timedelta(days=1))
+    issueTracker = Incident.objects.filter(closed_sw=False, last_dttm__lte=timezone.now()-datetime.timedelta(days=1))
     for i in issueTracker:
         i.closed_sw = True
         lastDttm = i.last_dttm
@@ -48,7 +48,7 @@ def IssueTrackerCleanup():
             i.id,
             i.server.cluster_id, i.server_id, i.id)
 
-        i = IssueNotification(issue_tracker_id=i.id,
+        i = IncidentNotification(incident_id=i.id,
                               application=i.server.cluster.application,
                               notification_method='Twerking',
                               notification_subject=mySubject,

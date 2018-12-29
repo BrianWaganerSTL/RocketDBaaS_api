@@ -1,9 +1,9 @@
 from rest_framework import authentication, permissions, generics
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, MetricsCpu, MetricsPingServer, IssueTracker
+from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer, IssuesTrackerSerializer
+    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer
 
 from rest_framework.authentication import TokenAuthentication
 
@@ -78,15 +78,7 @@ class NotesList(generics.ListAPIView):
         return ClusterNote.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
 
 
-class IssueTrackerList(generics.ListAPIView):
-    serializer_class = IssuesTrackerSerializer
-    permission_classes = [AllowAny, ]
-    authentication_classes = [TokenAuthentication, ]
-    lookup_field = 'vServerId'
 
-    def get_queryset(self):
-        vServerId = self.kwargs['vServerId']
-        return IssueTracker.objects.filter(server_id=vServerId).order_by('-created_dttm')
 
 
 class ApplicationContactsList(generics.ListAPIView):

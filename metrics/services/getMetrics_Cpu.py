@@ -1,20 +1,18 @@
-from datetime import datetime
-import time
-import os
 import requests
 from django.utils import timezone
 
-from dbaas.models import MetricsCpu
-from dbaas.trackers.track_cpu import Track_Cpu
+from metrics.models import Metrics_Cpu
+from monitor.services.metric_threshold_test import MetricThresholdTest
+
 
 errCnt = [0] * 1000
 metrics_port = 8080
 
 
-def GetMetricsCpu(server):
+def GetMetrics_Cpu(server):
     print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/cpu'
+    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics_temp/cpu'
     print('Cpu: ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''
@@ -24,7 +22,7 @@ def GetMetricsCpu(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print("metrics_temp" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
@@ -53,31 +51,31 @@ def GetMetricsCpu(server):
         for m in metricsList:
             print('m:' + str(m))
 
-            metricsCpu = MetricsCpu()
-            metricsCpu.server = server
-            metricsCpu.error_cnt = errCnt[server.id]
-            metricsCpu.created_dttm = m['created_dttm']
-            metricsCpu.cpu_idle_pct = metrics['idle']
-            metricsCpu.cpu_user_pct = metrics['user']
-            metricsCpu.cpu_system_pct = metrics['system']
+            metrics_Cpu = Metrics_Cpu()
+            metrics_Cpu.server = server
+            metrics_Cpu.error_cnt = errCnt[server.id]
+            metrics_Cpu.created_dttm = m['created_dttm']
+            metrics_Cpu.cpu_idle_pct = metrics['idle']
+            metrics_Cpu.cpu_user_pct = metrics['user']
+            metrics_Cpu.cpu_system_pct = metrics['system']
             if 'cpu_iowait_pct' in metrics:  # These only exist in Unix/Linux
-                metricsCpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
-                metricsCpu.cpu_irq_pct = metrics['cpu_irq_pct']
-                metricsCpu.cpu_steal_pct = metrics['cpu_steal_pct']
+                metrics_Cpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
+                metrics_Cpu.cpu_irq_pct = metrics['cpu_irq_pct']
+                metrics_Cpu.cpu_steal_pct = metrics['cpu_steal_pct']
                 if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
-                    metricsCpu.cpu_guest_pct = metrics['cpu_guest_pct']
-                    metricsCpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
-            metricsCpu.save()
+                    metrics_Cpu.cpu_guest_pct = metrics['cpu_guest_pct']
+                    metrics_Cpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
+            metrics_Cpu.save()
 
             try:
-                 Track_Cpu(server, metricsCpu.id)
+                MetricThresholdTest(server, 'Cpu', 'cpu_idle_pct', metrics_Cpu.cpu_idle_pct, '')
             except:
                  print('ERROR: ' + str(e))
                  pass
     else:
-        metricsCpu = MetricsCpu()
-        metricsCpu.server = server
-        metricsCpu.error_cnt = errCnt[server.id]
-        metricsCpu.created_dttm = timezone.now()
-        metricsCpu.error_msg = error_msg
-        metricsCpu.save()
+        metrics_Cpu = Metrics_Cpu()
+        metrics_Cpu.server = server
+        metrics_Cpu.error_cnt = errCnt[server.id]
+        metrics_Cpu.created_dttm = timezone.now()
+        metrics_Cpu.error_msg = error_msg
+        metrics_Cpu.save()

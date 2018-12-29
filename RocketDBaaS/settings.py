@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'dbaas',
+    'metrics',
+    'monitor',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',

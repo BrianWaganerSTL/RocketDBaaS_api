@@ -1,10 +1,11 @@
 from django.core.mail import EmailMessage
 
-from dbaas.models import IssueNotification, ApplicationContact
+from dbaas.models import ApplicationContact
+from monitor.models import IncidentNotification
 
 
-def SendNotificationEmail(IssueNotificationId):
-    i = IssueNotification.object.get(IssueNotificationId)
+def SendNotificationEmail(IncidentNotificationId):
+    i = IncidentNotification.object.get(IncidentNotificationId)
 
     dbmsType = i.server.cluster.dbms_type
     if (dbmsType == 'PostgreSQL'):

@@ -1,21 +1,18 @@
-from datetime import datetime
-import time
-import os
 import requests
 from django.utils import timezone
 
-from dbaas.models import MetricsPingDb
-from dbaas.trackers.track_ping_db import Track_PingDb
+from metrics.models import Metrics_CpuLoad
+from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
 metrics_port = 8080
 
 
-def GetMetricsPingDb(server):
+def GetMetrics_Load(server):
     print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/pingdb?dbms=PostgreSQL'
-    print('PingDb: url=' + url)
+    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics_temp/load'
+    print('Load: url=' + url)
     metrics = ''
     error_msg = ''
 
@@ -24,7 +21,7 @@ def GetMetricsPingDb(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print("metrics_temp" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
@@ -53,23 +50,24 @@ def GetMetricsPingDb(server):
         for m in metricsList:
             print('m:' + str(m))
 
-            metricsPingDb = MetricsPingDb()
-            metricsPingDb.server = server
-            metricsPingDb.error_cnt = errCnt[server.id]
-            metricsPingDb.created_dttm = m['created_dttm']
-            metricsPingDb.ping_db_status = metrics['ping_db_status']
-            metricsPingDb.ping_db_response_ms = metrics['ping_db_response_ms']
-            metricsPingDb.save()
+            metrics_CpuLoad = Metrics_CpuLoad()
+            metrics_CpuLoad.server = server
+            metrics_CpuLoad.error_cnt = errCnt[server.id]
+            metrics_CpuLoad.created_dttm = m['created_dttm']
+            metrics_CpuLoad.load_1min = m['load_1min']
+            metrics_CpuLoad.load_5min = m['load_5min']
+            metrics_CpuLoad.load_15min = m['load_15min']
+            metrics_CpuLoad.save()
 
             try:
-                 Track_PingDb(server, metricsPingDb.id)
+                 MetricThresholdTest(server, 'CpuLoad', 'load_5min', metrics_CpuLoad.load_5min, '')
             except:
                  print('ERROR: ' + str(e))
                  pass
     else:
-        metricsPingDb = MetricsPingDb()
-        metricsPingDb.server = server
-        metricsPingDb.error_cnt = errCnt[server.id]
-        metricsPingDb.created_dttm = timezone.now()
-        metricsPingDb.error_msg = error_msg
-        metricsPingDb.save()
+        metrics_CpuLoad = Metrics_CpuLoad()
+        metrics_CpuLoad.server = server
+        metrics_CpuLoad.error_cnt = errCnt[server.id]
+        metrics_CpuLoad.created_dttm = timezone.now()
+        metrics_CpuLoad.error_msg = error_msg
+        metrics_CpuLoad.save()

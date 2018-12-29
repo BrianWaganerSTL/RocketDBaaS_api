@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from dbaas.models import (
-    PoolServer,
-    CheckerThreshold)
+from dbaas.models import (PoolServer)
 
 
 
