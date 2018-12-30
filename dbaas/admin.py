@@ -3,6 +3,12 @@ from django.contrib.admin.sites import AdminSite
 
 from .models import *
 
+@admin.register(Datacenter)
+class Datacenter(admin.ModelAdmin):
+    list_display = [field.attname for field in Datacenter._meta.fields]
+    list_editable = ('datacenter','order')
+    list_display_links = ()
+
 @admin.register(PoolServer)
 class PoolServer(admin.ModelAdmin):
     list_display = [field.attname for field in PoolServer._meta.fields]
@@ -15,7 +21,7 @@ class Environment(admin.ModelAdmin):
 
 @admin.register(ServerPort)
 class ServerPort(admin.ModelAdmin):
-    list_display = ('port', 'port_status','port_notes','updated_dttm')
+    list_display = [field.attname for field in ServerPort._meta.fields]
     list_display_links = ('port',)
     ordering = [ 'port']
 
@@ -46,7 +52,7 @@ class Cluster(admin.ModelAdmin):
 
 @admin.register(Server)
 class Server(admin.ModelAdmin):
-    list_display = ('cluster','environment','server_name','server_ip','cpu','ram_gb','db_gb','data_center','node_role','server_health','os_version',
+    list_display = ('cluster','environment','server_name','server_ip','cpu','ram_gb','db_gb','datacenter','node_role','server_health','os_version',
                     'db_version','pending_restart_sw','metrics_sw','active_sw')
     list_select_related = ('cluster',)
     list_display_links = ('cluster',)

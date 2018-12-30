@@ -1,18 +1,18 @@
 import requests
 from django.utils import timezone
 
-from metrics.models import Metrics_MountPoint
+from metrics.models import Metrics_PingDb
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
 metrics_port = 8080
 
 
-def GetMetrics_MountPoints(server):
-    print('Server='+str(server)+', ServerId='+str(server.id) + ', ServerIP=' + str(server.server_ip))
+def GetMetrics_HostDetails(server):
+    print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints'
-    print('Check: MountPoints, ServerNm: ' + server.server_name + ', url=' + url)
+    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/hostdetails'
+    print('hostdetails: url=' + url)
     metrics = ''
     error_msg = ''
 
@@ -42,29 +42,31 @@ def GetMetrics_MountPoints(server):
         error_msg = 'Other Error ' + err
 
     if (error_msg == ''):
-        for m in metrics:
+        if (type(metrics) == dict):
+            metricsList = [metrics]
+        else:
+            metricsList = metrics
+
+        for m in metricsList:
             print('m:' + str(m))
 
-            metrics_MountPoint = Metrics_MountPoint()
-            metrics_MountPoint.server = server
-            metrics_MountPoint.error_cnt = errCnt[server.id]
-            metrics_MountPoint.created_dttm = m['created_dttm']
-            metrics_MountPoint.mount_point = m['mount_point']
-            metrics_MountPoint.allocated_gb = m['allocated_gb']
-            metrics_MountPoint.used_gb = m['used_gb']
-            metrics_MountPoint.used_pct = m['used_pct']
-            metrics_MountPoint.save()
+            metrics_PingDb = Metrics_PingDb()
+            metrics_PingDb.server = server
+            metrics_PingDb.error_cnt = errCnt[server.id]
+            metrics_PingDb.created_dttm = m['created_dttm']
+            metrics_PingDb.ping_db_status = metrics['ping_db_status']
+            metrics_PingDb.ping_db_response_ms = metrics['ping_db_response_ms']
+            metrics_PingDb.save()
 
             try:
-                 MetricThresholdTest(server, 'MountPoint', 'used_pct', metrics_MountPoint.used_pct, metrics_MountPoint.mount_point)
+                MetricThresholdTest(server, 'PingDb', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
             except:
                  print('ERROR: ' + str(e))
                  pass
     else:
-        metrics_MountPoint = Metrics_MountPoint()
-        metrics_MountPoint.server = server
-        metrics_MountPoint.error_cnt = errCnt[server.id]
-        metrics_MountPoint.created_dttm = timezone.now()
-        metrics_MountPoint.error_msg = error_msg
-        metrics_MountPoint.save()
-
+        metrics_PingDb = Metrics_PingDb()
+        metrics_PingDb.server = server
+        metrics_PingDb.error_cnt = errCnt[server.id]
+        metrics_PingDb.created_dttm = timezone.now()
+        metrics_PingDb.error_msg = error_msg
+        metrics_PingDb.save()

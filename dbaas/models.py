@@ -84,24 +84,33 @@ class ActivitiesStatusChoices(DjangoChoices):
 
 class Environment(Model):
     class Meta:
-        db_table = "environment"
+        db_table = "dbaas_environment"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.env_name
 
     env_name = CharField(max_length=10, null=False, default='', primary_key=True)
     order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1, unique=True)
 
 
-class DataCenter(Model):
+class Datacenter(Model):
     class Meta:
-        db_table = "data_center"
+        db_table = "dbaas_datacenter"
+        unique_together = (('environment', 'datacenter',),('environment', 'order',),)
+        ordering = ['environment', 'order']
+
+    def __str__(self):
+        return self.datacenter
 
     environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='')
-    data_center = CharField(max_length=15, null=False, default='', primary_key=True)
-    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], unique=True)
+    datacenter = CharField(max_length=15, null=False, default='')
+    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1)
 
 
 class PoolServer(Model):
     class Meta:
-        db_table = "pool_server"
+        db_table = "dbaas_pool_server"
 
     class StatusInPoolChoices(DjangoChoices):
         Available = ChoiceItem("Available", "Available",1)
@@ -115,7 +124,7 @@ class PoolServer(Model):
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = ForeignKey(DataCenter, on_delete=deletion.CASCADE, null=False, default='')
+    datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=False, default='')
     status_in_pool = CharField(max_length=20, null=False, default='', choices=StatusInPoolChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -123,7 +132,7 @@ class PoolServer(Model):
 
 class ServerPort(Model):
     class Meta:
-        db_table = "server_port"
+        db_table = "dbaas_server_port"
 
     class PortStatusChoices(DjangoChoices):
         Free = ChoiceItem("Free", "Free", 1)
@@ -147,7 +156,7 @@ class ServerPort(Model):
 
 class Contact(Model):
     class Meta:
-        db_table = "contact"
+        db_table = "dbaas_contact"
 
     class ContactTypeChoices(DjangoChoices):
         Person = ChoiceItem("Person","Person",1)
@@ -168,7 +177,7 @@ class Contact(Model):
 
 class Application(Model):
     class Meta:
-        db_table = "application"
+        db_table = "dbaas_application"
 
     def __str__(self):
         return self.application_name
@@ -181,7 +190,7 @@ class Application(Model):
 
 class Cluster(Model):
     class Meta:
-        db_table = "cluster"
+        db_table = "dbaas_cluster"
 
     def __str__(self):
         return self.cluster_name
@@ -215,7 +224,7 @@ class Cluster(Model):
 
 class Server(Model):
     class Meta:
-        db_table="server"
+        db_table="dbaas_server"
 
     def __str__(self):
         return self.server_name
@@ -233,7 +242,7 @@ class Server(Model):
     cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
     ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
     db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    data_center = ForeignKey(DataCenter, on_delete=deletion.CASCADE, null=False, default='')
+    datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=False, default='')
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
     server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=False, default='')
     os_version = CharField(max_length=30)
@@ -247,7 +256,7 @@ class Server(Model):
 
 class ApplicationContact(Model):
     class Meta:
-        db_table = "application_contact"
+        db_table = "dbaas_application_contact"
 
     application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
     contact = ForeignKey(Contact, on_delete=deletion.CASCADE, null=False)
@@ -258,7 +267,7 @@ class ApplicationContact(Model):
 
 class Backup (models.Model):
     class Meta:
-        db_table = "backup"
+        db_table = "dbaas_backup"
         ordering = ['start_dttm']
 
     cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
@@ -285,7 +294,7 @@ class Backup (models.Model):
 
 class Restore(models.Model):
     class Meta:
-        db_table="restore"
+        db_table="dbaas_restore"
 
     from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_from_cluster')
     to_cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False, related_name='restore_to_cluster')
@@ -304,7 +313,7 @@ class Restore(models.Model):
 
 class ServerActivity(models.Model):
     class Meta:
-        db_table = "server_activities"
+        db_table = "dbaas_server_activities"
         ordering = ['created_dttm']
 
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
@@ -320,7 +329,7 @@ class ServerActivity(models.Model):
 
 class ClusterNote(models.Model):
     class Meta:
-        db_table = "cluster_note"
+        db_table = "dbaas_cluster_note"
         ordering = ['created_dttm']
 
     cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)

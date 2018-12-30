@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 
-from dbaas.views import ApiViews, ApiMetricsViews
+from dbaas.views import ApiViews
 from metrics import metrics_views
 from monitor import monitor_views
 

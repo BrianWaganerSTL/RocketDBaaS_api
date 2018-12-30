@@ -11,7 +11,7 @@ metrics_port = 8080
 def GetMetrics_PingDb(server):
     print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics_temp/pingdb?dbms=PostgreSQL'
+    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/pingdb?dbms=PostgreSQL'
     print('PingDb: url=' + url)
     metrics = ''
     error_msg = ''
@@ -21,7 +21,7 @@ def GetMetrics_PingDb(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics_temp" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 

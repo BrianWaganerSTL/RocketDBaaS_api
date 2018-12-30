@@ -7,6 +7,7 @@ from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, Incid
 from dbaas.utils.DynCompare import DynCompare
 
 def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, detail_element):
+    server = Server.objects.get(id=slimServer.id)
     try:
         thresholdTest = ThresholdTest.objects \
             .filter(active_sw=True,
@@ -16,21 +17,21 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         logging.error('Found no active ThresholdTest for ' + category_name +' ('+ metric_name + ')')
         return
     else:
-        if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value):
+        if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value.replace("<<CPU>>", server.cpu)):
             pendingThresholdLevel = IncidentStatusChoices.Critical
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value)
-        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value):
+        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value.replace("<<CPU>>", server.cpu)):
             pendingThresholdLevel = IncidentStatusChoices.Warning
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
         else:
             pendingThresholdLevel = IncidentStatusChoices.Normal
-            CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.normal_predicate_type, thresholdTest.normal_value)
+            CurTestWithValues = '%d NOT (Warning OR Critical)' % (metric_value)
 
         print('Pending %s Threshold' % pendingThresholdLevel)
 
     #  Now Create an Incident if one doesn't already exist
     twerkIt = False
-    server = Server.objects.get(id=slimServer.id)
+
     try:
         i = Incident.objects.filter(server_id=server.id, threshold_test=thresholdTest, closed_sw=False)[0]
     except:

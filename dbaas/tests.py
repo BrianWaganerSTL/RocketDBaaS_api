@@ -11,7 +11,7 @@ class SimpleTest(TestCase):
                         "cpu": "2.0",
                         "ram_gb": "2.0",
                         "db_gb": "10.00",
-                        "data_center": "DC",
+                        "datacenter": "DC",
                         "status_in_pool": "Available"
                     })
         self.assertEquals(response.status_code, 201)

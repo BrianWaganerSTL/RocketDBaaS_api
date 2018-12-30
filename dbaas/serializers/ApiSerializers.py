@@ -66,7 +66,7 @@ class PoolServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = PoolServer
         fields = '__all__'
-        depth = 0
+        depth = 1
 
 
 
