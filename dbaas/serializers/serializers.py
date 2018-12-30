@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from dbaas.models import (PoolServer)
+from dbaas.models import (Server)
 
 
 
 class LockPoolServersSerializer (serializers.ModelSerializer):
     class Meta:
-        model = PoolServer
+        model = Server
         fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'ram_gb', 'db_gb',
                   'datacenter', 'status_in_pool', 'created_dttm', 'updated_dttm' )
         extra_kwargs = {
@@ -14,7 +14,7 @@ class LockPoolServersSerializer (serializers.ModelSerializer):
 
 class LockPoolServers2Serializer(serializers.ModelSerializer):
     class Meta:
-        model = PoolServer
+        model = Server
         fields = ('server_name', 'server_ip', 'dbms_type', 'cpu', 'ram_gb', 'db_gb',
                   'datacenter', 'status_in_pool', 'created_dttm', 'updated_dttm')
         extra_kwargs = {

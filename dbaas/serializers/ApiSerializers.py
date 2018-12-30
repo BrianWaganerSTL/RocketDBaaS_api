@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, PoolServer, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact
 
 
 class ServersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Server
         fields = '__all__'
-        depth = 0
+        depth = 1
 
 
 class BackupsSerializer(serializers.ModelSerializer):
@@ -58,13 +58,6 @@ class ApplicationContactsSerializer(serializers.ModelSerializer):
 class ClusterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cluster
-        fields = '__all__'
-        depth = 1
-
-
-class PoolServersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PoolServer
         fields = '__all__'
         depth = 1
 

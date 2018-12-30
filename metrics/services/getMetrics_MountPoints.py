@@ -11,7 +11,12 @@ metrics_port = 8080
 def GetMetrics_MountPoints(server):
     print('Server='+str(server)+', ServerId='+str(server.id) + ', ServerIP=' + str(server.server_ip))
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints'
+    if (server.server_ip is None):
+        return
+
+    server_ip = (server.server_ip).rstrip('\x00')
+
+    url = ('http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints').rstrip('\x00')
     print('Check: MountPoints, ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''

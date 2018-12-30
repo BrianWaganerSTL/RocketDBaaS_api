@@ -13,12 +13,17 @@ metrics_port = 8080
 def GetMetricsPingServer(server):
     print('PingServer: ping')
 
+    if (server.server_ip is None):
+        return
+
+    server_ip = (server.server_ip).rstrip('\x00')
+
     if platform == "linux" or platform =="linux2":
-        pingCmd = 'ping -c1 -W2 ' + server.server_ip
+        pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
-        pingCmd = 'ping -c1 -W2 ' + server.server_ip
+        pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "win32":
-        pingCmd = 'ping -n 1 -w 2 ' + server.server_ip
+        pingCmd = 'ping -n 1 -w 2 ' + server_ip
 
     metrics_PingServer = Metrics_PingServer()
 

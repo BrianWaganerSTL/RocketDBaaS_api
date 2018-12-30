@@ -9,12 +9,6 @@ class Datacenter(admin.ModelAdmin):
     list_editable = ('datacenter','order')
     list_display_links = ()
 
-@admin.register(PoolServer)
-class PoolServer(admin.ModelAdmin):
-    list_display = [field.attname for field in PoolServer._meta.fields]
-    list_editable = ('status_in_pool',)
-    list_display_links = ('id',)
-
 @admin.register(Environment)
 class Environment(admin.ModelAdmin):
     list_display = [field.attname for field in Environment._meta.fields]

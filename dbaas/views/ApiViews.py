@@ -1,9 +1,9 @@
 from rest_framework import authentication, permissions, generics
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import PoolServer, Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, ApplicationContactsSerializer, PoolServersSerializer
+    NotesSerializer, ApplicationContactsSerializer
 
 from rest_framework.authentication import TokenAuthentication
 
@@ -100,12 +100,12 @@ class ApplicationContactsList(generics.ListAPIView):
 #     authentication_classes = [TokenAuthentication, ]
 
 class PoolServersViewSet(ModelViewSet):
-    queryset = PoolServer.objects.all()
-    serializer_class = PoolServersSerializer
+    queryset = Server.objects.all()
+    serializer_class = ServersSerializer
     permission_classes = [AllowAny, ]
 
     def get_queryset(self):
-        queryset = PoolServer.objects.all().order_by('environment', 'datacenter', 'dbms_type', '-created_dttm')
+        queryset = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer).order_by('environment', 'datacenter', 'dbms_type', '-created_dttm')
 
         env = self.request.query_params.get('env', None)
         if env is not None:
@@ -126,8 +126,4 @@ class PoolServersViewSet(ModelViewSet):
         req_db_gb = self.request.query_params.get('req_db_gb', None)
         if req_db_gb is not None:
             queryset = queryset.filter(db_gb__gte=req_db_gb)
-
-        statusInPool = self.request.query_params.get('status_in_pool', None)
-        if statusInPool is not None:
-            queryset = queryset.filter(status_in_pool__iexact=statusInPool)
         return queryset

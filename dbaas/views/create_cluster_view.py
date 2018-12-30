@@ -1,16 +1,17 @@
 from django.shortcuts import render, redirect
 from rest_framework.generics import get_object_or_404
+from django.db.models import Q
 
 from dbaas import models
-from dbaas.models import Cluster, Application, ServerPort, PoolServer, DataCenterChoices
+from dbaas.models import Cluster, Application, ServerPort, PoolServer, DataCenterChoices, Server
 
 
 def create_cluster(request):
     if request.method == 'GET':
-        poolServers = PoolServer.objects.exclude(status_in_pool=PoolServer.StatusInPoolChoices.Used)
+        poolServers = Server.objects.filter(node_role='PoolServer')
         dataCenterChoicesDict = dict(DataCenterChoices.choices)
         return render(request, 'cluster/create.html',
-                      {'poolServers': poolServers,
+                      {'servers': poolServers,
                       'dataCenterChoicesDict': dataCenterChoicesDict })
 
 

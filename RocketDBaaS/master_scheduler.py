@@ -7,7 +7,7 @@ from monitor.services.issue_tracker_cleanup import IssueTrackerCleanup
 
 
 def StartMasterScheduler():
-    if "manage.py" not in sys.argv[0]:
+    if "django_manage.py" not in sys.argv[0]:
         print('This is the Start of all Good and Wonderful things...')
         scheduler = BackgroundScheduler()
         scheduler.add_job(Metrics_FastTick, 'interval', seconds=30, max_instances=10, next_run_time=timezone.now())

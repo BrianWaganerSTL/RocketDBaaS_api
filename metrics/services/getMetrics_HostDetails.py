@@ -1,7 +1,7 @@
 import requests
 from django.utils import timezone
 
-from metrics.models import Metrics_PingDb
+from metrics.models import Metrics_PingDb, Metrics_HostDetails
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
@@ -9,9 +9,14 @@ metrics_port = 8080
 
 
 def GetMetrics_HostDetails(server):
-    print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
+    if (server.server_ip is None):
+        return
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/hostdetails'
+    server_ip = (server.server_ip).rstrip('\x00')
+
+    print('Server=' + server + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
+
+    url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/hostdetails'
     print('hostdetails: url=' + url)
     metrics = ''
     error_msg = ''
@@ -21,7 +26,7 @@ def GetMetrics_HostDetails(server):
         print('r.status_code:' + str(r.status_code))
         print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print("metrics" + str(type(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
@@ -50,23 +55,26 @@ def GetMetrics_HostDetails(server):
         for m in metricsList:
             print('m:' + str(m))
 
-            metrics_PingDb = Metrics_PingDb()
-            metrics_PingDb.server = server
-            metrics_PingDb.error_cnt = errCnt[server.id]
-            metrics_PingDb.created_dttm = m['created_dttm']
-            metrics_PingDb.ping_db_status = metrics['ping_db_status']
-            metrics_PingDb.ping_db_response_ms = metrics['ping_db_response_ms']
-            metrics_PingDb.save()
+            metrics_HostDetails = Metrics_HostDetails()
+            metrics_HostDetails.server = server
+            metrics_HostDetails.error_cnt = errCnt[server.id]
+            metrics_HostDetails.created_dttm = m['created_dttm']
+            metrics_HostDetails.cpuCount = metrics['cpuCount']
+            metrics_HostDetails.lastReboot = metrics['lastReboot']
+            metrics_HostDetails.ramGb = metrics['ramGb']
+            metrics_HostDetails.osVersion = metrics['osVersion']
+            metrics_HostDetails.dbVersion = metrics['dbVersion']
+            metrics_HostDetails.save()
 
             try:
-                MetricThresholdTest(server, 'PingDb', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
+                MetricThresholdTest(server, 'HostDetails', 'lastReboot', metrics_HostDetails.lastReboot, '')
             except:
                  print('ERROR: ' + str(e))
                  pass
     else:
-        metrics_PingDb = Metrics_PingDb()
-        metrics_PingDb.server = server
-        metrics_PingDb.error_cnt = errCnt[server.id]
-        metrics_PingDb.created_dttm = timezone.now()
-        metrics_PingDb.error_msg = error_msg
-        metrics_PingDb.save()
+        metrics_HostDetails = Metrics_HostDetails()
+        metrics_HostDetails.server = server
+        metrics_HostDetails.error_cnt = errCnt[server.id]
+        metrics_HostDetails.created_dttm = timezone.now()
+        metrics_HostDetails.error_msg = error_msg
+        metrics_HostDetails.save()

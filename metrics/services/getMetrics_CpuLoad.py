@@ -9,9 +9,13 @@ metrics_port = 8080
 
 
 def GetMetrics_Load(server):
-    print('Server=' + str(server) + ', ServerId=' + str(server.id) + ', ServerIP=' + str(server.server_ip))
+    if (server.server_ip is None):
+        return
 
-    url = 'http://' + server.server_ip + ':' + str(metrics_port) + '/api/metrics/load'
+    server_ip = (server.server_ip).rstrip('\x00')
+
+    print('Server=' + server + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
+    url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/load'
     print('Load: url=' + url)
     metrics = ''
     error_msg = ''

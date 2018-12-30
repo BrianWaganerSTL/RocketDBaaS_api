@@ -71,7 +71,7 @@ class ThresholdTest(models.Model):
         db_table = 'monitor_threshold_test'
 
     threshold_metric = ForeignKey(ThresholdMetricLookup, on_delete=CASCADE, default='')
-    detail_element = CharField(max_length=50, null=False, default='')
+    detail_element = CharField(max_length=50, null=True, blank=True)
     normal_ticks = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=False, default=3)
     warning_ticks = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], null=False, default=3)
     warning_predicate_type = CharField(max_length=15, null=False, default='>=', choices=MetricThresholdPredicateTypeChoices.choices)
@@ -93,7 +93,7 @@ class Incident(models.Model):
     threshold_test = ForeignKey(ThresholdTest, on_delete=deletion.ProtectedError, null=False, default='')
     start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     last_dttm = DateTimeField()
-    closed_dttm = DateTimeField()
+    closed_dttm = DateTimeField(null=True, blank=True)
     closed_sw = BooleanField(default=False)
     min_value = DecimalField(null=False, default=0),
     cur_value = DecimalField(null=False, default=0),
@@ -105,9 +105,9 @@ class Incident(models.Model):
     critical_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
     warning_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
     normal_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
-    note = CharField(max_length=4000, null=True, default='')
-    note_by = CharField(max_length=30, null=True, default='')
-    ticket = CharField(max_length=30, null=True, default='')
+    note = CharField(max_length=4000, null=True, blank=True)
+    note_by = CharField(max_length=30, null=True, blank=True)
+    ticket = CharField(max_length=30, null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -122,7 +122,7 @@ class IncidentNotification(models.Model):
     notification_method = ForeignKey(ThresholdNotificationMethodLookup, on_delete=CASCADE, default='')
     notification_subject = CharField(max_length=2000, null=False, default='')
     notification_body = CharField(max_length=10000, null=False, default='')
-    acknowledged_by = CharField(max_length=30, null=False, default='')
-    acknowledged_dttm = DateTimeField(null=False, default=INFINITY)
+    acknowledged_by = CharField(max_length=30, null=True, blank=True)
+    acknowledged_dttm = DateTimeField(null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)

@@ -1,5 +1,5 @@
-from dbaas.models import Server, PoolServer
-from metrics.services import getMetrics_PingServer, getMetrics_MountPoints, getMetrics_PingDb, getMetrics_CpuLoad, getMetrics_Cpu
+from dbaas.models import Server, Server
+from metrics.services import getMetrics_PingServer, getMetrics_MountPoints, getMetrics_PingDb, getMetrics_CpuLoad, getMetrics_Cpu, getMetrics_HostDetails
 
 
 def Metrics_FastTick():
@@ -12,10 +12,10 @@ def Metrics_FastTick():
         getMetrics_Cpu.GetMetrics_Cpu(s)
         getMetrics_CpuLoad.GetMetrics_Load(s)
 
-    servers = PoolServer.objects.exclude(status_in_pool__iexact=PoolServer.StatusInPoolChoices.Used);
-    for s in servers:
-        getMetrics_PingServer.GetMetricsPingServer(s)
-        getMetrics_PingDb.GetMetrics_hostdetails(s)
+    poolServers = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer);
+    for ps in poolServers:
+        getMetrics_PingServer.GetMetricsPingServer(ps)
+        getMetrics_HostDetails.GetMetrics_HostDetails(ps)
 
 def Metrics_SlowTick():
     servers = Server.objects.filter(active_sw=True, metrics_sw=True);

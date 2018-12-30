@@ -108,28 +108,6 @@ class Datacenter(Model):
     order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1)
 
 
-class PoolServer(Model):
-    class Meta:
-        db_table = "dbaas_pool_server"
-
-    class StatusInPoolChoices(DjangoChoices):
-        Available = ChoiceItem("Available", "Available",1)
-        Locked = ChoiceItem("Locked", "Locked for Build",2)
-        Used = ChoiceItem("Used", "Used",3)
-
-    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='')
-    server_name = CharField(max_length=30, null=False)
-    server_ip = CharField(max_length=14, null=False)
-    dbms_type = CharField(max_length=10, null=False, default='', choices=DbmsTypeChoices.choices)
-    cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-    ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
-    db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=False, default='')
-    status_in_pool = CharField(max_length=20, null=False, default='', choices=StatusInPoolChoices.choices)
-    created_dttm = DateTimeField(editable=False, auto_now_add=True)
-    updated_dttm = DateTimeField(auto_now=True)
-
-
 class ServerPort(Model):
     class Meta:
         db_table = "dbaas_server_port"
@@ -166,7 +144,7 @@ class Contact(Model):
     contact_name = CharField(max_length=60, unique=True, null=False)
     contact_type = CharField(max_length=30, choices=ContactTypeChoices.choices, null=False, default='')
     contact_email = EmailField(null=False, default='default@email.com')
-    contact_phone = CharField(max_length=15)
+    contact_phone = CharField(max_length=15, null=True, blank=True)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -207,9 +185,6 @@ class Cluster(Model):
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
     application = ForeignKey(Application, on_delete=deletion.CASCADE, null=False)
     environment = ForeignKey(Environment, on_delete=deletion.PROTECT, null=False)
-    requested_cpu = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(14)], null=False, default=0)
-    requested_ram_gb = IntegerField(validators=[MinValueValidator(2), MaxValueValidator(64)], null=False, default=0)
-    requested_db_gb = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(102400)], null=False, default=0)
     read_write_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, default=65535, related_name='read_write_port_id')
     read_only_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, default=65535, related_name='read_only_port_id')
     tls_enabled_sw = BooleanField(null=False, default=True)
@@ -217,7 +192,7 @@ class Cluster(Model):
     cluster_health = CharField(max_length=30, null=False, choices=ClusterHealthChoices.choices, default=ClusterHealthChoices.ClusterConfiguring)
     active_sw = BooleanField(null=False, default=True)
     eff_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    exp_dttm = DateTimeField(null=False, default=INFINITY)
+    exp_dttm = DateTimeField(null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
 
@@ -234,21 +209,23 @@ class Server(Model):
         SecondarySync = ChoiceItem("SecondarySync", "Secondary Node - Replication is Synchronous",2)
         SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",3)
         Arbiter = ChoiceItem("Arbiter", "Arbiter Node",4)
+        PoolServer = ChoiceItem("PoolServer", "PoolServer",5)
+        PoolServerLocked = ChoiceItem("PoolServerLocked", "PoolServerLocked",6)
 
-    cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=False)
-    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='SBX')
+    cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=True, blank=True)
+    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=True, blank=True)
     server_name = CharField(max_length=30, null=False)
-    server_ip = CharField(max_length=14, null=False)
-    cpu = DecimalField(decimal_places=1, max_digits=3, null=False)
-    ram_gb = DecimalField(decimal_places=1, max_digits=3, null=False)
-    db_gb = DecimalField(decimal_places=2, max_digits=5, null=False)
-    datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=False, default='')
+    server_ip = CharField(max_length=14, null=True, blank=True)
+    cpu = DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
+    ram_gb = DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
+    db_gb = DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=True, blank=True)
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
-    server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=False, default='')
-    os_version = CharField(max_length=30)
-    db_version = CharField(max_length=30)
+    server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=True, blank=True)
+    os_version = CharField(max_length=30, null=True, blank=True)
+    db_version = CharField(max_length=30, null=True, blank=True)
     pending_restart_sw = BooleanField(null=False, default=False)
-    metrics_sw = BooleanField(null=False, default=True)
+    metrics_sw = BooleanField(null=False)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
@@ -272,12 +249,12 @@ class Backup (models.Model):
 
     cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
     backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BackupFull)
-    backup_status = CharField(max_length=15, choices=BackupStatusChoices.choices)
-    db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=False, default=0)
-    backup_size_gb = DecimalField(decimal_places=2, max_digits=5, null=False, default=0)
+    backup_status = CharField(max_length=15, choices=BackupStatusChoices.choices, null=True, blank=True)
+    db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
+    backup_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    stop_dttm = DateTimeField(editable=True, default=INFINITY)
-    deleted_dttm = DateTimeField(editable=True, default=INFINITY)
+    stop_dttm = DateTimeField(null=True, blank=True)
+    deleted_dttm = DateTimeField(null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -299,12 +276,12 @@ class Restore(models.Model):
     from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_from_cluster')
     to_cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False, related_name='restore_to_cluster')
     restore_type = CharField(max_length=10, null=False, default='', choices=RestoreTypeChoices.choices)
-    restore_to_dttm = DateTimeField(editable=True)
-    restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices)
+    restore_to_dttm = DateTimeField(editable=False)
+    restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices, null=True, blank=True)
     restore_by = CharField(max_length=30, null=False, default='')
-    ticket = CharField(max_length=30, null=False, default='')
+    ticket = CharField(max_length=30, null=True, blank=True)
     start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    stop_dttm = DateTimeField(editable=True, default=INFINITY)
+    stop_dttm = DateTimeField(null=True, blank=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
@@ -319,9 +296,9 @@ class ServerActivity(models.Model):
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     server_activity = CharField(max_length=20, null=False, choices=ServerActivityTypeChoices.choices,
                                 default=ServerActivityTypeChoices.RestartDB)
+    start_dttm = DateTimeField(null=True, blank=True)
+    stop_dttm = DateTimeField(null=True, blank=True)
     activity_status = CharField(max_length=15, null=False, default='Queued', choices=ActivitiesStatusChoices.choices)
-    start_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    stop_dttm = DateTimeField(editable=True, null=False, default=INFINITY)
     activity_by = CharField(max_length=30, null=False, default='')
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
@@ -334,10 +311,10 @@ class ClusterNote(models.Model):
 
     cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
     title = CharField(max_length=50)
-    note = CharField(max_length=2048)
-    ticket = CharField(max_length=30, null=False, default='')
+    note = CharField(max_length=2048, null=True, blank=True)
+    ticket = CharField(max_length=30, null=True, blank=True)
     created_by = CharField(max_length=30, null=False, default='')
-    note_color = CharField(max_length=15, null=False, default='', choices=ColorChoices.choices)
+    note_color = CharField(max_length=15, null=True, blank=True, choices=ColorChoices.choices)
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 

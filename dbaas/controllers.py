@@ -4,7 +4,7 @@ from django.contrib.messages.middleware import *
 from rest_framework.response import Response
 from rest_framework import viewsets, request
 
-from dbaas.models import PoolServer, DbmsTypeChoices
+from dbaas.models import Server
 from dbaas.serializers.serializers import LockPoolServers2Serializer
 
 
@@ -31,7 +31,7 @@ class ClaimPoolServers(viewsets.ModelViewSet):
     #
     # print(cpu)
 
-    queryset = PoolServer.objects.filter(cpu__exact=2)[:2]
+    queryset = Server.objects.filter(cpu__exact=2)[:2]
     serializer = LockPoolServers2Serializer(queryset)
 
     # def get_context_data(self, **kwargs):

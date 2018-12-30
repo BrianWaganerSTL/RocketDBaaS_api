@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from metrics.models import Metrics_Cpu, Metrics_MountPoint, Metrics_CpuLoad, Metrics_PingDb, Metrics_PingServer
+from metrics.models import Metrics_Cpu, Metrics_MountPoint, Metrics_CpuLoad, Metrics_PingDb, Metrics_PingServer, Metrics_HostDetails
 
 
 @admin.register(Metrics_Cpu)
@@ -26,4 +26,9 @@ class Metrics_PingDb(admin.ModelAdmin):
 @admin.register(Metrics_PingServer)
 class Metrics_ServerPing(admin.ModelAdmin):
     list_display = [field.attname for field in Metrics_PingServer._meta.fields]
+
+
+@admin.register(Metrics_HostDetails)
+class Metrics_HostDetails(admin.ModelAdmin):
+    list_display = [field.attname for field in Metrics_HostDetails._meta.fields]
 
