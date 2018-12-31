@@ -105,15 +105,15 @@ class PoolServersViewSet(ModelViewSet):
     permission_classes = [AllowAny, ]
 
     def get_queryset(self):
-        queryset = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer).order_by('environment', 'datacenter', 'dbms_type', '-created_dttm')
+        queryset = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer).order_by('environment', 'datacenter', '-created_dttm')
 
         env = self.request.query_params.get('env', None)
         if env is not None:
-            queryset = queryset.filter(environment__env__iexact=env)
+            queryset = queryset.filter(environment__iexact=env)
 
-        dbms = self.request.query_params.get('dbms', None)
-        if dbms is not None:
-            queryset = queryset.filter(dbms_type__iexact=dbms)
+        # dbms = self.request.query_params.get('dbms', None)
+        # if dbms is not None:
+        #     queryset = queryset.filter(dbms_type__iexact=dbms)
 
         req_cpu = self.request.query_params.get('req_cpu', None)
         if req_cpu is not None:

@@ -76,16 +76,21 @@ class Metrics_PingDb(models.Model):
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=2000, null=False, default='')
 
-class Metrics_HostDetails(models.Model):
+class Metrics_HostDetail(models.Model):
     class Meta:
-        db_table = 'metrics_host_details'
+        db_table = 'metrics_host_detail'
 
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    cpu_count = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
-    last_reboot = DateTimeField(editable=False, null=True, blank=True)
+    ipAddress = CharField(max_length=20, null=True, blank=True)
+    last_reboot = DateTimeField(null=True, blank=True)
+    cpu = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     ram_gb = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     os_version = CharField(max_length=200, null=True, blank=True)
     db_version = CharField(max_length=200, null=True, blank=True)
+    error_cnt = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
+    error_msg = CharField(max_length=2000, null=False, default='')
+
 
 # TODO: Metrics_DbTopSql
+

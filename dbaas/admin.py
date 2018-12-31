@@ -6,7 +6,7 @@ from .models import *
 @admin.register(Datacenter)
 class Datacenter(admin.ModelAdmin):
     list_display = [field.attname for field in Datacenter._meta.fields]
-    list_editable = ('datacenter','order')
+    list_editable = ('datacenter','order_num')
     list_display_links = ()
 
 @admin.register(Environment)
@@ -17,7 +17,7 @@ class Environment(admin.ModelAdmin):
 class ServerPort(admin.ModelAdmin):
     list_display = [field.attname for field in ServerPort._meta.fields]
     list_display_links = ('port',)
-    ordering = [ 'port']
+    ordering = ['port']
 
 
 @admin.register(Application)
@@ -46,10 +46,7 @@ class Cluster(admin.ModelAdmin):
 
 @admin.register(Server)
 class Server(admin.ModelAdmin):
-    list_display = ('cluster','environment','server_name','server_ip','cpu','ram_gb','db_gb','datacenter','node_role','server_health','os_version',
-                    'db_version','pending_restart_sw','metrics_sw','active_sw')
-    list_select_related = ('cluster',)
-    list_display_links = ('cluster',)
+    list_display = [field.attname for field in Server._meta.fields]
 
 
 @admin.register(ServerActivity)

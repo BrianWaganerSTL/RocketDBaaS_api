@@ -54,15 +54,6 @@ class ServerActivityTypeChoices(DjangoChoices):
     PromoteDB = ChoiceItem("PromoteDB", "Promote Database", 5)
     DemomoteDB = ChoiceItem("DemoteDB", "Demote Database", 6)
 
-
-class ServerHealthChoices(DjangoChoices):
-    ServerConfiguring = ChoiceItem("ServerConfig", "Server Configuring", 1)
-    ServerUp = ChoiceItem("ServerUp","Server Up and Healthy", 2)
-    ServerUpWithIssues = ChoiceItem("ServerUpWithIssues","Server is Up but something is Not Healthy", 3)
-    ServerDown = ChoiceItem("ServerDown", "Server is Down", 4)
-    ServerOnLineMaint = ChoiceItem("ServerOnLineMaint","Server On-Line Maintenance", 5)
-
-
 class ColorChoices(DjangoChoices):
     Primary = ChoiceItem("primary", "Primary", 1)
     Secondary = ChoiceItem("secondary", "Secondary", 2)
@@ -85,27 +76,25 @@ class ActivitiesStatusChoices(DjangoChoices):
 class Environment(Model):
     class Meta:
         db_table = "dbaas_environment"
-        ordering = ['order']
+        ordering = ['order_num']
 
     def __str__(self):
         return self.env_name
 
-    env_name = CharField(max_length=10, null=False, default='', primary_key=True)
-    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1, unique=True)
+    env_name = CharField(max_length=10, null=False, default='', primary_key=True, unique=True)
+    order_num = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1, unique=True)
 
 
 class Datacenter(Model):
     class Meta:
         db_table = "dbaas_datacenter"
-        unique_together = (('environment', 'datacenter',),('environment', 'order',),)
-        ordering = ['environment', 'order']
+        ordering = ['order_num']
 
     def __str__(self):
         return self.datacenter
 
-    environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=False, default='')
-    datacenter = CharField(max_length=15, null=False, default='')
-    order = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1)
+    datacenter = CharField(max_length=15, null=False, default='', unique=True)
+    order_num = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(99)], default=1, unique=True)
 
 
 class ServerPort(Model):
@@ -212,6 +201,13 @@ class Server(Model):
         PoolServer = ChoiceItem("PoolServer", "PoolServer",5)
         PoolServerLocked = ChoiceItem("PoolServerLocked", "PoolServerLocked",6)
 
+    class ServerHealthChoices(DjangoChoices):
+        ServerConfiguring = ChoiceItem("ServerConfig", "Server Configuring", 1)
+        ServerUp = ChoiceItem("ServerUp", "Server Up and Healthy", 2)
+        ServerUpWithIssues = ChoiceItem("ServerUpWithIssues", "Server is Up but something is Not Healthy", 3)
+        ServerDown = ChoiceItem("ServerDown", "Server is Down", 4)
+        ServerOnLineMaint = ChoiceItem("ServerOnLineMaint", "Server On-Line Maintenance", 5)
+
     cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=True, blank=True)
     environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=True, blank=True)
     server_name = CharField(max_length=30, null=False)
@@ -222,6 +218,7 @@ class Server(Model):
     datacenter = ForeignKey(Datacenter, on_delete=deletion.CASCADE, null=True, blank=True)
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
     server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=True, blank=True)
+    last_reboot = DateTimeField(null=True, blank=True)
     os_version = CharField(max_length=30, null=True, blank=True)
     db_version = CharField(max_length=30, null=True, blank=True)
     pending_restart_sw = BooleanField(null=False, default=False)

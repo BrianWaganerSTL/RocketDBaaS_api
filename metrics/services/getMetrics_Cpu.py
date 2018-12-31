@@ -15,7 +15,7 @@ def GetMetrics_Cpu(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
+    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/cpu'
     print('Cpu: ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''

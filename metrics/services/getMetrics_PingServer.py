@@ -1,4 +1,6 @@
 import os
+import sys
+
 from django.utils import timezone
 from sys import platform
 
@@ -11,13 +13,12 @@ metrics_port = 8080
 
 
 def GetMetricsPingServer(server):
-    print('PingServer: ping')
-
     if (server.server_ip is None):
         return
 
     server_ip = (server.server_ip).rstrip('\x00')
 
+    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     if platform == "linux" or platform =="linux2":
         pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
@@ -51,6 +52,6 @@ def GetMetricsPingServer(server):
 
     try:
         MetricThresholdTest(server, 'PingServer', 'ping_response_ms', metrics_PingServer.ping_response_ms, '')
-    except:
-        print('ERROR: ' + str(e))
+    except ValueError as err:
+        print('Value Error: ' + err)
         pass

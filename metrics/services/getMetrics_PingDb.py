@@ -15,7 +15,7 @@ def GetMetrics_PingDb(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
+    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/pingdb?dbms=PostgreSQL'
     print('PingDb: url=' + url)
     metrics = ''

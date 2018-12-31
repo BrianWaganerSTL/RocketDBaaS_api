@@ -14,13 +14,13 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
                     threshold_metric__category__category_name=category_name,
                     threshold_metric__metric_name=metric_name)[0]
     except:
-        logging.error('Found no active ThresholdTest for ' + category_name +' ('+ metric_name + ')')
+        print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ')')
         return
     else:
-        if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value.replace("<<CPU>>", server.cpu)):
+        if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu))):
             pendingThresholdLevel = IncidentStatusChoices.Critical
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value)
-        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value.replace("<<CPU>>", server.cpu)):
+        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value.replace("<<CPU>>", str(server.cpu))):
             pendingThresholdLevel = IncidentStatusChoices.Warning
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
         else:
