@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact, DbmsTypeChoices
 
 
 class ServersSerializer(serializers.ModelSerializer):

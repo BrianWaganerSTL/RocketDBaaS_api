@@ -1,11 +1,23 @@
+from django.http import HttpResponse, request
+from django.views.decorators.http import require_http_methods
+from django.views.generic import ListView
 from rest_framework import authentication, permissions, generics
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, DbmsTypeChoices
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
     NotesSerializer, ApplicationContactsSerializer
 
 from rest_framework.authentication import TokenAuthentication
+
+@require_http_methods(["GET"])
+def DbmsTypesList(request):
+    myJson = '['
+    for dbmsType in DbmsTypeChoices.values:
+        myJson += '"%s",' % (dbmsType)
+    myJson = myJson[0:-1] + ']'
+    print('myJson=' + myJson)
+    return HttpResponse(myJson)
 
 
 class ServersList(generics.ListAPIView):
@@ -109,7 +121,7 @@ class PoolServersViewSet(ModelViewSet):
 
         env = self.request.query_params.get('env', None)
         if env is not None:
-            queryset = queryset.filter(environment__iexact=env)
+            queryset = queryset.filter(environment__env_name__iexact=env)
 
         # dbms = self.request.query_params.get('dbms', None)
         # if dbms is not None:

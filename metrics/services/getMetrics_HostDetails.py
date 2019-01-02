@@ -59,17 +59,17 @@ def GetMetrics_HostDetails(server):
         for m in metricsList:
             print('m:' + str(m))
 
-            metrics_HostDetails = Metrics_HostDetails()
-            metrics_HostDetails.server = server
-            metrics_HostDetails.error_cnt = errCnt[server.id]
-            metrics_HostDetails.created_dttm = m['created_dttm']
-            metrics_HostDetails.ip_address = m['ipAddress']
-            metrics_HostDetails.last_reboot = metrics['lastReboot']
-            metrics_HostDetails.cpu = metrics['cpuCount']
-            metrics_HostDetails.ram_gb = metrics['ramGb']
-            metrics_HostDetails.os_version = metrics['osVersion']
-            metrics_HostDetails.db_version = metrics['dbVersion']
-            metrics_HostDetails.save()
+            metrics_HostDetail = Metrics_HostDetail()
+            metrics_HostDetail.server = server
+            metrics_HostDetail.error_cnt = errCnt[server.id]
+            metrics_HostDetail.created_dttm = m['created_dttm']
+            metrics_HostDetail.ip_address = m['ipAddress']
+            metrics_HostDetail.last_reboot = metrics['lastReboot']
+            metrics_HostDetail.cpu = metrics['cpuCount']
+            metrics_HostDetail.ram_gb = metrics['ramGb']
+            metrics_HostDetail.os_version = metrics['osVersion']
+            metrics_HostDetail.db_version = metrics['dbVersion']
+            metrics_HostDetail.save()
 
             if (server.server_ip is None) and (m['ipAddress'] != ''):
                 server.server_ip = m['ipAddress'];
@@ -100,15 +100,27 @@ def GetMetrics_HostDetails(server):
                     dc = Datacenter.objects.get(datacenter='PA');
                     server.datacenter = dc
                 server.save()
-
+            if (server.environment is None):
+                envChars = server.server_name[3:4]
+                if   (envChars == 'S'):
+                    server.environment = Environment.objects.get(Environment.env_name=="Sbx");
+                elif (envChars == 'D'):
+                    server.environment = Environment.objects.get(Environment.env_name=="Dev");
+                elif (envChars == 'Q'):
+                    server.environment = Environment.objects.get(Environment.env_name=="QA");
+                elif (envChars == 'U'):
+                    server.environment = Environment.objects.get(Environment.env_name=="UAT");
+                elif (envChars == 'P'):
+                    server.environment = Environment.objects.get(Environment.env_name=="Prod");
+                server.save()
             try:
-                MetricThresholdTest(server, 'HostDetails', 'lastReboot', metrics_HostDetails.lastReboot, '')
+                MetricThresholdTest(server, 'HostDetails', 'lastReboot', metrics_HostDetail.lastReboot, '')
             except:
                 pass
     else:
-        metrics_HostDetails = Metrics_HostDetails()
-        metrics_HostDetails.server = server
-        metrics_HostDetails.error_cnt = errCnt[server.id]
-        metrics_HostDetails.created_dttm = timezone.now()
-        metrics_HostDetails.error_msg = error_msg
-        metrics_HostDetails.save()
+        metrics_HostDetail = Metrics_HostDetail()
+        metrics_HostDetail.server = server
+        metrics_HostDetail.error_cnt = errCnt[server.id]
+        metrics_HostDetail.created_dttm = timezone.now()
+        metrics_HostDetail.error_msg = error_msg
+        metrics_HostDetail.save()

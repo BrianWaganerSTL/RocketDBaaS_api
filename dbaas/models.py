@@ -219,6 +219,7 @@ class Server(Model):
     node_role = CharField(choices=NodeRoleChoices.choices, max_length=20, null=False, default='')
     server_health = CharField(choices=ServerHealthChoices.choices, max_length=20, null=True, blank=True)
     last_reboot = DateTimeField(null=True, blank=True)
+    dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=20, null=True, blank=True)
     os_version = CharField(max_length=30, null=True, blank=True)
     db_version = CharField(max_length=30, null=True, blank=True)
     pending_restart_sw = BooleanField(null=False, default=False)
