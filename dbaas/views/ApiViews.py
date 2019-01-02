@@ -4,9 +4,9 @@ from django.views.generic import ListView
 from rest_framework import authentication, permissions, generics
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
-from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, DbmsTypeChoices
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, DbmsTypeChoices, Environment
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, ApplicationContactsSerializer
+    NotesSerializer, ApplicationContactsSerializer, EnvironmentsSerializer
 
 from rest_framework.authentication import TokenAuthentication
 
@@ -18,6 +18,14 @@ def DbmsTypesList(request):
     myJson = myJson[0:-1] + ']'
     print('myJson=' + myJson)
     return HttpResponse(myJson)
+
+
+class EnvironmentsList(generics.ListAPIView):
+    queryset = Environment.objects.all()
+    serializer_class = EnvironmentsSerializer
+    permission_classes = [AllowAny, ]
+    authentication_classes = [TokenAuthentication, ]
+
 
 
 class ServersList(generics.ListAPIView):

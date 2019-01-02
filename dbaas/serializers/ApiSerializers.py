@@ -1,5 +1,13 @@
 from rest_framework import serializers
-from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact, DbmsTypeChoices
+from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact, DbmsTypeChoices, Environment
+
+
+class EnvironmentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Environment
+        fields = '__all__'
+        depth = 0
+        sorted('order_num')
 
 
 class ServersSerializer(serializers.ModelSerializer):
