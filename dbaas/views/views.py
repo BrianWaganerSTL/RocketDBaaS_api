@@ -25,7 +25,7 @@ from django.http import HttpResponse
 #     poolServer = PoolServer.objects.filter(dbmsType__exact=PoolServer.dbms_type)
 #     return render(request, 'poolServer.html', {'poolServer':poolServer})
 from django.shortcuts import render
-from dbaas.models import PoolServer, DbmsTypeChoices, DataCenterChoices
+from dbaas.models import Server
 from dbaas.serializers.serializers import LockPoolServersSerializer, LockPoolServers2Serializer
 
 
@@ -51,7 +51,7 @@ def profile(request, NeededServers=3):
 
 
 class LockPoolServersViewSet(ModelViewSet):
-    queryset = PoolServer.objects.all()
+    queryset = Server.objects.all()
     serializer_class = LockPoolServersSerializer
     permission_classes = [AllowAny,]
     # lookup_field = ('server_name')
@@ -70,7 +70,7 @@ class LockPoolServersViewSet(ModelViewSet):
     #     print(self.request.query_params)
     #     print(self.lookup_url_kwarg)
     def poolserver_list(self, poolServersNeeded):
-        queryset = PoolServer.objects.filter(poolServersNeeded__=poolServersNeeded)
+        queryset = Server.objects.filter(poolServersNeeded__=poolServersNeeded)
         # def detail(self, request, *args, **kwargs):
         # print("DbmsType="+dbms_type)
         #print(self.lookup_url_kwarg)

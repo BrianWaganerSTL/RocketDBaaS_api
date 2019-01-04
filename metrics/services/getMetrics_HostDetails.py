@@ -102,15 +102,15 @@ def GetMetrics_HostDetails(server):
                 server.save()
             if (server.environment is None):
                 envChars = server.server_name[3:4]
-                if   (envChars == 'S'):
+                if   (envChars == 'x'):
                     server.environment = Environment.objects.get(Environment.env_name=="Sbx");
-                elif (envChars == 'D'):
+                elif (envChars == 'd'):
                     server.environment = Environment.objects.get(Environment.env_name=="Dev");
-                elif (envChars == 'Q'):
+                elif (envChars == 'q'):
                     server.environment = Environment.objects.get(Environment.env_name=="QA");
-                elif (envChars == 'U'):
+                elif (envChars == 'u'):
                     server.environment = Environment.objects.get(Environment.env_name=="UAT");
-                elif (envChars == 'P'):
+                elif (envChars == 'p'):
                     server.environment = Environment.objects.get(Environment.env_name=="Prod");
                 server.save()
             try:

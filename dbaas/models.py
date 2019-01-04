@@ -223,7 +223,7 @@ class Server(Model):
     os_version = CharField(max_length=30, null=True, blank=True)
     db_version = CharField(max_length=30, null=True, blank=True)
     pending_restart_sw = BooleanField(null=False, default=False)
-    metrics_sw = BooleanField(null=False)
+    metrics_sw = BooleanField(null=False, default=True)
     active_sw = BooleanField(null=False, default=True)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
