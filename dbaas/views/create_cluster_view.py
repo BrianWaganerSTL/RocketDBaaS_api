@@ -1,20 +1,16 @@
 from django.shortcuts import render, redirect
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import permission_classes
 from rest_framework.generics import get_object_or_404
 from django.db.models import Q
+from rest_framework.permissions import *
+
 
 from dbaas import models
-from dbaas.models import Cluster, Application, ServerPort, PoolServer, DataCenterChoices, Server
+from dbaas.models import Cluster, Application, ServerPort, Server
 
 
 def create_cluster(request):
-    if request.method == 'GET':
-        poolServers = Server.objects.filter(node_role='PoolServer')
-        dataCenterChoicesDict = dict(DataCenterChoices.choices)
-        return render(request, 'cluster/create.html',
-                      {'servers': poolServers,
-                      'dataCenterChoicesDict': dataCenterChoicesDict })
-
-
     if request.method == 'POST':
         if request.POST['application_name'] and \
                 request.POST['cluster_name'] and \
@@ -31,6 +27,7 @@ def create_cluster(request):
                 application = get_object_or_404(
                     Application.objects.filter(application_name=request.POST['application_name']))
             except:
+                # No Application found, make a new one
                 application.application_name = request.POST['application_name']
                 application.active_sw = True
                 application.save()
