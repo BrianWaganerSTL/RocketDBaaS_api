@@ -18,7 +18,7 @@ def GetMetricsPingServer(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
+    print('[PingServer] Server=' + server.server_name + ', ServerId=' + str(server.id))
     if platform == "linux" or platform =="linux2":
         pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
@@ -27,7 +27,6 @@ def GetMetricsPingServer(server):
         pingCmd = 'ping -n 1 -w 2 ' + server_ip
 
     metrics_PingServer = Metrics_PingServer()
-
     startTs = timezone.now()
     response = os.system(pingCmd)
     stopTs = timezone.now()

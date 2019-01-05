@@ -1,4 +1,6 @@
 import requests
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 
 from metrics.models import Metrics_PingDb
@@ -15,16 +17,14 @@ def GetMetrics_PingDb(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/pingdb?dbms=PostgreSQL'
-    print('PingDb: url=' + url)
+    print('[PingDb] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url)
         print('r.status_code:' + str(r.status_code))
-        print('r.' + str(r.content))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
@@ -53,21 +53,24 @@ def GetMetrics_PingDb(server):
             metricsList = metrics
 
         for m in metricsList:
-            print('m:' + str(m))
-
-            metrics_PingDb = Metrics_PingDb()
-            metrics_PingDb.server = server
-            metrics_PingDb.error_cnt = errCnt[server.id]
-            metrics_PingDb.created_dttm = m['created_dttm']
-            metrics_PingDb.ping_db_status = metrics['ping_db_status']
-            metrics_PingDb.ping_db_response_ms = metrics['ping_db_response_ms']
-            metrics_PingDb.save()
-
             try:
-                MetricThresholdTest(server, 'PingDb', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
-            except:
-                 print('ERROR: ' + str(e))
-                 pass
+                print('m:' + str(m))
+                metrics_PingDb = Metrics_PingDb()
+                metrics_PingDb.server = server
+                metrics_PingDb.error_cnt = errCnt[server.id]
+                metrics_PingDb.created_dttm = m['created_dttm']
+                metrics_PingDb.ping_db_status = metrics['ping_db_status']
+                metrics_PingDb.ping_db_response_ms = metrics['ping_db_response_ms']
+                metrics_PingDb.save()
+
+                try:
+                    MetricThresholdTest(server, 'PingDb', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
+                except:
+                     print('ERROR: ' + str(e))
+                     pass
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
+
     else:
         metrics_PingDb = Metrics_PingDb()
         metrics_PingDb.server = server

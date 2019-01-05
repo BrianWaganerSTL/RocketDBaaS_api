@@ -75,3 +75,37 @@ loaddata --app monitor monitor/fixtures/test_data.json
 ```angular2html
 pip freeze > requirements.txt
 ```
+
+<h3><i>LoadData not all That!</i></h3>
+I have tried loaddata, but it does an insert for every row.  Sometimes a SQL statement is just better.
+
+When I tried loaddata to load the server_port table it would have taken over 1 hour, with the API on my laptop and the database being on a Redhat Server.  Probably a firewall issues.
+
+```sql92
+CREATE database "RocketDB" WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
+
+!python manage.py makemigrations
+
+!python manage.py migrate
+
+!python manage.py createsuperuser
+   Username: RocketDBaaS
+   Email Address:
+   Password: RocketDBaaS
+   
+insert into dbaas_servers_port
+  select port, 'Free', '', now()
+  from generate_series(1024,65535) as port;
+  
+update dbaas_servers_port
+  set port_status = 'Hidden', port_note = 'Reserved for other processes'
+where port in (4200,8000,2379,2380);
+
+insert into dbaas_environment values 
+  ('Sbx',1),('Dev',2),('QA',3),('UAT',4),('Prod',5);
+  
+insert into dbaasdatacenter values 
+  (1, 'CH', 1), (2, 'PA', 2);
+ 
+
+```

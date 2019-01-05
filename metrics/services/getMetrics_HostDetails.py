@@ -1,4 +1,7 @@
 import requests
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 import pytz
 
@@ -19,18 +22,15 @@ def GetMetrics_HostDetails(server):
     else:
         server_ip = (server.server_ip).rstrip('\x00')
 
-    print('[HostDetails]Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/hostdetails'
-    print('hostdetails: url=' + url)
+    print('[HostDetails] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url)
         print('r.status_code:' + str(r.status_code))
-        print('r.' + str(r.content))
         metrics = r.json()
-        print("metrics" + str(type(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
@@ -57,66 +57,95 @@ def GetMetrics_HostDetails(server):
             metricsList = metrics
 
         for m in metricsList:
-            print('m:' + str(m))
-
-            metrics_HostDetail = Metrics_HostDetail()
-            metrics_HostDetail.server = server
-            metrics_HostDetail.error_cnt = errCnt[server.id]
-            metrics_HostDetail.created_dttm = m['created_dttm']
-            metrics_HostDetail.ip_address = m['ipAddress']
-            metrics_HostDetail.last_reboot = metrics['lastReboot']
-            metrics_HostDetail.cpu = metrics['cpuCount']
-            metrics_HostDetail.ram_gb = metrics['ramGb']
-            metrics_HostDetail.os_version = metrics['osVersion']
-            metrics_HostDetail.db_version = metrics['dbVersion']
-            metrics_HostDetail.save()
-
-            if (server.server_ip is None) and (m['ipAddress'] != ''):
-                server.server_ip = m['ipAddress'];
-                server.save()
-            if (server.last_reboot is None) or (server.last_reboot != m['lastReboot']):
-                server.last_reboot = m['lastReboot'];
-                server.save()
-            if (server.cpu is None) or (server.cpu != m['cpuCount']):
-                server.cpu = m['cpuCount'];
-                server.save()
-            if (server.ram_gb is None) or (server.ram_gb != m['ramGb']):
-                server.ram_gb = m['ramGb'];
-                server.save()
-            if (server.os_version is None) or (server.os_version != m['osVersion']):
-                server.os_version = m['osVersion'];
-                server.save()
-            if (server.db_version is None) or (server.db_version != m['dbVersion']):
-                server.db_version = m['dbVersion'];
-                server.save()
-            if (server.server_health is None):
-                server.server_health = server.ServerHealthChoices.ServerUp
-                server.save()
-            if (server.datacenter is None):
-                if (server.server_name.find('CH')):
-                    dc = Datacenter.objects.get(datacenter='CH');
-                    server.datacenter = dc
-                else:
-                    dc = Datacenter.objects.get(datacenter='PA');
-                    server.datacenter = dc
-                server.save()
-            if (server.environment is None):
-                envChars = server.server_name[3:4]
-                if   (envChars == 'x'):
-                    server.environment = Environment.objects.get(Environment.env_name=="Sbx");
-                elif (envChars == 'd'):
-                    server.environment = Environment.objects.get(Environment.env_name=="Dev");
-                elif (envChars == 'q'):
-                    server.environment = Environment.objects.get(Environment.env_name=="QA");
-                elif (envChars == 'u'):
-                    server.environment = Environment.objects.get(Environment.env_name=="UAT");
-                elif (envChars == 'p'):
-                    server.environment = Environment.objects.get(Environment.env_name=="Prod");
-                server.save()
             try:
-                MetricThresholdTest(server, 'HostDetails', 'lastReboot', metrics_HostDetail.lastReboot, '')
-            except:
-                pass
+                print('m:' + str(m))
+
+                metrics_HostDetail = Metrics_HostDetail()
+                metrics_HostDetail.server = server
+                metrics_HostDetail.error_cnt = errCnt[server.id]
+                metrics_HostDetail.created_dttm = m['created_dttm']
+                metrics_HostDetail.ip_address = m['ipAddress']
+                metrics_HostDetail.last_reboot = metrics['lastReboot']
+                metrics_HostDetail.cpu = metrics['cpuCount']
+                metrics_HostDetail.ram_gb = metrics['ramGb']
+                metrics_HostDetail.db_gb = metrics['dbGb']
+                metrics_HostDetail.os_version = metrics['osVersion']
+                metrics_HostDetail.db_version = metrics['dbVersion']
+                metrics_HostDetail.db_version_number = metrics['dbVersionNumber']
+                metrics_HostDetail.save()
+
+                if (server.server_ip is None) and (m['ipAddress'] != ''):
+                    server.server_ip = m['ipAddress'];
+                    server.save()
+
+                if (server.last_reboot is None) or (server.last_reboot != m['lastReboot']):
+                    server.last_reboot = m['lastReboot'];
+                    server.save()
+
+                if (server.cpu is None) or (server.cpu != m['cpuCount']):
+                    server.cpu = m['cpuCount'];
+                    server.save()
+
+                if (server.ram_gb is None) or (server.ram_gb != m['ramGb']):
+                    server.ram_gb = m['ramGb'];
+                    server.save()
+
+                if (server.db_gb is None) or (server.db_gb != m['dbGb']):
+                    server.db_gb = m['dbGb'];
+                    server.save()
+
+                if (server.os_version is None) or (server.os_version != m['osVersion']):
+                    server.os_version = m['osVersion'];
+                    server.save()
+
+                if (server.db_version is None) or (server.db_version != m['dbVersion']):
+                    server.db_version = m['dbVersion'];
+                    server.save()
+
+                if (server.db_version_number is None) or (server.db_version_number != m['dbVersionNumber']):
+                    server.db_version_number = m['dbVersionNumber'];
+                    server.save()
+
+                if (server.server_health is None):
+                    server.server_health = server.ServerHealthChoices.ServerUp
+                    server.save()
+
+                if (server.datacenter is None):
+                    dc = Datacenter()
+                    if (server.server_name.find('ch')):
+                        dc = get_object_or_404(Datacenter.objects.get(datacenter='CH'));
+                        server.datacenter = dc
+                    else:
+                        dc = get_object_or_404(Datacenter.objects.get(datacenter='PA'));
+                        server.datacenter = dc
+                    server.save()
+
+                if (server.environment is None):
+                    env = Environment()
+                    envChars = server.server_name[3:4]
+                    if   (envChars == 'x'):
+                        env = get_object_or_404(Environment.objects.filter(env_name='Sbx'))
+                        server.environment = env
+                    elif (envChars == 'd'):
+                        env = get_object_or_404(Environment.objects.filter(env_name='Dev'))
+                        server.environment = env
+                    elif (envChars == 'q'):
+                        env = get_object_or_404(Environment.objects.filter(env_name='QA'))
+                        server.environment = env
+                    elif (envChars == 'u'):
+                        env = get_object_or_404(Environment.objects.filter(env_name='UAT'))
+                        server.environment = env
+                    elif (envChars == 'p'):
+                        env = get_object_or_404(Environment.objects.filter(env_name='Prod'))
+                        server.environment = env
+                    server.save()
+
+                try:
+                    MetricThresholdTest(server, 'HostDetails', 'lastReboot', metrics_HostDetail.lastReboot, '')
+                except:
+                    pass
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
     else:
         metrics_HostDetail = Metrics_HostDetail()
         metrics_HostDetail.server = server

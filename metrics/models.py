@@ -86,8 +86,9 @@ class Metrics_HostDetail(models.Model):
     last_reboot = DateTimeField(null=True, blank=True)
     cpu = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     ram_gb = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
-    os_version = CharField(max_length=200, null=True, blank=True)
-    db_version = CharField(max_length=200, null=True, blank=True)
+    os_version = CharField(max_length=40, null=True, blank=True)
+    db_version = CharField(max_length=30, null=True, blank=True)
+    db_version_number = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
     error_msg = CharField(max_length=2000, null=False, default='')
 

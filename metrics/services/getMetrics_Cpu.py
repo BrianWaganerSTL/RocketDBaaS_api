@@ -1,4 +1,6 @@
 import requests
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 
 from metrics.models import Metrics_Cpu
@@ -15,16 +17,14 @@ def GetMetrics_Cpu(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/cpu'
-    print('Cpu: ServerNm: ' + server.server_name + ', url=' + url)
+    print('[Cpu] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url)
         print('r.status_code:' + str(r.status_code))
-        print('r.' + str(r.content))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
@@ -53,29 +53,32 @@ def GetMetrics_Cpu(server):
             metricsList = metrics
 
         for m in metricsList:
-            print('m:' + str(m))
-
-            metrics_Cpu = Metrics_Cpu()
-            metrics_Cpu.server = server
-            metrics_Cpu.error_cnt = errCnt[server.id]
-            metrics_Cpu.created_dttm = m['created_dttm']
-            metrics_Cpu.cpu_idle_pct = metrics['idle']
-            metrics_Cpu.cpu_user_pct = metrics['user']
-            metrics_Cpu.cpu_system_pct = metrics['system']
-            if 'cpu_iowait_pct' in metrics:  # These only exist in Unix/Linux
-                metrics_Cpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
-                metrics_Cpu.cpu_irq_pct = metrics['cpu_irq_pct']
-                metrics_Cpu.cpu_steal_pct = metrics['cpu_steal_pct']
-                if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
-                    metrics_Cpu.cpu_guest_pct = metrics['cpu_guest_pct']
-                    metrics_Cpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
-            metrics_Cpu.save()
-
             try:
-                MetricThresholdTest(server, 'Cpu', 'cpu_idle_pct', metrics_Cpu.cpu_idle_pct, '')
-            except:
-                 print('ERROR: ' + str(e))
-                 pass
+                print('m:' + str(m))
+                metrics_Cpu = Metrics_Cpu()
+                metrics_Cpu.server = server
+                metrics_Cpu.error_cnt = errCnt[server.id]
+                metrics_Cpu.created_dttm = m['created_dttm']
+                metrics_Cpu.cpu_idle_pct = metrics['idle']
+                metrics_Cpu.cpu_user_pct = metrics['user']
+                metrics_Cpu.cpu_system_pct = metrics['system']
+                if 'cpu_iowait_pct' in metrics:  # These only exist in Unix/Linux
+                    metrics_Cpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
+                    metrics_Cpu.cpu_irq_pct = metrics['cpu_irq_pct']
+                    metrics_Cpu.cpu_steal_pct = metrics['cpu_steal_pct']
+                    if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
+                        metrics_Cpu.cpu_guest_pct = metrics['cpu_guest_pct']
+                        metrics_Cpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
+                metrics_Cpu.save()
+
+                try:
+                    MetricThresholdTest(server, 'Cpu', 'cpu_idle_pct', metrics_Cpu.cpu_idle_pct, '')
+                except:
+                     print('ERROR: ' + str(e))
+                     pass
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
+
     else:
         metrics_Cpu = Metrics_Cpu()
         metrics_Cpu.server = server

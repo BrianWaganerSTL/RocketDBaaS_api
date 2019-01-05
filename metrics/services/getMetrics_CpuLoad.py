@@ -1,4 +1,6 @@
 import requests
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 
 from metrics.models import Metrics_CpuLoad
@@ -14,9 +16,8 @@ def GetMetrics_Load(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('Server=' + server.server_name + ', ServerId=' + str(server.id) + ', ServerIP=' + server_ip)
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/load'
-    print('Load: url=' + url)
+    print('[CpuLoad] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
@@ -52,27 +53,31 @@ def GetMetrics_Load(server):
             metricsList = metrics
 
         for m in metricsList:
-            print('m:' + str(m))
-
-            metrics_CpuLoad = Metrics_CpuLoad()
-            metrics_CpuLoad.server = server
-            metrics_CpuLoad.error_cnt = errCnt[server.id]
-            metrics_CpuLoad.created_dttm = m['created_dttm']
-            metrics_CpuLoad.load_1min = m['load_1min']
-            metrics_CpuLoad.load_5min = m['load_5min']
-            metrics_CpuLoad.load_15min = m['load_15min']
-            metrics_CpuLoad.save()
-
             try:
-                 MetricThresholdTest(server, 'CpuLoad', 'load_1min', metrics_CpuLoad.load_1min, '')
-            except:
-                 print('ERROR: ' + str(e))
-                 pass
-            try:
-                 MetricThresholdTest(server, 'CpuLoad', 'load_5min', metrics_CpuLoad.load_5min, '')
-            except:
-                 print('ERROR: ' + str(e))
-                 pass
+                print('m:' + str(m))
+                metrics_CpuLoad = Metrics_CpuLoad()
+                metrics_CpuLoad.server = server
+                metrics_CpuLoad.error_cnt = errCnt[server.id]
+                metrics_CpuLoad.created_dttm = m['created_dttm']
+                metrics_CpuLoad.load_1min = m['load_1min']
+                metrics_CpuLoad.load_5min = m['load_5min']
+                metrics_CpuLoad.load_15min = m['load_15min']
+                metrics_CpuLoad.save()
+
+                try:
+                     MetricThresholdTest(server, 'CpuLoad', 'load_1min', metrics_CpuLoad.load_1min, '')
+                except:
+                     print('ERROR: ' + str(e))
+                     pass
+
+                try:
+                     MetricThresholdTest(server, 'CpuLoad', 'load_5min', metrics_CpuLoad.load_5min, '')
+                except:
+                     print('ERROR: ' + str(e))
+                     pass
+
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
     else:
         metrics_CpuLoad = Metrics_CpuLoad()
         metrics_CpuLoad.server = server

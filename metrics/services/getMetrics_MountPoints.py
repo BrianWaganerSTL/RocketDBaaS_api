@@ -1,4 +1,6 @@
 import requests
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 
 from metrics.models import Metrics_MountPoint
@@ -17,14 +19,13 @@ def GetMetrics_MountPoints(server):
     server_ip = (server.server_ip).rstrip('\x00')
 
     url = ('http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints').rstrip('\x00')
-    print('Check: MountPoints, ServerNm: ' + server.server_name + ', url=' + url)
+    print('[MountPoints] ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url)
         print('r.status_code:' + str(r.status_code))
-        print('r.' + str(r.content))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
@@ -48,23 +49,26 @@ def GetMetrics_MountPoints(server):
 
     if (error_msg == ''):
         for m in metrics:
-            print('m:' + str(m))
-
-            metrics_MountPoint = Metrics_MountPoint()
-            metrics_MountPoint.server = server
-            metrics_MountPoint.error_cnt = errCnt[server.id]
-            metrics_MountPoint.created_dttm = m['created_dttm']
-            metrics_MountPoint.mount_point = m['mount_point']
-            metrics_MountPoint.allocated_gb = m['allocated_gb']
-            metrics_MountPoint.used_gb = m['used_gb']
-            metrics_MountPoint.used_pct = m['used_pct']
-            metrics_MountPoint.save()
-
             try:
-                 MetricThresholdTest(server, 'MountPoint', 'used_pct', metrics_MountPoint.used_pct, metrics_MountPoint.mount_point)
-            except:
-                 print('ERROR: ' + str(e))
-                 pass
+                print('m:' + str(m))
+
+                metrics_MountPoint = Metrics_MountPoint()
+                metrics_MountPoint.server = server
+                metrics_MountPoint.error_cnt = errCnt[server.id]
+                metrics_MountPoint.created_dttm = m['created_dttm']
+                metrics_MountPoint.mount_point = m['mount_point']
+                metrics_MountPoint.allocated_gb = m['allocated_gb']
+                metrics_MountPoint.used_gb = m['used_gb']
+                metrics_MountPoint.used_pct = m['used_pct']
+                metrics_MountPoint.save()
+
+                try:
+                     MetricThresholdTest(server, 'MountPoint', 'used_pct', metrics_MountPoint.used_pct, metrics_MountPoint.mount_point)
+                except:
+                     print('ERROR: ' + str(e))
+                     pass
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
     else:
         metrics_MountPoint = Metrics_MountPoint()
         metrics_MountPoint.server = server
