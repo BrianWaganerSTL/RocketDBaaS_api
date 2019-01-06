@@ -79,8 +79,7 @@ pip freeze > requirements.txt
 <h3><i>LoadData not all That!</i></h3>
 I have tried loaddata, but it does an insert for every row.  Sometimes a SQL statement is just better.
 
-When I tried loaddata to load the server_port table it would have taken over 1 hour, with the API on my laptop and the database being on a Redhat Server.  Probably a firewall issues.
-
+When I tried loaddata to load the server_port table it would have taken over 1 hour, with the API on my laptop and the database being on a Redhat Server.  Probably a firewall is
 ```sql92
 CREATE database "RocketDB" WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
 
@@ -106,6 +105,4 @@ insert into dbaas_environment values
   
 insert into dbaasdatacenter values 
   (1, 'CH', 1), (2, 'PA', 2);
- 
-
 ```
