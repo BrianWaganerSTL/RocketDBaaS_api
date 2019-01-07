@@ -24,8 +24,8 @@ from RocketDBaaS.master_scheduler import StartMasterScheduler
 from dbaas.controllers import *
 
 urlpatterns = [
-  path('dbaas/', include('dbaas.urls')),
-  path('dbaas_api/', admin.site.urls),
+  path('dbaas_api/', include('dbaas.urls')),
+  path('', admin.site.urls),
   url(r'dbaas_api/api-token-auth/', views.obtain_auth_token),
   path('dbaas_api/auth/', include('rest_framework.urls')),
   # path('auth_api/', include('auth_api.urls'))
