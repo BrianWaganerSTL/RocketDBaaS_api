@@ -23,6 +23,7 @@ pathlib==1.0.1
 Pillow==5.2.0
 popper==1.1.1
 psycopg2==2.7.5
+psycopg2-binary
 pyaes==1.6.1
 python-crontab==2.3.5
 python-dateutil==2.7.5
