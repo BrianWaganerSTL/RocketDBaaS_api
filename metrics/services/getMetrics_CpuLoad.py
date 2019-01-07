@@ -3,11 +3,12 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
 
+from RocketDBaaS.settings_local import MINION_PORT
 from metrics.models import Metrics_CpuLoad
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
-metrics_port = 8080
+metrics_port = MINION_PORT
 
 
 def GetMetrics_Load(server):
@@ -16,7 +17,7 @@ def GetMetrics_Load(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/load'
+    url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/load'
     print('[CpuLoad] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''

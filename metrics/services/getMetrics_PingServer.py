@@ -1,15 +1,12 @@
 import os
-import sys
+from sys import platform
 
 from django.utils import timezone
-from sys import platform
 
 from metrics.models import Metrics_PingServer
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
-
 errCnt = [0] * 1000
-metrics_port = 8080
 
 
 def GetMetricsPingServer(server):

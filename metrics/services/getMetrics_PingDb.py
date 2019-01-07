@@ -3,11 +3,12 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
 
+from RocketDBaaS.settings_local import MINION_PORT
 from metrics.models import Metrics_PingDb
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
-metrics_port = 8080
+metrics_port = MINION_PORT
 
 
 def GetMetrics_PingDb(server):
@@ -17,7 +18,12 @@ def GetMetrics_PingDb(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/pingdb?dbms=PostgreSQL'
+    if (server.dbms_type is None):
+        return
+    if (server.dbms_type != 'PostgreSQL'):
+        return
+
+    url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/pingdb?dbms=' + server.dbms_type
     print('[PingDb] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''

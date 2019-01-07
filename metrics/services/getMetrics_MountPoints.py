@@ -3,11 +3,12 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
 
+from RocketDBaaS.settings_local import MINION_PORT
 from metrics.models import Metrics_MountPoint
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
-metrics_port = 8080
+metrics_port = MINION_PORT
 
 
 def GetMetrics_MountPoints(server):
@@ -18,7 +19,7 @@ def GetMetrics_MountPoints(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    url = ('http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/mountpoints').rstrip('\x00')
+    url = ('http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/mountpoints').rstrip('\x00')
     print('[MountPoints] ServerNm: ' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''

@@ -151,6 +151,9 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Set in the local file
+MINION_PORT = 0
+
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 # DJANGO_LOG_LEVEL=DEBUG
@@ -175,7 +178,7 @@ REST_FRAMEWORK = {
 # }
 
 try:
-    from .local_settings import *
+    from .settings_local import *
 except ImportError:
     print('ERROR: Cannot find your local_settings.py file!  For security purposes you should always have one.')
     pass

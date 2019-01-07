@@ -3,17 +3,18 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-import pytz
 
+from RocketDBaaS.settings_local import MINION_PORT
 from dbaas.models import Datacenter, Environment
-from metrics.models import Metrics_PingDb, Metrics_HostDetail
+from metrics.models import Metrics_HostDetail
 from monitor.services.metric_threshold_test import MetricThresholdTest
 
 errCnt = [0] * 1000
-metrics_port = 8080
+metrics_port = MINION_PORT
 
 
 def GetMetrics_HostDetails(server):
+    server_ip = ''
     if (server.server_ip is None):
         if (server.server_name is None):
             return
@@ -22,7 +23,7 @@ def GetMetrics_HostDetails(server):
     else:
         server_ip = (server.server_ip).rstrip('\x00')
 
-    url = 'http://' + server_ip + ':' + str(metrics_port) + '/api/metrics/hostdetails'
+    url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/hostdetails'
     print('[HostDetails] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
