@@ -26,13 +26,24 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #
 # ALLOWED_HOSTS = []
 
+#If True, the whitelist will not be used and all origins will be accepted. Defaults to False.
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
-    '127.0.0.1:4200'
+    '127.0.0.1:4200',
 )
-
-CORS_ORIGIN_ALLOW_ALL = True
-# Application definition
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = (
+    'localhost',
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,7 +71,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'RocketDBaaS.urls'

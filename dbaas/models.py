@@ -1,18 +1,16 @@
 import datetime
 import textwrap
 
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion, CASCADE
-from django.utils import timezone
-from djchoices import DjangoChoices, ChoiceItem
-
-from django.conf import settings
+from django.db.models import Model, CharField, DecimalField, BooleanField, DateTimeField, IntegerField, EmailField, ForeignKey, deletion
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-import datetime
+from django.utils import timezone
 from django.utils.timezone import utc
+from djchoices import DjangoChoices, ChoiceItem
+from rest_framework.authtoken.models import Token
 
 INFINITY = timezone.datetime(9999, 12, 31, 23, 59, 59, 999999).replace(tzinfo=utc)
 
@@ -116,8 +114,13 @@ class ServerPort(Model):
     updated_dttm = DateTimeField(auto_now=True, null=False)
 
     def NextOpenPort(self):
-        serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).last()
-        serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed.port).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+        cnt = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).count()
+        if (cnt == 0):
+            serverPort__NextPort = ServerPort.objects.filter(port__gt=1023).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+        else:
+            serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).last()
+            serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+
         return serverPort__NextPort.pk
 
 
