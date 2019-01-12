@@ -121,7 +121,7 @@ class ServerPort(Model):
             serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).last()
             serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed).filter(port_status=ServerPort.PortStatusChoices.Free).first()
 
-        return serverPort__NextPort.pk
+        return serverPort__NextPort
 
 
 class Contact(Model):
@@ -149,8 +149,8 @@ class Application(Model):
     class Meta:
         db_table = "dbaas_application"
 
-    def __str__(self):
-        return self.application_name
+    # def __str__(self):
+    #     return self.application_name
 
     application_name = CharField(max_length=40, unique=True, null=False)
     active_sw = BooleanField(null=False, default=True)

@@ -1,8 +1,9 @@
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import (AllowAny)
 from django.http import HttpResponse
 from django.shortcuts import render
+from rest_framework.permissions import (AllowAny)
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 from dbaas.models import Server
 from dbaas.serializers.serializers import LockPoolServersSerializer
 
@@ -33,3 +34,14 @@ class LockPoolServersViewSet(ModelViewSet):
         poolServersQS = self.get_queryset()
         serializer = LockPoolServersSerializer(poolServersQS)
         return Response(serializer.data)
+
+
+# ===========================================================
+from django.conf.urls import url
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='RocketDBaaS API')
+
+urlpatterns = [
+    url(r'^$', schema_view)
+]

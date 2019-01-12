@@ -13,6 +13,7 @@ __pychache__/
 /src
 local_files/*
 local_settings.py
+settings_local.py
 dbaas/migrations/*
 metrics/migrations/*
 monitor/migrations/*

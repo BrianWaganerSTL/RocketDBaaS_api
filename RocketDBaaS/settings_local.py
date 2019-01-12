@@ -34,7 +34,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'C:/logs/RocketDBaaS_API_debug.log',
+            'filename': 'C:/logs/RocketDBaaS_API_debug.log'
         },
     },
     'loggers': {

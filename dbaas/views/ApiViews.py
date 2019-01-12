@@ -1,14 +1,14 @@
-from django.http import HttpResponse, request
+from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
-from django.views.generic import ListView
-from rest_framework import authentication, permissions, generics
+from rest_framework import generics
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import (AllowAny, )
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, )
+
 from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, DbmsTypeChoices, Environment, Application
 from dbaas.serializers.ApiSerializers import ClusterSerializer, ServersSerializer, RestoresSerializer, BackupsSerializer, ServerActivitiesSerializer, \
-    NotesSerializer, ApplicationContactsSerializer, EnvironmentsSerializer, ApplicationsSerializer
+  NotesSerializer, ApplicationContactsSerializer, EnvironmentsSerializer, ApplicationsSerializer
 
-from rest_framework.authentication import TokenAuthentication
 
 @require_http_methods(["GET"])
 def DbmsTypesList(request):
@@ -20,7 +20,7 @@ def DbmsTypesList(request):
     return HttpResponse(myJson)
 
 
-class EnvironmentsList(generics.ListAPIView):
+class Environments(ModelViewSet):
     queryset = Environment.objects.all()
     serializer_class = EnvironmentsSerializer
     permission_classes = [AllowAny, ]
@@ -33,26 +33,6 @@ class Applications(ModelViewSet):
     permission_classes = [AllowAny, ]
     # authentication_classes = [TokenAuthentication, ]
 
-# class ApplicationsList(generics.ListAPIView):
-#     queryset = Application.objects.filter(active_sw=True)
-#     serializer_class = ApplicationsSerializer
-#     permission_classes = [AllowAny, ]
-#     authentication_classes = [TokenAuthentication, ]
-#     lookup_field = 'vApplicationId'
-#     def get_queryset(self):
-#         vApplicationId = self.kwargs['vApplicationId']
-#         return Application.objects.filter(active_sw=True).filter(application_id=vApplicationId) \
-#             .order_by('server_name')
-# class ApplicationsDetail(generics.ListAPIView):
-#     queryset = Application.objects.filter(active_sw=True)
-#     serializer_class = ApplicationsSerializer
-#     permission_classes = [AllowAny, ]
-#     authentication_classes = [TokenAuthentication, ]
-#     lookup_field = 'vApplicationId'
-#     def get_queryset(self):
-#         vApplicationId = self.kwargs['vApplicationId']
-#         return Application.objects.filter(active_sw=True).filter(application_id=vApplicationId) \
-#             .order_by('server_name')
 
 class ServersList(generics.ListAPIView):
     serializer_class = ServersSerializer
@@ -67,18 +47,17 @@ class ServersList(generics.ListAPIView):
 
 
 class Clusters(ModelViewSet):
-    queryset = Cluster.objects.all()
-    serializer_class = ClusterSerializer
-    permission_classes = [AllowAny, ]
-    authentication_classes = [TokenAuthentication, ]
+  queryset = Cluster.objects.all()
+  serializer_class = ClusterSerializer
+  permission_classes = [AllowAny, ]
+  authentication_classes = [TokenAuthentication, ]
 
-
-    def get_queryset(self):
-        clusters = Cluster.objects.all()
-        queryClusterName = self.request.GET.get('cluster_name')
-        if queryClusterName is not None:
-            clusters = clusters.filter(cluster_name__icontains=queryClusterName)
-        return clusters
+  def get_queryset(self):
+    clusters = Cluster.objects.all()
+    queryClusterName = self.request.GET.get('cluster_name')
+    if queryClusterName is not None:
+      clusters = clusters.filter(cluster_name__icontains=queryClusterName)
+    return clusters
 
 class BackupsList(generics.ListAPIView):
     serializer_class = BackupsSerializer
@@ -124,9 +103,6 @@ class NotesList(generics.ListAPIView):
         return ClusterNote.objects.filter(cluster_id=vClusterId).order_by('-created_dttm')
 
 
-
-
-
 class ApplicationContactsList(generics.ListAPIView):
     serializer_class = ApplicationContactsSerializer
     permission_classes = [AllowAny, ]
@@ -137,13 +113,6 @@ class ApplicationContactsList(generics.ListAPIView):
         vApplicationId = self.kwargs['vApplicationId']
         return ApplicationContact.objects.filter(application__exact=vApplicationId).filter(active_sw=True)
 
-
-# class PoolServerList(ModelViewSet):
-#     # queryset = PoolServer.objects.filter(status_in_pool__in={'Available', 'Locked'})
-#     queryset = PoolServer.objects
-#     serializer_class = PoolServerSerializer
-#     permission_classes = [AllowAny, ]
-#     authentication_classes = [TokenAuthentication, ]
 
 class PoolServersViewSet(ModelViewSet):
     queryset = Server.objects.all()

@@ -1,8 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-
-from dbaas.views import ApiViews, create_cluster_view
+from dbaas.views import ApiViews
 from metrics import metrics_views
 from monitor import monitor_views
 
@@ -10,7 +9,8 @@ router = DefaultRouter()
 router.register(r'poolservers', ApiViews.PoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
 router.register(r'applications', ApiViews.Applications)
-
+router.register(r'environments', ApiViews.Environments)
+# http://127.0.0.1:8080/admin/dbaas/cluster/add/
 urlpatterns = [
     path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
     path('clusters/<vClusterId>/servers/', ApiViews.ServersList.as_view()),
@@ -19,8 +19,7 @@ urlpatterns = [
     path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
     path('servers/<vServerId>/activities/', ApiViews.ActivitiesList.as_view()),
     path('dbmstypes/', ApiViews.DbmsTypesList),
-    path('environments/', ApiViews.EnvironmentsList.as_view()),
-    path('create_cluster/', create_cluster_view.create_cluster),
+    # path('create_cluster/', create_cluster_view.create_cluster.as_view()),
 
     path('servers/<vServerId>/incidents/', monitor_views.IncidentList.as_view()),
 
