@@ -19,7 +19,6 @@ urlpatterns = [
     path('clusters/<vClusterId>/notes/', ApiViews.NotesList.as_view()),
     path('servers/<vServerId>/activities/', ApiViews.ActivitiesList.as_view()),
     path('dbmstypes/', ApiViews.DbmsTypesList),
-    # path('create_cluster/', create_cluster_view.create_cluster.as_view()),
 
     path('servers/<vServerId>/incidents/', monitor_views.IncidentList.as_view()),
 
