@@ -197,12 +197,13 @@ class Server(Model):
         return self.server_name
 
     class NodeRoleChoices(DjangoChoices):
-        Primary = ChoiceItem("Primary", "Primary Node",1)
-        SecondarySync = ChoiceItem("SecondarySync", "Secondary Node - Replication is Synchronous",2)
-        SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",3)
-        Arbiter = ChoiceItem("Arbiter", "Arbiter Node",4)
-        PoolServer = ChoiceItem("PoolServer", "PoolServer",5)
-        PoolServerLocked = ChoiceItem("PoolServerLocked", "PoolServerLocked",6)
+        CONFIGURING = ChoiceItem("Configuring", "Primary Configuring", 1)
+        Primary = ChoiceItem("Primary", "Primary Node",2)
+        SecondarySync = ChoiceItem("SecondarySync", "Secondary Node - Replication is Synchronous",3)
+        SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",4)
+        Arbiter = ChoiceItem("Arbiter", "Arbiter Node",5)
+        PoolServer = ChoiceItem("PoolServer", "PoolServer",6)
+        PoolServerLocked = ChoiceItem("PoolServerLocked", "PoolServerLocked",7)
 
     class ServerHealthChoices(DjangoChoices):
         ServerConfiguring = ChoiceItem("ServerConfig", "Server Configuring", 1)

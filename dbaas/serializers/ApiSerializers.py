@@ -1,6 +1,8 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
 from dbaas.models import Cluster, Server, Backup, Restore, ServerActivity, ClusterNote, ApplicationContact, Contact, Environment, Application, ServerPort
 
@@ -73,38 +75,33 @@ class ApplicationContactsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
-
+# Need to decide between this way and the dbaas/view/create_cluster_view.py
 class ClusterSerializer(serializers.ModelSerializer):
   class Meta:
     model = Cluster
     fields = '__all__'
-    # fields = ('cluster_name','dbms_type','application','environment','read_write_port','read_only_port','tls_enabled_sw','backup_retention_days','cluster_health','active_sw','eff_dttm','exp_dttm','created_dttm','updated_dttm')
     depth = 2
     read_only_fields = ['application','environment']
 
-  def validate_application(self, pk):
-    try:
-      data = Application.objects.get(id=pk)
-    except Exception as e:
-      raise ValidationError("Error: application_id("+pk+") doesn't exist")
-    return data
-
-  def validate_environement(self, pk):
-    try:
-      data = Environment.objects.get(env_name=pk)  # It's a natural key
-    except Exception as e:
-      raise ValidationError("Error: environment_id("+pk+") doesn't exist")
-    return data
 
   def create(self, validated_data):
+    appl_name = self.initial_data['application_name']
+    application = Application()
+    try:
+      application = get_object_or_404(Application.objects.filter(application_name=appl_name))
+    except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+      print('No Application found.  Create a new one: ' + str(ex))
+      application.application_name = appl_name
+      application.active_sw = True
+      application.save()
+    validated_data.update(application_id=application.id)  # Add it to the object to be saved
 
-    pk = self.initial_data['application_id']
-    self.validate_application(pk)
-    validated_data.update(application_id=pk)
-
-    pk = self.initial_data['environment']
-    self.validate_environement(pk)
-    validated_data.update(environment_id=pk)
+    env_name = self.initial_data['environment_id']
+    try:
+      environment = Environment.objects.get(env_name=env_name)  # It's a natural key
+    except Exception as e:
+      raise ValidationError("Error: env_name("+env_name+") doesn't exist")
+    validated_data.update(environment_id=env_name)  # Add it to the object to be saved
 
     read_write_port = ServerPort.NextOpenPort(self)
     read_write_port.updated_dttm = timezone.datetime.now()
@@ -120,7 +117,27 @@ class ClusterSerializer(serializers.ModelSerializer):
     read_only_port.port_status = ServerPort.PortStatusChoices.Used
     validated_data.update(read_only_port=read_only_port)
 
+    # Just validate the server for now
+    server_ids = self.initial_data['server_ids']
+    for id in server_ids:
+      try:
+        server = Server.objects.filter(pk=id, cluster_id__isnull=True, node_role=Server.NodeRoleChoices.PoolServer)
+      except Exception as e:
+        raise ValidationError("Error: server_id(" + id + ") doesn't exist and/or belongs to a cluster and/or is not a PoolServer")
+
     cluster = Cluster.objects.create(**validated_data)
+    print(str(cluster))
     cluster.save()
+
+    server = Server()
+    for id in server_ids:
+      server = Server()
+      try:
+        server = get_object_or_404(Server.objects.filter(id=id))
+      except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+        print('No Server (" + id + ") found to join the cluster. ' + str(ex))
+      server.cluster_id = cluster.id
+      server.node_role = Server.NodeRoleChoices.CONFIGURING
+      server.save()
 
     return cluster
