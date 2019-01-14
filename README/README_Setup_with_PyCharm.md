@@ -92,17 +92,17 @@ CREATE database "RocketDB" WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LI
    Email Address:
    Password: RocketDBaaS
    
-insert into dbaas_servers_port
+insert into dbaas_server_port
   select port, 'Free', '', now()
-  from generate_series(1024,65535) as port;
+  from generate_series(10000,15000) as port;
   
-update dbaas_servers_port
+update dbaas_server_port
   set port_status = 'Hidden', port_note = 'Reserved for other processes'
 where port in (4200,8000,2379,2380);
 
 insert into dbaas_environment values 
   ('Sbx',1),('Dev',2),('QA',3),('UAT',4),('Prod',5);
   
-insert into dbaasdatacenter values 
+insert into dbaas_datacenter values 
   (1, 'CH', 1), (2, 'PA', 2);
 ```
