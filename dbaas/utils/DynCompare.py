@@ -1,20 +1,18 @@
 def DynCompare(left, operator, right):
-    lValue = float(left)
-    rValue = float(right)
-
-    print(str(lValue) + operator + str(rValue))
+    leftValue = float(left)
+    rightValue = float(right)
 
     if (operator == '<'):
-        return lValue < rValue;
+        return leftValue < rightValue;
     elif (operator == '<='):
-        return lValue <= rValue;
+        return leftValue <= rightValue;
     elif (operator == '>'):
-        return lValue > rValue;
+        return leftValue > rightValue;
     elif (operator == '>='):
-        return lValue >= rValue;
+        return leftValue >= rightValue;
     elif (operator == '=='):
-        return lValue == rValue;
+        return leftValue == rightValue;
     elif (operator == '!='):
-        return lValue != rValue;
+        return leftValue != rightValue;
     else:
         return False;

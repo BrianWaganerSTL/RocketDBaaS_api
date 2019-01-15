@@ -24,7 +24,7 @@ def GetMetrics_HostDetails(server):
         server_ip = (server.server_ip).rstrip('\x00')
 
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/hostdetails'
-    print('[HostDetails] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
+    print('\n[HostDetails] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
@@ -50,6 +50,8 @@ def GetMetrics_HostDetails(server):
     except requests.exceptions.HTTPError as err:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
+    except:
+        print('ERROR: Other')
 
     if (error_msg == ''):
         if (type(metrics) == dict):

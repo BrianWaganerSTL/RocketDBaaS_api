@@ -18,14 +18,13 @@ def GetMetrics_Load(server):
     server_ip = (server.server_ip).rstrip('\x00')
 
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/load'
-    print('[CpuLoad] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
+    print('\n[CpuLoad] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url)
         print('r.status_code:' + str(r.status_code))
-        print('r.' + str(r.content))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
         print(metrics)
@@ -46,6 +45,8 @@ def GetMetrics_Load(server):
     except requests.exceptions.HTTPError as err:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
+    except:
+        print('ERROR: Other')
 
     if (error_msg == ''):
         if (type(metrics) == dict):
@@ -64,15 +65,18 @@ def GetMetrics_Load(server):
                 metrics_CpuLoad.load_5min = m['load_5min']
                 metrics_CpuLoad.load_15min = m['load_15min']
                 metrics_CpuLoad.save()
+                print('Post Save')
 
                 try:
                      MetricThresholdTest(server, 'CpuLoad', 'load_1min', metrics_CpuLoad.load_1min, '')
+                     print('Post MetricThresholdTest 1min')
                 except:
                      print('ERROR: ' + str(e))
                      pass
 
                 try:
                      MetricThresholdTest(server, 'CpuLoad', 'load_5min', metrics_CpuLoad.load_5min, '')
+                     print('Post MetricThresholdTest 5min')
                 except:
                      print('ERROR: ' + str(e))
                      pass

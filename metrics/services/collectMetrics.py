@@ -1,5 +1,5 @@
-from dbaas.models import Server, Server
-from metrics.services import getMetrics_PingServer, getMetrics_MountPoints, getMetrics_PingDb, getMetrics_CpuLoad, getMetrics_Cpu, getMetrics_HostDetails
+from dbaas.models import Server
+from metrics.services import getMetrics_PingServer, getMetrics_MountPoints, getMetrics_PingDb, getMetrics_CpuLoad, getMetrics_Cpu, getMetrics_HostDetails, getMetrics_CollectionErrors
 
 
 def Metrics_FastTick():
@@ -17,10 +17,18 @@ def Metrics_FastTick():
         servers = Server.objects.filter(active_sw=True, metrics_sw=True).exclude(node_role=Server.NodeRoleChoices.PoolServer).exclude(
             node_role=Server.NodeRoleChoices.PoolServerLocked);
         for s in servers:
+            print('getMetrics_PingServer: ' + s.server_name)
             getMetrics_PingServer.GetMetricsPingServer(s)
+            print('getMetrics_PingDb: ' + s.server_name)
             getMetrics_PingDb.GetMetrics_PingDb(s)
+            print('getMetrics_Cpu: ' + s.server_name)
             getMetrics_Cpu.GetMetrics_Cpu(s)
+            print('getMetrics_CpuLoad: ' + s.server_name)
             getMetrics_CpuLoad.GetMetrics_Load(s)
+            # print('getMetrics_MountPoints: ' + s.server_name)
+            # getMetrics_MountPoints.GetMetrics_MountPoints(s)
+            print('getMetrics_CollectionErrors: ' + s.server_name)
+            getMetrics_CollectionErrors.GetMetricsCollectionErrors(s)
     except:
         pass
 

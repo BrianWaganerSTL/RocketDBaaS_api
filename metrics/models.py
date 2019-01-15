@@ -93,5 +93,15 @@ class Metrics_HostDetail(models.Model):
     error_msg = CharField(max_length=2000, null=False, default='')
 
 
+class Metrics_CollectionError(models.Model):
+    class Meta:
+        db_table = 'metrics_collections_error'
+
+    server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
+    created_dttm = DateTimeField(editable=False, null=False)
+    metric_name = CharField(max_length=40, null=False, blank=True)
+    error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
+    error_msg = CharField(max_length=2000, null=False, default='')
+
 # TODO: Metrics_DbTopSql
 

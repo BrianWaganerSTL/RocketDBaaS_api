@@ -24,7 +24,7 @@ def GetMetrics_PingDb(server):
         return
 
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/pingdb?dbms=' + server.dbms_type
-    print('[PingDb] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
+    print('\n[PingDb] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
     metrics = ''
     error_msg = ''
 
@@ -51,6 +51,8 @@ def GetMetrics_PingDb(server):
     except requests.exceptions.HTTPError as err:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
+    except:
+        print('ERROR: Other')
 
     if (error_msg == ''):
         if (type(metrics) == dict):

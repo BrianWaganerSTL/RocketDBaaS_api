@@ -1,10 +1,14 @@
-import logging
-
 from django.utils import timezone
 
 from dbaas.models import Server
 from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, IncidentNotification
 from dbaas.utils.DynCompare import DynCompare
+from django.utils import timezone
+
+from dbaas.models import Server
+from dbaas.utils.DynCompare import DynCompare
+from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, IncidentNotification
+
 
 def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, detail_element):
     server = Server.objects.get(id=slimServer.id)
@@ -17,10 +21,12 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ')')
         return
     else:
-        if DynCompare(metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu))):
+        critical_value = eval(thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu)))
+        warning_value = eval(thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu)))
+        if DynCompare(metric_value, thresholdTest.critical_predicate_type, critical_value):
             pendingThresholdLevel = IncidentStatusChoices.Critical
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value)
-        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value.replace("<<CPU>>", str(server.cpu))):
+        elif DynCompare(metric_value, thresholdTest.warning_predicate_type, warning_value):
             pendingThresholdLevel = IncidentStatusChoices.Warning
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
         else:
@@ -31,7 +37,6 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
 
     #  Now Create an Incident if one doesn't already exist
     twerkIt = False
-
     try:
         i = Incident.objects.filter(server_id=server.id, threshold_test=thresholdTest, closed_sw=False)[0]
     except:

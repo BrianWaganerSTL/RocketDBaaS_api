@@ -15,7 +15,7 @@ def GetMetricsPingServer(server):
 
     server_ip = (server.server_ip).rstrip('\x00')
 
-    print('[PingServer] Server=' + server.server_name + ', ServerId=' + str(server.id))
+    print('\n[PingServer] Server=' + server.server_name + ', ServerId=' + str(server.id))
     if platform == "linux" or platform =="linux2":
         pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
