@@ -1,3 +1,6 @@
+import os
+from logging import INFO
+
 SECRET_KEY = 'lwgooy5r7-7roe5d5m6g5w-zuzg+957ger!y-9)ccxewyr_-ac'
 
 ALLOWED_HOSTS = []
@@ -15,7 +18,7 @@ DATABASES = {
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DJANGO_LOG_LEVEL=DEBUG
+DJANGO_LOG_LEVEL=INFO
 # LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
@@ -53,10 +56,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
-        # 'django': {
-        #     'handlers': ['console'],
-        #     'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        # },
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
         # 'django.request': {
         #     'handlers': ['mail_admins'],
         #     'level': 'ERROR',

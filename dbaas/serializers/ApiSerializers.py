@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import ValidationError, FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
@@ -87,20 +89,23 @@ class ClusterSerializer(serializers.ModelSerializer):
   def create(self, validated_data):
     appl_name = self.initial_data['application_name']
     application = Application()
-    try:
-      application = get_object_or_404(Application.objects.filter(application_name=appl_name))
-    except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
-      print('No Application found.  Create a new one: ' + str(ex))
+    if (Application.objects.filter(application_name=appl_name).count() == 0):
+      print('No Application found.  Create a new one')
+      logging.info('No Application found.  Create a new one');
       application.application_name = appl_name
       application.active_sw = True
       application.save()
+
+    application = get_object_or_404(Application.objects.filter(application_name=appl_name))
+
+    print('In ClusterSerializer(POST). application.id=' + str(application.id))
+    logging.info('In ClusterSerializer(POST). application.id=', application.id)
     validated_data.update(application_id=application.id)  # Add it to the object to be saved
 
     env_name = self.initial_data['environment_id']
-    try:
-      environment = Environment.objects.get(env_name=env_name)  # It's a natural key
-    except Exception as e:
-      raise ValidationError("Error: env_name("+env_name+") doesn't exist")
+    if (Environment.objects.filter(env_name=env_name) == 0): # It's a natural key)
+      raise ValidationError("Error: env_name(" + env_name + ") doesn't exist")
+
     validated_data.update(environment_id=env_name)  # Add it to the object to be saved
 
     read_write_port = ServerPort.NextOpenPort(self)

@@ -1,3 +1,5 @@
+import logging
+
 import requests
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
@@ -38,20 +40,30 @@ def GetMetrics_HostDetails(server):
     except requests.exceptions.ConnectionError:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'ConnectionRefusedError:  Make sure the Minion is up and running.'
+        print(error_msg)
+        logging.error(error_msg)
     except requests.exceptions.Timeout:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Timeout'
+        print(error_msg)
+        logging.error(error_msg)
     except requests.exceptions.TooManyRedirects:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Bad URL'
+        print(error_msg)
+        logging.error(error_msg)
     except requests.exceptions.RequestException as e:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Catastrophic error. Bail ' + str(e)
+        print(error_msg)
     except requests.exceptions.HTTPError as err:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
+        print(error_msg)
+        logging.error(error_msg)
     except:
         print('ERROR: Other')
+        logging.error(error_msg)
 
     if (error_msg == ''):
         if (type(metrics) == dict):
@@ -116,10 +128,10 @@ def GetMetrics_HostDetails(server):
                 if (server.datacenter is None):
                     dc = Datacenter()
                     if (server.server_name.find('ch')):
-                        dc = get_object_or_404(Datacenter.objects.get(datacenter='CH'));
+                        dc = Datacenter.objects.get(datacenter='CH');
                         server.datacenter = dc
                     else:
-                        dc = get_object_or_404(Datacenter.objects.get(datacenter='PA'));
+                        dc = Datacenter.objects.get(datacenter='PA');
                         server.datacenter = dc
                     server.save()
 
@@ -141,6 +153,9 @@ def GetMetrics_HostDetails(server):
                     elif (envChars == 'p'):
                         env = get_object_or_404(Environment.objects.filter(env_name='Prod'))
                         server.environment = env
+                    else:
+                        env = get_object_or_404(Environment.objects.filter(env_name='Sbx'))
+                        server.environment = env
                     server.save()
 
                 try:
@@ -149,6 +164,7 @@ def GetMetrics_HostDetails(server):
                     pass
             except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
                 print('Error: ' + str(ex))
+                logging.error('Error: ' + str(ex))
     else:
         metrics_HostDetail = Metrics_HostDetail()
         metrics_HostDetail.server = server
