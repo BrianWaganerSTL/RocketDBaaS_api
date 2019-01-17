@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from dbaas.views import ApiViews
 from metrics import metrics_views
+from metrics.services.charts import getChart_MountPoints
 from monitor import monitor_views
 
 router = DefaultRouter()
@@ -27,6 +28,8 @@ urlpatterns = [
     path('servers/<vServerId>/metrics/load/', metrics_views.Metrics_CpuLoadList.as_view()),
     path('servers/<vServerId>/metrics/pingserver/', metrics_views.Metrics_PingServerList.as_view()),
     path('servers/<vServerId>/metrics/pingdb/', metrics_views.Metrics_PingDbList.as_view()),
+    
+    path('servers/<vServerId>/charts/mountpoints/', getChart_MountPoints.ChartMountPoints.as_view()),
 ]
 
 urlpatterns += router.urls
