@@ -25,8 +25,6 @@ def Metrics_FastTick():
             getMetrics_Cpu.GetMetrics_Cpu(s)
             print('getMetrics_CpuLoad: ' + s.server_name)
             getMetrics_CpuLoad.GetMetrics_Load(s)
-            # print('getMetrics_MountPoints: ' + s.server_name)
-            # getMetrics_MountPoints.GetMetrics_MountPoints(s)
             print('getMetrics_CollectionErrors: ' + s.server_name)
             getMetrics_CollectionErrors.GetMetricsCollectionErrors(s)
     except:
