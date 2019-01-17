@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from dbaas.views import ApiViews
 from metrics import metrics_views
-from metrics.services.charts import getChart_MountPoints
+from metrics.services import getChart_MountPoints
 from monitor import monitor_views
 
 router = DefaultRouter()

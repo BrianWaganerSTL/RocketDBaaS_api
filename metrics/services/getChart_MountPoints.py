@@ -1,13 +1,11 @@
-from django.core.serializers import json
-from django.db.models.functions import Replace
+from django.http import HttpResponse
 from django.http import HttpResponse
 from django.utils import timezone
-from psycopg2._json import Json
 from rest_framework import authentication, status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from metrics.metrics_views import defaultMetricsMins
-from metrics.models import Metrics_CpuLoad, Metrics_MountPoint
+
+from metrics.models import Metrics_MountPoint
 
 
 class ChartMountPoints(APIView):
@@ -34,6 +32,7 @@ class ChartMountPoints(APIView):
     mntBkupsDP = ''
     mntHomeDP = ''
     mntTmpDP = ''
+    # mntCDP = ''
 
     for a in mountPoints:
       myDateStr = a.created_dttm.strftime("%Y-%m-%d %H:%M")
@@ -51,6 +50,8 @@ class ChartMountPoints(APIView):
         mntHomeDP += element
       elif (a.mount_point == '/tmp'):
         mntTmpDP += element
+      # elif (a.mount_point == 'C'):
+      #   mntCDP += element
       else:
         continue
 
@@ -61,6 +62,7 @@ class ChartMountPoints(APIView):
       {"name": 'backups', "series": mntBkupsDP.replace("'","\"")},
       {"name": 'home', "series": mntHomeDP.replace("'","\"")},
       {"name": 'tmp', "series": mntTmpDP.replace("'","\"")},
+      # {"name": 'tmp', "series": mntCDP.replace("'", "\"")},
     ];
 
     return HttpResponse(mountPointGraphData, status=status.HTTP_200_OK)
