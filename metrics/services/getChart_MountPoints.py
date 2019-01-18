@@ -1,8 +1,8 @@
 from django.http import HttpResponse
-from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import authentication, status
 from rest_framework.permissions import AllowAny
+from rest_framework.utils import json
 from rest_framework.views import APIView
 
 from metrics.models import Metrics_MountPoint
@@ -12,57 +12,55 @@ class ChartMountPoints(APIView):
   authentication_classes = (authentication.TokenAuthentication,)
   permission_classes = [AllowAny, ]
 
-  defaultMetricsMins = 180
-
   def get(self, request, vServerId):
     print('vServerId=' + str(vServerId))
-
-    # afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
-    afterDttm = timezone.now() - timezone.timedelta(days=30)
+    afterDttm = timezone.now() - timezone.timedelta(days=60)
 
     mountPoints = Metrics_MountPoint.objects \
-            .filter(server_id=vServerId) \
-            .filter(created_dttm__gte=afterDttm) \
-            .exclude(mount_point='') \
-            .order_by('-created_dttm')
+      .filter(server_id=vServerId) \
+      .filter(created_dttm__gte=afterDttm) \
+      .exclude(mount_point='') \
+      .order_by('-created_dttm')
 
-    mntSlashDP = ''
-    mntDataDP = ''
-    mntLogsDP = ''
-    mntBkupsDP = ''
-    mntHomeDP = ''
-    mntTmpDP = ''
-    # mntCDP = ''
+    dataList = []
+    mntSlashList = []
+    mntDataList = []
+    mntLogsList = []
+    mntBkupsList = []
+    mntHomeList = []
+    mntTmpList = []
+    mntCList = []
+
 
     for a in mountPoints:
-      myDateStr = a.created_dttm.strftime("%Y-%m-%d %H:%M")
-      element = "{'name': new Date('" + myDateStr + "'), 'value': " + str(a.used_pct) + "}"
+      myDateStr = a.created_dttm.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+      dataPoint = {'name': myDateStr, 'value': str(a.used_pct) }
 
       if (a.mount_point == '/'):
-        mntSlashDP += element
+        mntSlashList.append(dataPoint)
       elif (a.mount_point == '/opt/pgsql/data'):
-        mntDataDP += element
+        mntDataList.append(dataPoint)
       elif (a.mount_point == '/opt/pgsql/logs'):
-        mntLogsDP += element
+        mntLogsList.append(dataPoint)
       elif (a.mount_point == '/opt/pgsql/backups'):
-        mntBkupsDP += element
+        mntBkupsList.append(dataPoint)
       elif (a.mount_point == '/home'):
-        mntHomeDP += element
+        mntHomeList.append(dataPoint)
       elif (a.mount_point == '/tmp'):
-        mntTmpDP += element
-      # elif (a.mount_point == 'C'):
-      #   mntCDP += element
+        mntTmpList.append(dataPoint)
+      elif (a.mount_point == 'C'):
+        mntCList.append(dataPoint)
       else:
         continue
 
-    mountPointGraphData = [
-      {"name": '/', "series": mntSlashDP.replace("'","\"")},
-      {"name": 'data', "series": mntDataDP.replace("'","\"")},
-      {"name": 'logs', "series": mntLogsDP.replace("'","\"")},
-      {"name": 'backups', "series": mntBkupsDP.replace("'","\"")},
-      {"name": 'home', "series": mntHomeDP.replace("'","\"")},
-      {"name": 'tmp', "series": mntTmpDP.replace("'","\"")},
-      # {"name": 'tmp', "series": mntCDP.replace("'", "\"")},
-    ];
+    dataList.append({'name': '/', 'series': mntSlashList })
+    dataList.append({'name': 'data', 'series': mntDataList})
+    dataList.append({'name': 'logs', 'series': mntLogsList})
+    dataList.append({'name': 'backups', 'series': mntBkupsList})
+    dataList.append({'name': 'home', 'series': mntHomeList})
+    dataList.append({'name': 'tmp', 'series': mntTmpList})
+    dataList.append({'name': 'C', 'series': mntCList})
+
+    mountPointGraphData = json.dumps(dataList)
 
     return HttpResponse(mountPointGraphData, status=status.HTTP_200_OK)
