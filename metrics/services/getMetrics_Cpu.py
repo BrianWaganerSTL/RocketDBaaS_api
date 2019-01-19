@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import requests
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
@@ -23,7 +25,7 @@ def GetMetrics_Cpu(server):
     error_msg = ''
 
     try:
-        r = requests.get(url)
+        r = requests.get(url, params={'timeout': 10})
         print('r.status_code:' + str(r.status_code))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
@@ -61,16 +63,16 @@ def GetMetrics_Cpu(server):
                 metrics_Cpu.server = server
                 metrics_Cpu.error_cnt = errCnt[server.id]
                 metrics_Cpu.created_dttm = m['created_dttm']
-                metrics_Cpu.cpu_idle_pct = metrics['idle']
-                metrics_Cpu.cpu_user_pct = metrics['user']
-                metrics_Cpu.cpu_system_pct = metrics['system']
-                if 'cpu_iowait_pct' in metrics:  # These only exist in Unix/Linux
-                    metrics_Cpu.cpu_iowait_pct = metrics['cpu_iowait_pct']
-                    metrics_Cpu.cpu_irq_pct = metrics['cpu_irq_pct']
-                    metrics_Cpu.cpu_steal_pct = metrics['cpu_steal_pct']
-                    if 'cpu_guest_pct' in metrics:  # Only certain versions of Unix/Linux has
-                        metrics_Cpu.cpu_guest_pct = metrics['cpu_guest_pct']
-                        metrics_Cpu.cpu_guest_nice_pct = metrics['cpu_guest_nice_pct']
+                metrics_Cpu.cpu_idle_pct = Decimal(m['idle'])
+                metrics_Cpu.cpu_user_pct = Decimal(m['user'])
+                metrics_Cpu.cpu_system_pct = Decimal(m['system'])
+                if 'cpu_iowait_pct' in m:  # These only exist in Unix/Linux
+                    metrics_Cpu.cpu_iowait_pct = Decimal(m['cpu_iowait_pct'])
+                    metrics_Cpu.cpu_irq_pct = Decimal(m['cpu_irq_pct'])
+                    metrics_Cpu.cpu_steal_pct = Decimal(m['cpu_steal_pct'])
+                    if 'cpu_guest_pct' in m:  # Only certain versions of Unix/Linux has
+                        metrics_Cpu.cpu_guest_pct = Decimal(m['cpu_guest_pct'])
+                        metrics_Cpu.cpu_guest_nice_pct = Decimal(m['cpu_guest_nice_pct'])
                 metrics_Cpu.save()
 
                 try:
