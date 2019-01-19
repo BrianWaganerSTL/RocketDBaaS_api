@@ -9,9 +9,12 @@ def SendNotificationEmail(IncidentNotificationId):
 
     dbmsType = i.server.cluster.dbms_type
     if (dbmsType == 'PostgreSQL'):
-        emailFrom = 'NextGenDBaaS<DBA-PostgreSQL@express-scripts.com>'
-        emailCc = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
-        replyTo = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
+        emailFrom = 'bwaganer<bwaganer@express-scripts.com>'
+        emailCc = ['bwaganer<bwaganer@express-scripts.com>']
+        replyTo = ['bwaganer<bwaganer@express-scripts.com>']
+        # emailFrom = 'NextGenDBaaS<DBA-PostgreSQL@express-scripts.com>'
+        # emailCc = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
+        # replyTo = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
     elif (dbmsType == 'MongoDB'):
         emailFrom = 'NextGenDBaaS<DBA-MongoDB@express-scripts.com>>'
         emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
