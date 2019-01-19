@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import requests
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
@@ -23,7 +25,7 @@ def GetMetrics_Load(server):
     error_msg = ''
 
     try:
-        r = requests.get(url)
+        r = requests.get(url, params={'timeout': 10})
         print('r.status_code:' + str(r.status_code))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
@@ -46,7 +48,9 @@ def GetMetrics_Load(server):
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
     except:
-        print('ERROR: Other')
+        print('ERROR: ' + str(r.status_code) + ' ' + r.reason)
+        errCnt[server.id] = errCnt[server.id] + 1
+        error_msg = str(r.status_code) + ' ' + r.reason
 
     if (error_msg == ''):
         if (type(metrics) == dict):
@@ -61,9 +65,9 @@ def GetMetrics_Load(server):
                 metrics_CpuLoad.server = server
                 metrics_CpuLoad.error_cnt = errCnt[server.id]
                 metrics_CpuLoad.created_dttm = m['created_dttm']
-                metrics_CpuLoad.load_1min = m['load_1min']
-                metrics_CpuLoad.load_5min = m['load_5min']
-                metrics_CpuLoad.load_15min = m['load_15min']
+                metrics_CpuLoad.load_1min = Decimal(m['load_1min'])
+                metrics_CpuLoad.load_5min = Decimal(m['load_5min'])
+                metrics_CpuLoad.load_15min = Decimal(m['load_15min'])
                 metrics_CpuLoad.save()
                 print('Post Save')
 
