@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import requests
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
@@ -22,7 +24,7 @@ def GetMetrics_MountPoints(server):
     error_msg = ''
 
     try:
-        r = requests.get(url)
+        r = requests.get(url, params={'timeout': 10})
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)) + ', r.status_code:' + str(r.status_code))
         print(metrics)
@@ -60,9 +62,9 @@ def GetMetrics_MountPoints(server):
                 metrics_MountPoint.error_cnt = errCnt[server.id]
                 metrics_MountPoint.created_dttm = m['created_dttm']
                 metrics_MountPoint.mount_point = m['mount_point']
-                metrics_MountPoint.allocated_gb = m['allocated_gb']
-                metrics_MountPoint.used_gb = m['used_gb']
-                metrics_MountPoint.used_pct = m['used_pct']
+                metrics_MountPoint.allocated_gb = Decimal(m['allocated_gb'])
+                metrics_MountPoint.used_gb = Decimal(m['used_gb'])
+                metrics_MountPoint.used_pct = Decimal(m['used_pct'])
                 metrics_MountPoint.save()
 
                 try:
