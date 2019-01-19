@@ -29,7 +29,7 @@ def GetMetrics_PingDb(server):
     error_msg = ''
 
     try:
-        r = requests.get(url)
+        r = requests.get(url, params={'timeout': 10})
         print('r.status_code:' + str(r.status_code))
         metrics = r.json()
         print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
@@ -67,12 +67,12 @@ def GetMetrics_PingDb(server):
                 metrics_PingDb.server = server
                 metrics_PingDb.error_cnt = errCnt[server.id]
                 metrics_PingDb.created_dttm = m['created_dttm']
-                metrics_PingDb.ping_db_status = metrics['ping_db_status']
-                metrics_PingDb.ping_db_response_ms = metrics['ping_db_response_ms']
+                metrics_PingDb.ping_db_status = m['ping_db_status']
+                metrics_PingDb.ping_db_response_ms = m['ping_db_response_ms']
                 metrics_PingDb.save()
 
                 try:
-                    MetricThresholdTest(server, 'PingDb', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
+                    MetricThresholdTest(server, 'PingDB', 'ping_db_response_ms', metrics_PingDb.ping_db_response_ms, '')
                 except:
                      print('ERROR: ' + str(e))
                      pass
