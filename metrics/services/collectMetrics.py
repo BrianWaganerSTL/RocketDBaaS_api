@@ -14,26 +14,43 @@ def Metrics_FastTick():
         pass
 
     try:
-        servers = Server.objects.filter(active_sw=True, metrics_sw=True).exclude(node_role=Server.NodeRoleChoices.PoolServer).exclude(
-            node_role=Server.NodeRoleChoices.PoolServerLocked);
+        servers = Server.objects.filter(active_sw=True, metrics_sw=True). \
+                    exclude(node_role=Server.NodeRoleChoices.PoolServer). \
+                    exclude(node_role=Server.NodeRoleChoices.PoolServerLocked)
         for s in servers:
-            print('getMetrics_PingServer: ' + s.server_name)
-            getMetrics_PingServer.GetMetricsPingServer(s)
-            print('getMetrics_PingDb: ' + s.server_name)
-            getMetrics_PingDb.GetMetrics_PingDb(s)
-            print('getMetrics_Cpu: ' + s.server_name)
-            getMetrics_Cpu.GetMetrics_Cpu(s)
-            print('getMetrics_CpuLoad: ' + s.server_name)
-            getMetrics_CpuLoad.GetMetrics_Load(s)
-            print('getMetrics_CollectionErrors: ' + s.server_name)
-            getMetrics_CollectionErrors.GetMetricsCollectionErrors(s)
+            try:
+                print('getMetrics_PingServer: ' + s.server_name)
+                getMetrics_PingServer.GetMetricsPingServer(s)
+            except:
+                pass
+            try:
+                print('getMetrics_PingDb: ' + s.server_name)
+                getMetrics_PingDb.GetMetrics_PingDb(s)
+            except:
+                pass
+            try:
+                print('getMetrics_Cpu: ' + s.server_name)
+                getMetrics_Cpu.GetMetrics_Cpu(s)
+            except:
+                pass
+            try:
+                print('getMetrics_CpuLoad: ' + s.server_name)
+                getMetrics_CpuLoad.GetMetrics_Load(s)
+            except:
+                pass
+            try:
+                print('getMetrics_CollectionErrors: ' + s.server_name)
+                getMetrics_CollectionErrors.GetMetricsCollectionErrors(s)
+            except:
+                pass
     except:
         pass
 
 def Metrics_SlowTick():
     try:
-        servers = Server.objects.filter(active_sw=True, metrics_sw=True).exclude(node_role=Server.NodeRoleChoices.PoolServer).exclude(
-            node_role=Server.NodeRoleChoices.PoolServerLocked);
+        servers = Server.objects.filter(active_sw=True, metrics_sw=True). \
+                    exclude(node_role=Server.NodeRoleChoices.PoolServer). \
+                    exclude(node_role=Server.NodeRoleChoices.PoolServerLocked)
         for s in servers:
             print('\nMetrics_SlowTick: ServerId=' + str(s.id))
             getMetrics_MountPoints.GetMetrics_MountPoints(s)
