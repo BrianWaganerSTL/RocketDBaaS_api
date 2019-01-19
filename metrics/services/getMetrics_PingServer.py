@@ -19,7 +19,7 @@ def GetMetricsPingServer(server):
     if platform == "linux" or platform =="linux2":
         pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
-        pingCmd = 'ping -c1 -W2 ' + server_ip
+        pingCmd = 'ping -c1 -W2 -t10 ' + server_ip
     elif platform == "win32":
         pingCmd = 'ping -n 1 -w 2 ' + server_ip
 
@@ -47,7 +47,7 @@ def GetMetricsPingServer(server):
     metrics_PingServer.save()
 
     try:
-        MetricThresholdTest(server, 'PingServer', 'ping_response_ms', metrics_PingServer.ping_response_ms, '')
+        MetricThresholdTest(server, 'PingServer', 'ping_server_response_ms', metrics_PingServer.ping_response_ms, '')
     except ValueError as err:
         print('Value Error: ' + err)
         pass
