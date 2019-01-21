@@ -19,7 +19,7 @@ def GetMetricsPingServer(server):
     if platform == "linux" or platform =="linux2":
         pingCmd = 'ping -c1 -W2 ' + server_ip
     elif platform == "darwin":  # Mac OS
-        pingCmd = 'ping -c1 -W2 -t10 ' + server_ip
+        pingCmd = 'ping -c1 -W2 -t2 ' + server_ip
     elif platform == "win32":
         pingCmd = 'ping -n 1 -w 2 ' + server_ip
 
@@ -37,6 +37,7 @@ def GetMetricsPingServer(server):
         errCnt[server.id] = errCnt[server.id] + 1
         pingStatus = 'Critical'
         errorMsg = 'Server not available'
+        print(errorMsg)
 
     metrics_PingServer.server = server
     metrics_PingServer.created_dttm = timezone.now()
