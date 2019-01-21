@@ -26,9 +26,8 @@ def GetMetrics_Cpu(server):
 
     try:
         r = requests.get(url, params={'timeout': 10})
-        print('r.status_code:' + str(r.status_code))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print('r.status_code:' + str(r.status_code) + '. type(metrics)' + str(type(metrics)))
         print(metrics)
         errCnt[server.id] = 0
 
