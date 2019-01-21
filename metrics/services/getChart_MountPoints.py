@@ -1,3 +1,5 @@
+from random import randint
+
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import authentication, status
@@ -14,7 +16,9 @@ class ChartMountPoints(APIView):
 
   def get(self, request, vServerId):
     print('vServerId=' + str(vServerId))
-    afterDttm = timezone.now() - timezone.timedelta(days=60)
+    daysToDisplay = 60
+    dataPoints = 720
+    afterDttm = timezone.now() - timezone.timedelta(days=daysToDisplay)
 
     mountPoints = Metrics_MountPoint.objects \
       .filter(server_id=vServerId) \
@@ -52,6 +56,23 @@ class ChartMountPoints(APIView):
         mntCList.append(dataPoint)
       else:
         continue
+
+    # Reduce the number of plotpoint to be 300 or less per mountpoint
+    for x in range(dataPoints, len(mntSlashList)):
+      mntSlashList.pop(randint(0, len(mntSlashList)-1))
+    for x in range(dataPoints, len(mntDataList)):
+      mntDataList.pop(randint(0, len(mntDataList)-1))
+    for x in range(dataPoints, len(mntLogsList)):
+      mntLogsList.pop(randint(0, len(mntLogsList)-1))
+    for x in range(dataPoints, len(mntBkupsList)):
+      mntBkupsList.pop(randint(0, len(mntBkupsList)-1))
+    for x in range(dataPoints, len(mntHomeList)):
+      mntHomeList.pop(randint(0, len(mntHomeList)-1))
+    for x in range(dataPoints, len(mntTmpList)):
+      mntTmpList.pop(randint(0, len(mntTmpList)-1))
+    for x in range(dataPoints, len(mntCList)):
+      mntCList.pop(randint(0, len(mntCList)-1))
+
 
     dataList.append({'name': '/', 'series': mntSlashList })
     dataList.append({'name': 'data', 'series': mntDataList})

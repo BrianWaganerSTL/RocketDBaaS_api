@@ -1,3 +1,5 @@
+import decimal
+
 from django.db import models
 from django.db.models import ForeignKey, IntegerField, CASCADE, deletion, BooleanField, CharField, DateTimeField, DecimalField
 from djchoices import DjangoChoices, ChoiceItem
@@ -87,7 +89,7 @@ class ThresholdTest(models.Model):
 class Incident(models.Model):
     class Meta:
         db_table = 'monitor_incident'
-        ordering = ['-start_dttm']
+        ordering = ['-last_dttm']
 
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     threshold_test = ForeignKey(ThresholdTest, on_delete=deletion.ProtectedError, null=False, default='')
@@ -95,9 +97,9 @@ class Incident(models.Model):
     last_dttm = DateTimeField()
     closed_dttm = DateTimeField(null=True, blank=True)
     closed_sw = BooleanField(default=False)
-    min_value = DecimalField(null=False, default=0),
-    cur_value = DecimalField(null=False, default=0),
-    max_value = DecimalField(null=False, default=0),
+    min_value = DecimalField(null=False, max_digits = 6, decimal_places = 2, default = 0)
+    cur_value = DecimalField(null=False, max_digits = 6, decimal_places = 2, default = 0)
+    max_value = DecimalField(null=False, max_digits = 6, decimal_places = 2, default = 0)
     cur_test_w_values = CharField(max_length=500, null=False, default='')
     pending_status = CharField(max_length=15, null=False, default='', choices=IncidentStatusChoices.choices)
     current_status = CharField(max_length=15, null=False, default='', choices=IncidentStatusChoices.choices)

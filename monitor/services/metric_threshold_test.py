@@ -1,9 +1,15 @@
+import decimal
+
+
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
+from django_core import exceptions
+
 from dbaas.models import Server
 from dbaas.utils.DynCompare import DynCompare
-from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, IncidentNotification
+from monitor.models import ThresholdTest, IncidentStatusChoices, Incident
+from monitor.services.send_incident_notification import SendIncidentNotification
 
 
 def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, detail_element):
@@ -29,7 +35,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
             CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
         else:
             pendingThresholdLevel = IncidentStatusChoices.Normal
-            CurTestWithValues = '%d NOT (Warning OR Critical)' % (metric_value)
+            CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
 
         print('Pending Threshold: %s' % pendingThresholdLevel)
 
@@ -60,13 +66,11 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
     i.detail_element = detail_element
     i.cur_test_w_values = CurTestWithValues
     i.cur_value = metric_value
+    print('<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>')
     print('Before max_value')
-    print(str(i.max_value))
     if (metric_value > i.max_value):
-        print('flag2')
         i.max_value = metric_value
     if (metric_value < i.min_value):
-        print('flag3')
         i.min_value = metric_value
 
     print('Before last_dttm')
@@ -78,18 +82,21 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         i.critical_ticks = min(i.critical_ticks + 1, thresholdTest.critical_ticks)
         i.warning_ticks = min(i.warning_ticks + 1, thresholdTest.warning_ticks)
         i.normal_ticks = max(i.normal_ticks - 1, 0)
-        print('Ticks needed: %d, currently %d ticks' % (thresholdTest.critical_ticks, i.critical_ticks))
+        print('Critical Ticks needed: %d, currently %d ticks' % (thresholdTest.critical_ticks, i.critical_ticks))
+        print('if (' + str(i.critical_ticks) + ') == ' + str(thresholdTest.critical_ticks) + ')')
         if (i.critical_ticks == thresholdTest.critical_ticks):
             if (i.pending_status != i.current_status):
                 twerkIt = True
                 i.current_status = i.pending_status
+                print('Set current_status = ' + i.pending_status)
             i.pending_status = IncidentStatusChoices.Critical
+            print('Set pending_status = Critical')
 
     elif pendingThresholdLevel == 'Warning':
         i.critical_ticks = max(i.critical_ticks - 1, 0)
         i.warning_ticks = min(i.warning_ticks + 1, thresholdTest.warning_ticks)
         i.normal_ticks = max(i.normal_ticks - 1, 0)
-        print('Ticks needed: %d, currently %d ticks' % (thresholdTest.warning_ticks, i.warning_ticks))
+        print('Warning Ticks needed: %d, currently %d ticks' % (thresholdTest.warning_ticks, i.warning_ticks))
         if (i.warning_ticks == thresholdTest.warning_ticks):
             if (i.pending_status != i.current_status):
                 twerkIt = True
@@ -100,7 +107,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         i.critical_ticks = max(i.critical_ticks - 1, 0)
         i.warning_ticks = max(i.warning_ticks - 1, 0)
         i.normal_ticks = min(i.normal_ticks + 1, thresholdTest.normal_ticks)
-        print('Ticks needed: %d, currently %d ticks' % (thresholdTest.normal_ticks, i.normal_ticks))
+        print('Normal Ticks needed: %d, currently %d ticks' % (thresholdTest.normal_ticks, i.normal_ticks))
         if (i.normal_ticks == thresholdTest.normal_ticks):
             if (i.pending_status != i.current_status):
                 twerkIt = True
@@ -110,6 +117,8 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
             i.current_status = IncidentStatusChoices.Normal
     i.save()
 
+    print('Should We TwerkIt Baby???')
     if (twerkIt):
         # Create Issue Notification
-        IncidentNotification(i.id)
+        print('SendIncidentNotification')
+        SendIncidentNotification(i.id)

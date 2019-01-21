@@ -18,41 +18,44 @@ def GetMetrics_Load(server):
         return
 
     server_ip = (server.server_ip).rstrip('\x00')
-
     url = 'http://' + server_ip + ':' + str(metrics_port) + '/minion_api/metrics/load'
-    print('\n[CpuLoad] Server=' + server.server_name + ', ServerId=' + str(server.id) + ', url=' + url)
+    print('\n[CpuLoad] Server=' + server.server_name + ', url=' + url)
     metrics = ''
     error_msg = ''
 
     try:
         r = requests.get(url, params={'timeout': 10})
-        print('r.status_code:' + str(r.status_code))
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)))
+        print('r.status_code:' + str(r.status_code) + '. type(metrics):' + str(type(metrics)))
         print(metrics)
         errCnt[server.id] = 0
-
     except requests.exceptions.ConnectionError:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'ConnectionRefusedError:  Make sure the Minion is up and running.'
+        print(error_msg)
     except requests.exceptions.Timeout:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Timeout'
+        print(error_msg)
     except requests.exceptions.TooManyRedirects:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Bad URL'
+        print(error_msg)
     except requests.exceptions.RequestException as e:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Catastrophic error. Bail ' + str(e)
+        print(error_msg)
     except requests.exceptions.HTTPError as err:
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
+        print(error_msg)
     except:
         print('ERROR: ' + str(r.status_code) + ' ' + r.reason)
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = str(r.status_code) + ' ' + r.reason
 
     if (error_msg == ''):
+        # Make sure you have a List
         if (type(metrics) == dict):
             metricsList = [metrics]
         else:
