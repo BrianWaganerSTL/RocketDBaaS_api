@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from monitor.models import Incident, IncidentStatusChoices
+from monitor.models import Incident, IncidentStatusChoices, IncidentNotification
 from monitor.services.send_notification_email import SendNotificationEmail
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: %s (%s)'
@@ -16,10 +16,10 @@ myHtmlTemplate = '''<h1 style="%s; margin:0px; padding:1rem">Server: %s &nbsp;&n
     <br>\n
     Issue Tracker ID: %s <br>\n
     <br>\n
-    Link to Issue: <a href="http://0.0.0.0:8000/clusters/%s/servers/%s/issuetrackers/%s">Click</a> <br>\n
+    Link to Issue: <a href="http://0.0.0.0:8080/clusters/%s/servers/%s/incidents/%s">Click</a> <br>\n
     '''
 
-def IncidentNotification(incidentId):
+def SendIncidentNotification(incidentId):
     i = Incident.objects.get(incidentId)
 
     print('============================================')
@@ -48,12 +48,12 @@ def IncidentNotification(incidentId):
         i.id,
         i.server.cluster_id, i.server_id, i.id)
 
-    note = IncidentNotification(incident=i,
-                                application=i.server.cluster.application,
-                                notification_method='Email',
-                                notification_subject=mySubject,
-                                notification_body=myBody)
-    note.save()
+    incidentNotification = IncidentNotification(incident=i,
+                            application=i.server.cluster.application,
+                            notification_method='Email',
+                            notification_subject=mySubject,
+                            notification_body=myBody)
+    incidentNotification.save()
 
-    if (note.notification_method == 'Email'):
-        SendNotificationEmail(note.id)
+    if (incidentNotification.notification_method == 'Email'):
+        SendNotificationEmail(incidentNotification.id)
