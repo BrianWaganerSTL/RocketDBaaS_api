@@ -26,7 +26,7 @@ def GetMetrics_MountPoints(server):
     try:
         r = requests.get(url, params={'timeout': 10})
         metrics = r.json()
-        print("metrics" + str(type(metrics)) + ', Count=' + str(len(metrics)) + ', r.status_code:' + str(r.status_code))
+        print("metrics" + str(r.status_code))
         print(metrics)
         errCnt[server.id] = 0
     except requests.exceptions.ConnectionError:
@@ -50,10 +50,18 @@ def GetMetrics_MountPoints(server):
         error_msg = 'Other Error ' + err
         print(error_msg)
     except:
-        print('ERROR: Other')
+        print('ERROR: ' + str(r.status_code) + ' ' + r.reason)
+        errCnt[server.id] = errCnt[server.id] + 1
+        error_msg = str(r.status_code) + ' ' + r.reason
 
     if (error_msg == ''):
-        for m in metrics:
+        # Make sure you have a List
+        if (type(metrics) == dict):
+            metricsList = [metrics]
+        else:
+            metricsList = metrics
+
+        for m in metricsList:
             try:
                 print('m:' + str(m))
 
