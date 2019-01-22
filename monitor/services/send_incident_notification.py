@@ -1,6 +1,8 @@
+from django.core.exceptions import FieldDoesNotExist, FieldError
+from django.db import IntegrityError
 from django.utils import timezone
 
-from monitor.models import Incident, IncidentStatusChoices, IncidentNotification
+from monitor.models import Incident, IncidentStatusChoices, IncidentNotification, ThresholdNotificationMethodLookup
 from monitor.services.send_notification_email import SendNotificationEmail
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: %s (%s)'
@@ -20,9 +22,14 @@ myHtmlTemplate = '''<h1 style="%s; margin:0px; padding:1rem">Server: %s &nbsp;&n
     '''
 
 def SendIncidentNotification(incidentId):
-    i = Incident.objects.get(incidentId)
-
     print('============================================')
+    try:
+        print('Try to find a current incident')
+        i = Incident.objects.filter(id=incidentId)[0]
+        print('Found a current incident id: ' + str(i.id))
+    except:
+        print('Did not find an existing Incident')
+
     print('Create a new Issue Notification and TwerkIt!')
 
     if (i.current_status == IncidentStatusChoices.Critical):
@@ -48,12 +55,19 @@ def SendIncidentNotification(incidentId):
         i.id,
         i.server.cluster_id, i.server_id, i.id)
 
-    incidentNotification = IncidentNotification(incident=i,
-                            application=i.server.cluster.application,
-                            notification_method='Email',
-                            notification_subject=mySubject,
-                            notification_body=myBody)
-    incidentNotification.save()
+    try:
+        print('NotificationMethod: ' + i.threshold_test.notification_method.notification_method)
+        incidentNotification = IncidentNotification(incident_id=i.id,
+                                                    application=i.server.cluster.application,
+                                                    notification_method=i.threshold_test.notification_method,
+                                                    notification_subject=mySubject,
+                                                    notification_body=myBody)
+        incidentNotification.save()
+    except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+        print('Error: ' + str(ex))
+    except:
+        print('Other error')
 
-    if (incidentNotification.notification_method == 'Email'):
-        SendNotificationEmail(incidentNotification.id)
+    print('incidentNotification.notification_method.notification_method(' + incidentNotification.notification_method.notification_method+ ') == Email')
+    if (incidentNotification.notification_method.notification_method == 'Email'):
+        SendNotificationEmail(incidentNotification.id, i.server.dbms_type)
