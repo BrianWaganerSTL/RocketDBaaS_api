@@ -1,13 +1,19 @@
 from django.core.mail import EmailMessage
 
-from dbaas.models import ApplicationContact
+from dbaas.models import ApplicationContact, Server
 from monitor.models import IncidentNotification
 
 
-def SendNotificationEmail(IncidentNotificationId):
-    i = IncidentNotification.object.get(IncidentNotificationId)
+def SendNotificationEmail(IncidentNotificationId, dbmsType):
+    print('In SendNotificationEmail')
+    try:
+        print('Try to find a current incident')
+        notification = IncidentNotification.objects.filter(id=IncidentNotificationId)[0]
+        print('Found a current IncidentNotification id: ' + str(notification.id))
+    except:
+        print('Did not find an existing IncidentNotification')
 
-    dbmsType = i.server.cluster.dbms_type
+    print('dbmsType=' + dbmsType)
     if (dbmsType == 'PostgreSQL'):
         emailFrom = 'bwaganer<bwaganer@express-scripts.com>'
         emailCc = ['bwaganer<bwaganer@express-scripts.com>']
@@ -20,18 +26,36 @@ def SendNotificationEmail(IncidentNotificationId):
         emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
         replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
 
-
     # Send the Notification out to the following
     print('Notify the following contacts')
-    for ac in ApplicationContact.objects.filter(application=i.server.cluster.application, contact__active_sw=True):
-        print('  %s: email: %s, phone: %s' % (
-            ac.contact.contact_name,
-            ac.contact.contact_email,
-            ac.contact.contact_phone))
 
-        msg = EmailMessage(subject=i.notification_subject, body=i.notification_body, from_email=emailFrom, to=[ac.contact.contact_email], bcc=None,
-                           connection=None, attachments=None, headers=None, cc=emailCc, reply_to=replyTo)
+    try:
+        print('Try to find Application Contacts')
+        applicationContacts = ApplicationContact.objects.filter(application=notification.application.id, contact__active_sw=True).all()
+        print('Found it')
+    except:
+        print('Did not find an application Contacts')
+
+    print('applicationContacts.count()=' + str(applicationContacts.count()))
+    if (applicationContacts.count() == 0):
+        print('No Application Contacts registerest for this metric, just send to the CC list')
+        msg = EmailMessage(subject=notification.notification_subject, body=notification.notification_body,
+                           from_email=emailFrom, to=emailCc, bcc=None,
+                           connection=None, attachments=None, headers=None, cc=None, reply_to=replyTo)
         msg.content_subtype = "html"  # Main content is now text/html
         msg.send()
+    else:
+        print('Before loop to get contacts and send an email')
+        for ac in ApplicationContact.objects.filter(application=notification.server.cluster.application, contact__active_sw=True):
+            print('  %s: email: %s, phone: %s' % (
+                ac.contact.contact_name,
+                ac.contact.contact_email,
+                ac.contact.contact_phone))
 
-    print('============================================\n')
+            msg = EmailMessage(subject=notification.notification_subject, body=notification.notification_body,
+                               from_email=emailFrom, to=[ac.contact.contact_email], bcc=None,
+                               connection=None, attachments=None, headers=None, cc=emailCc, reply_to=replyTo)
+            msg.content_subtype = "html"  # Main content is now text/html
+            msg.send()
+
+    print('===================  EMAIL SENT  =========================\n')
