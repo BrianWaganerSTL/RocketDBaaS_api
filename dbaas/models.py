@@ -214,7 +214,7 @@ class Server(Model):
 
     cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=True, blank=True)
     environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=True, blank=True)
-    server_name = CharField(max_length=30, null=False)
+    server_name = CharField(max_length=30, null=False, unique=True)
     server_ip = CharField(max_length=14, null=True, blank=True)
     cpu = DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
     ram_gb = DecimalField(decimal_places=1, max_digits=3, null=True, blank=True)
