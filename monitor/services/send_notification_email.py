@@ -1,4 +1,6 @@
+from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.core.mail import EmailMessage
+from django.db import IntegrityError
 
 from dbaas.models import ApplicationContact, Server
 from monitor.models import IncidentNotification
@@ -16,15 +18,15 @@ def SendNotificationEmail(IncidentNotificationId, dbmsType):
     print('dbmsType=' + dbmsType)
     if (dbmsType == 'PostgreSQL'):
         emailFrom = 'bwaganer<bwaganer@express-scripts.com>'
-        emailCc = ['bwaganer<bwaganer@express-scripts.com>']
-        replyTo = ['bwaganer<bwaganer@express-scripts.com>']
+        emailCc = ['bwaganer<bwaganer@express-scripts.com>',]
+        replyTo = ['bwaganer<bwaganer@express-scripts.com>',]
         # emailFrom = 'NextGenDBaaS<DBA-PostgreSQL@express-scripts.com>'
         # emailCc = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
         # replyTo = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
     elif (dbmsType == 'MongoDB'):
         emailFrom = 'NextGenDBaaS<DBA-MongoDB@express-scripts.com>>'
-        emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
-        replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>']
+        emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>',]
+        replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>',]
 
     # Send the Notification out to the following
     print('Notify the following contacts')
@@ -46,16 +48,21 @@ def SendNotificationEmail(IncidentNotificationId, dbmsType):
         msg.send()
     else:
         print('Before loop to get contacts and send an email')
-        for ac in ApplicationContact.objects.filter(application=notification.server.cluster.application, contact__active_sw=True):
+        for ac in applicationContacts:
             print('  %s: email: %s, phone: %s' % (
                 ac.contact.contact_name,
                 ac.contact.contact_email,
                 ac.contact.contact_phone))
 
-            msg = EmailMessage(subject=notification.notification_subject, body=notification.notification_body,
-                               from_email=emailFrom, to=[ac.contact.contact_email], bcc=None,
-                               connection=None, attachments=None, headers=None, cc=emailCc, reply_to=replyTo)
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
+            try:
+                msg = EmailMessage(subject=notification.notification_subject, body=notification.notification_body,
+                                   from_email=emailFrom, to=[ac.contact.contact_email], bcc=None,
+                                   connection=None, attachments=None, headers=None, cc=emailCc, reply_to=replyTo)
+                msg.content_subtype = "html"  # Main content is now text/html
+                msg.send()
+            except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                print('Error: ' + str(ex))
+            except Exception as ex:
+                print('Error: ' + str(ex))
 
     print('===================  EMAIL SENT  =========================\n')
