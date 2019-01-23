@@ -13,7 +13,7 @@ from monitor.services.send_incident_notification import SendIncidentNotification
 
 
 def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, detail_element):
-  print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)
+  # print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)
   server = Server.objects.get(id=slimServer.id)
   try:
     thresholdTest = ThresholdTest.objects \
@@ -22,12 +22,13 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
                               Q(threshold_metric__metric_name=metric_name) &
                               (Q(detail_element=detail_element) |
                                Q(threshold_metric__detail_element_sw=False)))[0]
-    print('Found an active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
+    # print('Found an active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
   except:
-    print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
-    print('returning')
+    # print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
+    # print('returning')
     return
   else:
+    print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)
     critical_value = eval(thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu)))
     warning_value = eval(thresholdTest.warning_value.replace("<<CPU>>", str(server.cpu)))
     print('warning_value: ' + str(warning_value) + ', critical_value: ' + str(critical_value));
@@ -56,7 +57,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
       print('Flag1')
       print('Create an Incident with server.id:' + str(server.id) + ',  pending_status:' + pendingThresholdLevel)
       try:
-        i = Incident(server_id=server.id, threshold_test=thresholdTest, pending_status=pendingThresholdLevel)
+        i = Incident(server_id=server.id, threshold_test=thresholdTest, pending_status=pendingThresholdLevel, min_value=metric_value, max_value=metric_value)
       except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
         print('Error: ' + str(ex))
       except:
@@ -85,7 +86,7 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
     i.warning_ticks = min(i.warning_ticks + 1, thresholdTest.warning_ticks)
     i.normal_ticks = max(i.normal_ticks - 1, 0)
     print('Critical Ticks needed: %d, currently %d ticks' % (thresholdTest.critical_ticks, i.critical_ticks))
-    print('if (' + str(i.critical_ticks) + ') == ' + str(thresholdTest.critical_ticks) + ')')
+    print('if (' + str(i.critical_ticks) + ' == ' + str(thresholdTest.critical_ticks) + ')')
     if (i.critical_ticks == thresholdTest.critical_ticks):
       if (i.pending_status != i.current_status):
         twerkIt = True
@@ -119,7 +120,15 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
       i.current_status = IncidentStatusChoices.Normal
   i.save()
 
-  print('Should We TwerkIt Baby???' + str(twerkIt))
+  print('Get Ready to...')
+  print('\n' +
+        '>>>  Should We TwerkIt Baby???' + str(twerkIt) + ' ' + i.server.server_name + ' ' +
+        i.threshold_test.threshold_metric.category.category_name + ': ' +
+        i.threshold_test.threshold_metric.metric_name + ' ' +
+        str(i.threshold_test.detail_element) + ' ' +
+        'Current [' + i.cur_test_w_values + ']\n' +
+        '>>>  PendingStatus: ' + i.pending_status + ', CurrentStatus: ' + i.current_status + ' Ticks(N,W,C):(' + str(i.normal_ticks) + ',' + str(i.warning_ticks) + ',' + str(critical_value) + ')\n')
+  print('>>>  Started: ' + str(i.start_dttm) + ', ID=' + str(i.id))
   if (twerkIt):
     # Create Issue Notification
     print('SendIncidentNotification')
