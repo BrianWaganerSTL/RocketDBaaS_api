@@ -8,8 +8,15 @@ class ThresholdTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThresholdTest
         fields = '__all__'
-        depth = 0
-        sorted('created_dttm', reverse=True)
+        depth = 3
+
+
+# class ThresholdTestSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ThresholdTest
+#         fields = '__all__'
+#         depth = 0
+#         sorted('created_dttm', reverse=True)
 
 class IncidentSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,10 +1,7 @@
-import decimal
-
 from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
-from django.utils import timezone
-from django_core import exceptions
 from django.db.models import Q
+from django.utils import timezone
 
 from dbaas.models import Server
 from dbaas.utils.DynCompare import DynCompare
@@ -25,7 +22,8 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
     # print('Found an active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
   except:
     # print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
-    # print('returning')
+    print('returning')
+    pass
     return
   else:
     print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)

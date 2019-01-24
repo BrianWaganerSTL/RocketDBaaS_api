@@ -11,6 +11,7 @@ router.register(r'poolservers', ApiViews.PoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
 router.register(r'applications', ApiViews.Applications)
 router.register(r'environments', ApiViews.Environments)
+router.register(r'threshold_tests', monitor_views.ThresholdTest)
 # http://127.0.0.1:8080/admin/dbaas/cluster/add/
 urlpatterns = [
     path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),

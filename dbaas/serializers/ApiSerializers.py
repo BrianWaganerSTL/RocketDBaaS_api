@@ -77,12 +77,12 @@ class ApplicationContactsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
-# Need to decide between this way and the dbaas/view/create_cluster_view.py
+
 class ClusterSerializer(serializers.ModelSerializer):
   class Meta:
     model = Cluster
     fields = '__all__'
-    depth = 2
+    depth = 3
     read_only_fields = ['application','environment']
 
 
@@ -97,12 +97,11 @@ class ClusterSerializer(serializers.ModelSerializer):
       application.save()
 
     application = get_object_or_404(Application.objects.filter(application_name=appl_name))
-
     print('In ClusterSerializer(POST). application.id=' + str(application.id))
     logging.info('In ClusterSerializer(POST). application.id=', application.id)
     validated_data.update(application_id=application.id)  # Add it to the object to be saved
 
-    env_name = self.initial_data['environment_id']
+    env_name = self.initial_data['environment_name']
     if (Environment.objects.filter(env_name=env_name) == 0): # It's a natural key)
       raise ValidationError("Error: env_name(" + env_name + ") doesn't exist")
 

@@ -6,7 +6,7 @@ from metrics.models import Metrics_CollectionError, Metrics_Cpu, Metrics_CpuLoad
 
 
 def GetMetricsCollectionErrors(s):
-  print('\n[CollectionErrors]: ' + s.server_name )
+  print('\n[GetMetricsCollectionErrors]: ' + s.server_name )
 
   print('cpu')
   try:
@@ -53,8 +53,8 @@ def GetMetricsCollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as e:
+    print('ERROR: Saving it to the Metrics_CollectionError table, %s', e)
 
   print('HostDetail')
   try:
