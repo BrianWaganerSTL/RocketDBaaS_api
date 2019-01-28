@@ -1,11 +1,10 @@
-import decimal
-
 from django.db import models
 from django.db.models import ForeignKey, IntegerField, CASCADE, deletion, BooleanField, CharField, DateTimeField, DecimalField
 from djchoices import DjangoChoices, ChoiceItem
 from rest_framework.compat import MinValueValidator, MaxValueValidator
 
-from dbaas.models import Server, INFINITY, Application
+from dbaas.models import Server, Application
+
 
 #
 # class MetricNameChoices(DjangoChoices):
@@ -28,6 +27,7 @@ class IncidentStatusChoices(DjangoChoices):
     Warning = ChoiceItem("Warning",'Warning',2)
     Critical = ChoiceItem("Critical","Critical",3)
     Blackout = ChoiceItem("Blackout","Blackout",4)
+    Watching = ChoiceItem("Watching", "Watching", 6)
     Unknown = ChoiceItem("Unknown","Unknown", 6)
 
 
@@ -102,7 +102,7 @@ class Incident(models.Model):
     max_value = DecimalField(null=False, max_digits = 6, decimal_places = 2, default = 0)
     cur_test_w_values = CharField(max_length=500, null=False, default='')
     pending_status = CharField(max_length=15, null=False, default='', choices=IncidentStatusChoices.choices)
-    current_status = CharField(max_length=15, null=False, default='', choices=IncidentStatusChoices.choices)
+    current_status = CharField(max_length=15, null=False, default=IncidentStatusChoices.Watching, choices=IncidentStatusChoices.choices)
     detail_element = CharField(max_length=25, null=False, default='')
     critical_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
     warning_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
@@ -113,6 +113,24 @@ class Incident(models.Model):
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)
 
+
+
+class IncidentDetail(models.Model):
+  class Meta:
+    db_table = 'monitor_incident_details'
+    ordering = ['-created_dttm']
+
+  incident = ForeignKey(Incident, on_delete=deletion.CASCADE, null=False)
+  cur_value = DecimalField(null=False, max_digits=6, decimal_places=2, default=0)
+  min_value = DecimalField(null=False, max_digits=6, decimal_places=2, default=0)
+  max_value = DecimalField(null=False, max_digits=6, decimal_places=2, default=0)
+  cur_test_w_values = CharField(max_length=500, null=False, default='')
+  pending_status = CharField(max_length=15, null=False, default='', choices=IncidentStatusChoices.choices)
+  current_status = CharField(max_length=15, null=False, default=IncidentStatusChoices.Watching, choices=IncidentStatusChoices.choices)
+  critical_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
+  warning_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
+  normal_ticks = IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], null=False, default=0)
+  created_dttm = DateTimeField(editable=False, auto_now_add=True)
 
 class IncidentNotification(models.Model):
     class Meta:

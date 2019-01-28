@@ -9,7 +9,7 @@ from monitor.services.metric_threshold_test import MetricThresholdTest
 errCnt = [0] * 1000
 
 
-def GetMetricsPingServer(server):
+def PingServer(server):
     if (server.server_ip is None):
         return
 

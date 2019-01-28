@@ -13,7 +13,7 @@ errCnt = [0] * 1000
 metrics_port = MINION_PORT
 
 
-def GetMetrics_Cpu(server):
+def Cpu(server):
     if (server.server_ip is None):
         return
 
@@ -76,9 +76,11 @@ def GetMetrics_Cpu(server):
 
                 try:
                     MetricThresholdTest(server, 'Cpu', 'cpu_idle_pct', metrics_Cpu.cpu_idle_pct, '')
+                except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
+                    print('Error: ' + str(ex))
                 except:
-                     print('ERROR: ' + str(e))
-                     pass
+                    print('Other error')
+                    pass
             except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
                 print('Error: ' + str(ex))
 

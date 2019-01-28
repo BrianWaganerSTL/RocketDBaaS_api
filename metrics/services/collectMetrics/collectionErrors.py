@@ -5,7 +5,7 @@ from django.utils import timezone
 from metrics.models import Metrics_CollectionError, Metrics_Cpu, Metrics_CpuLoad, Metrics_MountPoint, Metrics_HostDetail, Metrics_PingDb, Metrics_PingServer
 
 
-def GetMetricsCollectionErrors(s):
+def CollectionErrors(s):
   print('\n[GetMetricsCollectionErrors]: ' + s.server_name )
 
   print('cpu')

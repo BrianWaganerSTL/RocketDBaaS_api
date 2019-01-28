@@ -15,7 +15,7 @@ errCnt = [0] * 1000
 metrics_port = MINION_PORT
 
 
-def GetMetrics_HostDetails(server):
+def HostDetails(server):
     server_ip = ''
     if (server.server_ip is None):
         if (server.server_name is None):

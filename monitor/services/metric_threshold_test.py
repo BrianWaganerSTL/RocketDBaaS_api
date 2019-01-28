@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from dbaas.models import Server
 from dbaas.utils.DynCompare import DynCompare
-from monitor.models import ThresholdTest, IncidentStatusChoices, Incident
+from monitor.models import ThresholdTest, IncidentStatusChoices, Incident, IncidentDetail
 from monitor.services.send_incident_notification import SendIncidentNotification
 
 
@@ -21,26 +21,37 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
                                Q(threshold_metric__detail_element_sw=False)))[0]
     # print('Found an active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
   except:
-    # print('Found no active ThresholdTest for ' + category_name + ' (' + metric_name + ') ' + detail_element)
     print('returning')
     pass
     return
-  else:
-    print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)
-    critical_value = eval(thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu)))
-    warning_value = eval(thresholdTest.warning_value.replace("<<CPU>>", str(server.cpu)))
-    print('warning_value: ' + str(warning_value) + ', critical_value: ' + str(critical_value));
-    if DynCompare(metric_value, thresholdTest.critical_predicate_type, critical_value):
-      pendingThresholdLevel = IncidentStatusChoices.Critical
+
+  print('In MetricThresholdTest: category_name=' + category_name + ', metric_name=' + metric_name + ', metric_value=' + str(metric_value) + ', detail_element=' + detail_element)
+  critical_value = eval(thresholdTest.critical_value.replace("<<CPU>>", str(server.cpu)))
+  warning_value = eval(thresholdTest.warning_value.replace("<<CPU>>", str(server.cpu)))
+  print('warning_value: ' + str(warning_value) + ', critical_value: ' + str(critical_value));
+
+  if DynCompare(metric_value, thresholdTest.critical_predicate_type, critical_value):
+    pendingThresholdLevel = IncidentStatusChoices.Critical
+    if (str(critical_value) == thresholdTest.critical_value):
       CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, thresholdTest.critical_value)
-    elif DynCompare(metric_value, thresholdTest.warning_predicate_type, warning_value):
-      pendingThresholdLevel = IncidentStatusChoices.Warning
+    else:
+      CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.critical_predicate_type, str(critical_value) + ' (' + thresholdTest.critical_value) + ')'
+
+  elif DynCompare(metric_value, thresholdTest.warning_predicate_type, warning_value):
+    pendingThresholdLevel = IncidentStatusChoices.Warning
+    if (str(warning_value) == thresholdTest.warning_value):
       CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
     else:
-      pendingThresholdLevel = IncidentStatusChoices.Normal
-      CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
+      CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, str(warning_value) + ' (' + thresholdTest.warning_value) + ')'
 
-    print('Pending Threshold: %s' % pendingThresholdLevel)
+  else:
+    pendingThresholdLevel = IncidentStatusChoices.Normal
+    if (str(warning_value) == thresholdTest.warning_value):
+      CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, thresholdTest.warning_value)
+    else:
+      CurTestWithValues = '%d %s %s' % (metric_value, thresholdTest.warning_predicate_type, str(warning_value) + ' (' + thresholdTest.warning_value) + ')'
+
+  print('Pending Threshold: %s' % pendingThresholdLevel)
 
   #  Now Create an Incident if one doesn't already exist
   twerkIt = False
@@ -48,36 +59,42 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
     print('Try to find a current incident')
     i = Incident.objects.filter(server_id=server.id, threshold_test=thresholdTest, closed_sw=False)[0]
     print('Found a current incident id: ' + str(i.id))
+
+    i.detail_element = detail_element
+    i.cur_test_w_values = CurTestWithValues
+    i.cur_value = metric_value
+
+    if (metric_value > i.max_value):
+      i.max_value = metric_value
+    if (metric_value < i.min_value):
+      i.min_value = metric_value
+
+    i.last_dttm = timezone.now()
+    i.save()  # Save so I get the datetimes and other default
   except:
     print('Did not find an existing Incident')
     print('pendingThresholdLevel=' + pendingThresholdLevel)
-    if (pendingThresholdLevel == 'Critical' or pendingThresholdLevel == 'Warning'):
-      print('Flag1')
+    if (pendingThresholdLevel == IncidentStatusChoices.Critical or pendingThresholdLevel == IncidentStatusChoices.Warning):
       print('Create an Incident with server.id:' + str(server.id) + ',  pending_status:' + pendingThresholdLevel)
       try:
-        i = Incident(server_id=server.id, threshold_test=thresholdTest, pending_status=pendingThresholdLevel, min_value=metric_value, max_value=metric_value)
+        i = Incident(server_id=server.id, threshold_test=thresholdTest, current_status=IncidentStatusChoices.Watching, pending_status=pendingThresholdLevel, min_value=metric_value, max_value=metric_value, detail_element=detail_element, cur_test_w_values=CurTestWithValues, cur_value=metric_value, last_dttm=timezone.now())
+        i.save()  # Save so I get the datetimes and other default
+        print('Created a Incident')
+        pass
       except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
         print('Error: ' + str(ex))
       except:
         print('Other error')
-      print('Created a Incident')
+
     else:
       print('Nothing to do, Return')
       return
 
-  print('Before setting incident fields')
-  i.detail_element = detail_element
-  i.cur_test_w_values = CurTestWithValues
-  i.cur_value = metric_value
-
-  if (metric_value > i.max_value):
-    i.max_value = metric_value
-  if (metric_value < i.min_value):
-    i.min_value = metric_value
-
-  i.last_dttm = timezone.now()
-  print('Before saving incident fields')
-  i.save()  # Save so I get the datetimes and other default
+  incidentDetail = IncidentDetail(incident=i, cur_value=i.cur_value, min_value=i.min_value, max_value=i.max_value,
+                                  cur_test_w_values=i.cur_test_w_values, pending_status=i.pending_status,
+                                  current_status=i.current_status, critical_ticks=i.critical_ticks,
+                                  warning_ticks=i.warning_ticks, normal_ticks=i.normal_ticks)
+  incidentDetail.save()
 
   if pendingThresholdLevel == 'Critical':
     i.critical_ticks = min(i.critical_ticks + 1, thresholdTest.critical_ticks)
@@ -117,6 +134,12 @@ def MetricThresholdTest(slimServer, category_name, metric_name, metric_value, de
         i.closed_sw = True
       i.current_status = IncidentStatusChoices.Normal
   i.save()
+
+  incidentDetail = IncidentDetail(incident=i, cur_value=i.cur_value, min_value=i.min_value, max_value=i.max_value,
+                                  cur_test_w_values=i.cur_test_w_values, pending_status=i.pending_status,
+                                  current_status=i.current_status, critical_ticks=i.critical_ticks,
+                                  warning_ticks=i.warning_ticks, normal_ticks=i.normal_ticks)
+  incidentDetail.save()
 
   print('Get Ready to...')
   print('\n' +

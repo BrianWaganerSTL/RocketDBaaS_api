@@ -1,5 +1,6 @@
 from dbaas.models import Server
-from metrics.services import getMetrics_PingServer, getMetrics_MountPoints, getMetrics_PingDb, getMetrics_CpuLoad, getMetrics_Cpu, getMetrics_HostDetails, getMetrics_CollectionErrors
+from metrics.services.collectMetrics import pingServer, collectionErrors, pingDb, cpu, hostDetails, mountPoints, \
+    cpuLoad
 
 
 def Metrics_FastTick():
@@ -8,8 +9,8 @@ def Metrics_FastTick():
     try:
         poolServers = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer);
         for ps in poolServers:
-            getMetrics_HostDetails.GetMetrics_HostDetails(ps)  #  This should be first incase cpu and stuff are not filled in yet.
-            getMetrics_PingServer.GetMetricsPingServer(ps)
+            hostDetails.HostDetails(ps)  #  This should be first incase cpu and stuff are not filled in yet.
+            pingServer.PingServer(ps)
     except:
         pass
 
@@ -20,27 +21,27 @@ def Metrics_FastTick():
         for s in servers:
             try:
                 print('getMetrics_PingServer: ' + s.server_name)
-                getMetrics_PingServer.GetMetricsPingServer(s)
+                pingServer.PingServer(s)
             except:
                 pass
             try:
                 print('getMetrics_PingDb: ' + s.server_name)
-                getMetrics_PingDb.GetMetrics_PingDb(s)
+                pingDb.PingDb(s)
             except:
                 pass
             try:
                 print('getMetrics_Cpu: ' + s.server_name)
-                getMetrics_Cpu.GetMetrics_Cpu(s)
+                cpu.Cpu(s)
             except:
                 pass
             try:
                 print('getMetrics_CpuLoad: ' + s.server_name)
-                getMetrics_CpuLoad.GetMetrics_Load(s)
+                cpuLoad.CpuLoad(s)
             except:
                 pass
             try:
                 print('getMetrics_CollectionErrors: ' + s.server_name)
-                getMetrics_CollectionErrors.GetMetricsCollectionErrors(s)
+                collectionErrors.CollectionErrors(s)
             except:
                 pass
     except:
@@ -53,6 +54,6 @@ def Metrics_SlowTick():
                     exclude(node_role=Server.NodeRoleChoices.PoolServerLocked)
         for s in servers:
             print('\nMetrics_SlowTick: ServerId=' + str(s.id))
-            getMetrics_MountPoints.GetMetrics_MountPoints(s)
+            mountPoints.MountPoints(s)
     except:
         pass

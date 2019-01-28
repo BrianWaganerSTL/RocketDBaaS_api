@@ -23,6 +23,7 @@ class ChartMountPoints(APIView):
     mountPoints = Metrics_MountPoint.objects \
       .filter(server_id=vServerId) \
       .filter(created_dttm__gte=afterDttm) \
+      .filter(error_cnt=0) \
       .exclude(mount_point='') \
       .order_by('-created_dttm')
 

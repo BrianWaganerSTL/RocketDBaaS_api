@@ -127,7 +127,7 @@ class ClusterSerializer(serializers.ModelSerializer):
       try:
         server = Server.objects.filter(pk=id, cluster_id__isnull=True, node_role=Server.NodeRoleChoices.PoolServer)
       except Exception as e:
-        raise ValidationError("Error: server_id(" + id + ") doesn't exist and/or belongs to a cluster and/or is not a PoolServer")
+        raise ValidationError("Error: server_id(" + id + ") doesn't exist and/or belongs to a cluster and/or is not a PoolServer" + str(e))
 
     cluster = Cluster.objects.create(**validated_data)
     print(str(cluster))

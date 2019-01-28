@@ -3,12 +3,12 @@ import sys
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.utils import timezone
 
-from metrics.services.collectMetrics import Metrics_FastTick, Metrics_SlowTick
+from metrics.services.collectMetrics.callCollectors import Metrics_FastTick, Metrics_SlowTick
 from monitor.services.issue_tracker_cleanup import IssueTrackerCleanup
 
 
 def StartMasterScheduler():
-  if ('makemigrations' in sys.argv or 'migrate' in sys.argv):
+  if ('makemigrations' in sys.argv or 'migrate' in sys.argv or 'test' in sys.argv):
     print('Schedulers NOT started')
     return []
   else:
