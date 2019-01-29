@@ -3,6 +3,7 @@ from django.contrib.admin.sites import AdminSite
 
 from .models import *
 
+
 @admin.register(Datacenter)
 class Datacenter(admin.ModelAdmin):
     list_display = [field.attname for field in Datacenter._meta.fields]
@@ -51,7 +52,7 @@ class Server(admin.ModelAdmin):
 
 @admin.register(ServerActivity)
 class ServerActivity(admin.ModelAdmin):
-    list_display = ('server', 'server_activity','activity_status','start_dttm')
+    list_display = ('server', 'activity_type','activity_status','start_dttm')
     list_select_related = ('server',)
     list_display_links = ('server',)
 

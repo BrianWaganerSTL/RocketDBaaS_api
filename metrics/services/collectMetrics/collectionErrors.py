@@ -21,8 +21,8 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))
 
   print('cpuLoad')
   try:
@@ -37,8 +37,8 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))
 
   print('MountPoint')
   try:
@@ -53,8 +53,8 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except Exception as e:
-    print('ERROR: Saving it to the Metrics_CollectionError table, %s', e)
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))
 
   print('HostDetail')
   try:
@@ -69,8 +69,8 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))
 
   print('PingDb')
   try:
@@ -85,8 +85,8 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))
 
   print('PingServer')
   try:
@@ -101,5 +101,5 @@ def CollectionErrors(s):
       metrics_CollectionError.save()
   except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
     print('Error: Saving a Metrics_CollectionError' + str(ex))
-  except:
-    print('ERROR: Saving it to the Metrics_CollectionError table')
+  except Exception as ex:
+    print('ERROR: Saving it to the Metrics_CollectionError table' + str(ex))

@@ -129,7 +129,7 @@ class PoolServersViewSet(ModelViewSet):
   permission_classes = [AllowAny, ]
 
   def get_queryset(self):
-    queryset = Server.objects.filter(node_role=Server.NodeRoleChoices.PoolServer).order_by('environment', 'datacenter', '-created_dttm')
+    queryset = Server.objects.filter(node_role=Server.NodeRoleChoices.POOLSERVER).order_by('environment', 'datacenter', '-created_dttm')
 
     env = self.request.query_params.get('env', None)
     if env is not None:

@@ -49,8 +49,8 @@ def CpuLoad(server):
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = 'Other Error ' + err
         print(error_msg)
-    except:
-        print('ERROR: ' + str(r.status_code) + ' ' + r.reason)
+    except Exception as ex:
+        print('ERROR: ' + str(r.status_code) + ' ' + r.reason + '; ' + str(ex))
         errCnt[server.id] = errCnt[server.id] + 1
         error_msg = str(r.status_code) + ' ' + r.reason
 
@@ -90,6 +90,8 @@ def CpuLoad(server):
 
             except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
                 print('Error: ' + str(ex))
+            except Exception as ex:
+                print('ERROR: ' + str(ex))
     else:
         metrics_CpuLoad = Metrics_CpuLoad()
         metrics_CpuLoad.server = server

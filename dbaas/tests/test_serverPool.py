@@ -12,7 +12,7 @@ class PoolServersTestCases(TestCase):
     self.poolServer.cpu = 4
     self.poolServer.ram_gb = 4
     self.poolServer.db_gb = 10
-    self.poolServer.node_role = Server.NodeRoleChoices.PoolServer
+    self.poolServer.node_role = Server.NodeRoleChoices.POOLSERVER
     self.poolServer.active_sw = True
 
   # def test_create_pool_server(self):

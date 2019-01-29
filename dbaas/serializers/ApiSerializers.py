@@ -109,23 +109,23 @@ class ClusterSerializer(serializers.ModelSerializer):
 
     read_write_port = ServerPort.NextOpenPort(self)
     read_write_port.updated_dttm = timezone.datetime.now()
-    read_write_port.port_status = ServerPort.PortStatusChoices.Locked
+    read_write_port.port_status = ServerPort.PortStatusChoices.LOCKED
     read_write_port.save()
-    read_write_port.port_status = ServerPort.PortStatusChoices.Used
+    read_write_port.port_status = ServerPort.PortStatusChoices.USED
     validated_data.update(read_write_port=read_write_port)
 
     read_only_port = ServerPort.NextOpenPort(self)
     read_write_port.updated_dttm = timezone.datetime.now()
-    read_only_port.port_status = ServerPort.PortStatusChoices.Locked
+    read_only_port.port_status = ServerPort.PortStatusChoices.LOCKED
     read_only_port.save()
-    read_only_port.port_status = ServerPort.PortStatusChoices.Used
+    read_only_port.port_status = ServerPort.PortStatusChoices.USED
     validated_data.update(read_only_port=read_only_port)
 
     # Just validate the server for now
     server_ids = self.initial_data['server_ids']
     for id in server_ids:
       try:
-        server = Server.objects.filter(pk=id, cluster_id__isnull=True, node_role=Server.NodeRoleChoices.PoolServer)
+        server = Server.objects.filter(pk=id, cluster_id__isnull=True, node_role=Server.NodeRoleChoices.POOLSERVER)
       except Exception as e:
         raise ValidationError("Error: server_id(" + id + ") doesn't exist and/or belongs to a cluster and/or is not a PoolServer" + str(e))
 

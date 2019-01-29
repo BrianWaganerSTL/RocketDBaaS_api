@@ -6,11 +6,6 @@ from rest_framework.compat import MinValueValidator
 from dbaas.models import Server
 
 
-class PingStatusChoices(DjangoChoices):
-    Normal = ChoiceItem("Normal","Normal",1)
-    Critical = ChoiceItem("Critical","Critical",2)
-    Blackout = ChoiceItem("Blackout","Blackout",3)
-
 # ====================================================================================
 class Metrics_Cpu(models.Model):
     class Meta:
@@ -58,9 +53,14 @@ class Metrics_PingServer(models.Model):
     class Meta:
         db_table = 'metrics_ping_server'
 
+    class PingStatusChoices(DjangoChoices):
+        NORMAL = ChoiceItem("Normal", "Normal", 1)
+        CRITICAL = ChoiceItem("Critical", "Critical", 2)
+        BLACKOUT = ChoiceItem("Blackout", "Blackout", 3)
+
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    ping_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
+    ping_status = CharField(max_length=30, null=False, choices=PingStatusChoices.choices, default='')
     ping_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=2000, null=False, default='')
@@ -69,9 +69,14 @@ class Metrics_PingDb(models.Model):
     class Meta:
         db_table = 'metrics_ping_db'
 
+    class PingStatusChoices(DjangoChoices):
+        NORMAL = ChoiceItem("Normal", "Normal", 1)
+        CRITICAL = ChoiceItem("Critical", "Critical", 2)
+        BLACKOUT = ChoiceItem("Blackout", "Blackout", 3)
+
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
     created_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
-    ping_db_status = CharField(max_length=30, null=False, default='', choices=PingStatusChoices.choices)
+    ping_db_status = CharField(max_length=30, null=False, choices=PingStatusChoices.choices, default='')
     ping_db_response_ms = IntegerField(null=False, default=0)
     error_cnt = IntegerField(validators=[MinValueValidator(0)], null=False, default=0)
     error_msg = CharField(max_length=2000, null=False, default='')

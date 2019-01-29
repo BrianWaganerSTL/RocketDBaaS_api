@@ -20,55 +20,15 @@ class DbmsTypeChoices(DjangoChoices):
     MongoDB = ChoiceItem()
 
 
-class BackupTypeChoices(DjangoChoices):
-    BackupFull = ChoiceItem("Full", "Full", 1)
-    BackupIncremental = ChoiceItem("Incr","Incremental", 2)
-    BackupDifferential = ChoiceItem("Diff", "Differential", 3)
-
-
-class BackupStatusChoices(DjangoChoices):
-    Running = ChoiceItem("Running","Running",1)
-    Failed = ChoiceItem("Failed",'Failed',2)
-    Successful = ChoiceItem("Successful","Successful",3)
-
-
-class RestoreTypeChoices(DjangoChoices):
-    RestoreFull = ChoiceItem("Full", "Restore Full", 1)
-    RestoreDB = ChoiceItem("DB","Restore Database", 2)
-    RestoreTable = ChoiceItem("Table", "Restore Table", 3)
-
-
-class RestoreStatusChoices(DjangoChoices):
-    Running = ChoiceItem("Running","Running",1)
-    Failed = ChoiceItem("Failed",'Failed',2)
-    Successful = ChoiceItem("Successful","Successful",3)
-
-
-class ServerActivityTypeChoices(DjangoChoices):
-    RestartServer = ChoiceItem("RestartServer", "Restart Server", 1)
-    StopServer = ChoiceItem("StopServer", "Stop Server", 2)
-    StartServer = ChoiceItem("StartServer", "Start Server", 3)
-    RestartDB = ChoiceItem("RestartDB", "Restart Database", 4)
-    PromoteDB = ChoiceItem("PromoteDB", "Promote Database", 5)
-    DemomoteDB = ChoiceItem("DemoteDB", "Demote Database", 6)
-
 class ColorChoices(DjangoChoices):
-    Primary = ChoiceItem("primary", "Primary", 1)
-    Secondary = ChoiceItem("secondary", "Secondary", 2)
-    Success = ChoiceItem("success", "Success", 3)
-    Danger = ChoiceItem("danger", "Danger", 4)
-    Warning = ChoiceItem("warning", "Warning", 5)
-    Info = ChoiceItem("info", "Info", 6)
-    Light = ChoiceItem("light", "Light", 7)
-    Dark = ChoiceItem("dark", "Dark", 8)
-
-
-class ActivitiesStatusChoices(DjangoChoices):
-    Queued = ChoiceItem("Queued","Queued",1)
-    PendingRestart = ChoiceItem("PendingRestart",'PendingRestart',2)
-    Processing = ChoiceItem("Processing","Processing",3)
-    Successful = ChoiceItem("Successful","Successful",4)
-    Failed = ChoiceItem("Failed","Failed", 5)
+    PRIMARY = ChoiceItem("primary", "Primary", 1)
+    SECONDARY = ChoiceItem("secondary", "Secondary", 2)
+    SUCCESS = ChoiceItem("success", "Success", 3)
+    DANGER = ChoiceItem("danger", "Danger", 4)
+    WARNING = ChoiceItem("warning", "Warning", 5)
+    INFO = ChoiceItem("info", "Info", 6)
+    LIGHT = ChoiceItem("light", "Light", 7)
+    DARK = ChoiceItem("dark", "Dark", 8)
 
 
 class Environment(Model):
@@ -100,26 +60,26 @@ class ServerPort(Model):
         db_table = "dbaas_server_port"
 
     class PortStatusChoices(DjangoChoices):
-        Free = ChoiceItem("Free", "Free", 1)
-        Locked = ChoiceItem("Locked", "Locked", 2)
-        Used = ChoiceItem("Used", "Used", 3)
-        Hidden = ChoiceItem("Hidden", "Hidden", 4)
+        FREE = ChoiceItem("Free", "Free", 1)
+        LOCKED = ChoiceItem("Locked", "Locked", 2)
+        USED = ChoiceItem("Used", "Used", 3)
+        HIDDEN = ChoiceItem("Hidden", "Hidden", 4)
 
     def __str__(self):
         return str(self.port)
 
     port = IntegerField(validators=[MinValueValidator(1024), MaxValueValidator(65535)], primary_key=True, unique=True)
-    port_status = CharField(max_length=10, choices=PortStatusChoices.choices, null=False, default='Free')
+    port_status = CharField(max_length=10, choices=PortStatusChoices.choices, null=False, default=PortStatusChoices.FREE)
     port_notes = CharField(max_length=100, null=False)
     updated_dttm = DateTimeField(auto_now=True, null=False)
 
     def NextOpenPort(self):
-        cnt = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).count()
+        cnt = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.USED).count()
         if (cnt == 0):
-            serverPort__NextPort = ServerPort.objects.filter(port__gt=1023).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+            serverPort__NextPort = ServerPort.objects.filter(port__gt=1023).filter(port_status=ServerPort.PortStatusChoices.FREE).first()
         else:
-            serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.Used).last()
-            serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed).filter(port_status=ServerPort.PortStatusChoices.Free).first()
+            serverPort__LastUsed = ServerPort.objects.filter(port_status=ServerPort.PortStatusChoices.USED).last()
+            serverPort__NextPort = ServerPort.objects.filter(port__gt=serverPort__LastUsed).filter(port_status=ServerPort.PortStatusChoices.FREE).first()
 
         return serverPort__NextPort
 
@@ -129,12 +89,12 @@ class Contact(Model):
         db_table = "dbaas_contact"
 
     class ContactTypeChoices(DjangoChoices):
-        Person = ChoiceItem("Person","Person",1)
-        Group = ChoiceItem("Distro","Email Group Distro",2)
+        PERSON = ChoiceItem("Person", "Person", 1)
+        GROUP = ChoiceItem("Distro", "Email Group Distro", 2)
         API = ChoiceItem("API","API Endpoint",3)
 
     contact_name = CharField(max_length=60, unique=True, null=False)
-    contact_type = CharField(max_length=30, choices=ContactTypeChoices.choices, null=False, default='')
+    contact_type = CharField(max_length=30, choices=ContactTypeChoices.choices, null=False, default=ContactTypeChoices.PERSON)
     contact_email = EmailField(null=False, default='default@email.com')
     contact_phone = CharField(max_length=15, null=True, blank=True)
     active_sw = BooleanField(null=False, default=True)
@@ -167,11 +127,11 @@ class Cluster(Model):
 
 
     class ClusterHealthChoices(DjangoChoices):
-        ClusterConfiguring = ChoiceItem("ClusterConfig", "Cluster Configuring", 1)
-        ClusterUp = ChoiceItem("ClusterUp","Nodes Up and Healthy", 2)
-        ClusterUpWithIssues = ChoiceItem("ClusterUpWithIssues","Primary is Up but something is Not Healthy", 3)
-        ClusterDown = ChoiceItem("ClusterDown", "Cluster is Down", 4)
-        ClusterOnLineMaint = ChoiceItem("ClusterOnLineMaint","On-Line Maintenance", 5)
+        CLUSTERCONFIGURING = ChoiceItem("ClusterConfig", "Cluster Configuring", 1)
+        CLUSTERUP = ChoiceItem("ClusterUp", "Nodes Up and Healthy", 2)
+        CLUSTERUPWITHISSUES = ChoiceItem("ClusterUpWithIssues", "Primary is Up but something is Not Healthy", 3)
+        CLUSTERDOWN = ChoiceItem("ClusterDown", "Cluster is Down", 4)
+        CLUSTERONLINEMAINT = ChoiceItem("ClusterOnLineMaint", "On-Line Maintenance", 5)
 
     cluster_name = CharField(max_length=30, unique=True, null=False)
     dbms_type = CharField(choices=DbmsTypeChoices.choices, max_length=10, null=False)
@@ -181,7 +141,7 @@ class Cluster(Model):
     read_only_port = ForeignKey(ServerPort, on_delete=deletion.ProtectedError, null=False, default=65535, related_name='read_only_port_id')
     tls_enabled_sw = BooleanField(null=False, default=True)
     backup_retention_days = IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], null=False, default=14)
-    cluster_health = CharField(max_length=30, null=False, choices=ClusterHealthChoices.choices, default=ClusterHealthChoices.ClusterConfiguring)
+    cluster_health = CharField(max_length=30, null=False, choices=ClusterHealthChoices.choices, default=ClusterHealthChoices.CLUSTERCONFIGURING)
     active_sw = BooleanField(null=False, default=True)
     eff_dttm = DateTimeField(editable=False, auto_now_add=True, null=False)
     exp_dttm = DateTimeField(null=True, blank=True)
@@ -198,19 +158,19 @@ class Server(Model):
 
     class NodeRoleChoices(DjangoChoices):
         CONFIGURING = ChoiceItem("Configuring", "Primary Configuring", 1)
-        Primary = ChoiceItem("Primary", "Primary Node",2)
-        SecondarySync = ChoiceItem("SecondarySync", "Secondary Node - Replication is Synchronous",3)
-        SecondaryAsync = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous",4)
-        Arbiter = ChoiceItem("Arbiter", "Arbiter Node",5)
-        PoolServer = ChoiceItem("PoolServer", "PoolServer",6)
-        PoolServerLocked = ChoiceItem("PoolServerLocked", "PoolServerLocked",7)
+        PRIMARY = ChoiceItem("Primary", "Primary Node", 2)
+        SECONDARYSYNC = ChoiceItem("SecondarySync", "Secondary Node - Replication is Synchronous", 3)
+        SECONDARYASYNC = ChoiceItem("SecondaryAsync", "Secondary Node- Replication is Asynchronous", 4)
+        ARBITER = ChoiceItem("Arbiter", "Arbiter Node", 5)
+        POOLSERVER = ChoiceItem("PoolServer", "PoolServer", 6)
+        POOLSERVERLOCKED = ChoiceItem("PoolServerLocked", "PoolServerLocked", 7)
 
     class ServerHealthChoices(DjangoChoices):
-        ServerConfiguring = ChoiceItem("ServerConfig", "Server Configuring", 1)
-        ServerUp = ChoiceItem("ServerUp", "Server Up and Healthy", 2)
-        ServerUpWithIssues = ChoiceItem("ServerUpWithIssues", "Server is Up but something is Not Healthy", 3)
-        ServerDown = ChoiceItem("ServerDown", "Server is Down", 4)
-        ServerOnLineMaint = ChoiceItem("ServerOnLineMaint", "Server On-Line Maintenance", 5)
+        SERVERCONFIGURING = ChoiceItem("ServerConfig", "Server Configuring", 1)
+        SERVERUP = ChoiceItem("ServerUp", "Server Up and Healthy", 2)
+        SERVERUPWITHISSUES = ChoiceItem("ServerUpWithIssues", "Server is Up but something is Not Healthy", 3)
+        SERVERDOWN = ChoiceItem("ServerDown", "Server is Down", 4)
+        SERVERONLINEMAINT = ChoiceItem("ServerOnLineMaint", "Server On-Line Maintenance", 5)
 
     cluster = ForeignKey(Cluster, related_name='clusters', on_delete=deletion.CASCADE, null=True, blank=True)
     environment = ForeignKey(Environment, on_delete=deletion.CASCADE, null=True, blank=True)
@@ -252,8 +212,18 @@ class Backup (models.Model):
         db_table = "dbaas_backup"
         ordering = ['start_dttm']
 
+    class BackupTypeChoices(DjangoChoices):
+        BACKUPFULL = ChoiceItem("Full", "Full", 1)
+        BACKUPINCREMENTAL = ChoiceItem("Incr", "Incremental", 2)
+        BACKUPDIFFERENTIAL = ChoiceItem("Diff", "Differential", 3)
+
+    class BackupStatusChoices(DjangoChoices):
+        RUNNING = ChoiceItem("Running", "Running", 1)
+        FAILED = ChoiceItem("Failed", 'Failed', 2)
+        SUCCESSFUL = ChoiceItem("Successful", "Successful", 3)
+
     cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False)
-    backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BackupFull)
+    backup_type = CharField(max_length=10, null=False, choices=BackupTypeChoices.choices, default=BackupTypeChoices.BACKUPFULL)
     backup_status = CharField(max_length=15, choices=BackupStatusChoices.choices, null=True, blank=True)
     db_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
     backup_size_gb = DecimalField(decimal_places=2, max_digits=5, null=True, blank=True)
@@ -278,9 +248,19 @@ class Restore(models.Model):
     class Meta:
         db_table="dbaas_restore"
 
+    class RestoreTypeChoices(DjangoChoices):
+        RESTOREFULL = ChoiceItem("Full", "Restore Full", 1)
+        RESTOREDB = ChoiceItem("DB", "Restore Database", 2)
+        RESTORETABLE = ChoiceItem("Table", "Restore Table", 3)
+
+    class RestoreStatusChoices(DjangoChoices):
+        RUNNING = ChoiceItem("Running", "Running", 1)
+        FAILED = ChoiceItem("Failed", 'Failed', 2)
+        SUCCESSFUL = ChoiceItem("Successful", "Successful", 3)
+
     from_cluster = ForeignKey(Cluster, on_delete=deletion.ProtectedError, null=False, related_name='restore_from_cluster')
     to_cluster = ForeignKey(Cluster, on_delete=deletion.CASCADE, null=False, related_name='restore_to_cluster')
-    restore_type = CharField(max_length=10, null=False, default='', choices=RestoreTypeChoices.choices)
+    restore_type = CharField(max_length=10, null=False, choices=RestoreTypeChoices.choices, default='')
     restore_to_dttm = DateTimeField(editable=False)
     restore_status = CharField(max_length=15, choices=RestoreStatusChoices.choices, null=True, blank=True)
     restore_by = CharField(max_length=30, null=False, default='')
@@ -298,12 +278,28 @@ class ServerActivity(models.Model):
         db_table = "dbaas_server_activities"
         ordering = ['created_dttm']
 
+    class ActivitiesStatusChoices(DjangoChoices):
+        QUEUED = ChoiceItem("Queued", "Queued", 1)
+        PENDINGRESTART = ChoiceItem("PendingRestart", 'PendingRestart', 2)
+        PROCESSING = ChoiceItem("Processing", "Processing", 3)
+        SUCCESSFUL = ChoiceItem("Successful", "Successful", 4)
+        FAILED = ChoiceItem("Failed", "Failed", 5)
+
+    class ActivityTypeChoices(DjangoChoices):
+        RESTARTSERVER = ChoiceItem("RestartServer", "Restart Server", 1)
+        STOPSERVER = ChoiceItem("StopServer", "Stop Server", 2)
+        STARTSERVER = ChoiceItem("StartServer", "Start Server", 3)
+        RESTARTDB = ChoiceItem("RestartDB", "Restart Database", 4)
+        PROMOTEDB = ChoiceItem("PromoteDB", "Promote Database", 5)
+        DEMOMOTEDB = ChoiceItem("DemoteDB", "Demote Database", 6)
+        CREATEDB = ChoiceItem("CreateDB", "Create Database", 7)
+        DISTROYEDDB = ChoiceItem("DISTROYDB", "Destroy Database", 8)
+
     server = ForeignKey(Server, on_delete=deletion.CASCADE, null=False)
-    server_activity = CharField(max_length=20, null=False, choices=ServerActivityTypeChoices.choices,
-                                default=ServerActivityTypeChoices.RestartDB)
+    activity_type = CharField(max_length=20, null=False, choices=ActivityTypeChoices.choices, default=ActivityTypeChoices.CREATEDB)
     start_dttm = DateTimeField(null=True, blank=True)
     stop_dttm = DateTimeField(null=True, blank=True)
-    activity_status = CharField(max_length=15, null=False, default='Queued', choices=ActivitiesStatusChoices.choices)
+    activity_status = CharField(max_length=20, null=False, choices=ActivitiesStatusChoices.choices, default=ActivitiesStatusChoices.QUEUED)
     activity_by = CharField(max_length=30, null=False, default='')
     created_dttm = DateTimeField(editable=False, auto_now_add=True)
     updated_dttm = DateTimeField(auto_now=True)

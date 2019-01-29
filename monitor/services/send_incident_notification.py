@@ -2,7 +2,7 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
 
-from monitor.models import Incident, IncidentStatusChoices, IncidentNotification, ThresholdNotificationMethodLookup
+from monitor.models import Incident, IncidentNotification
 from monitor.services.send_notification_email import SendNotificationEmail
 
 mySubjectTemplate = '%s: Server: %s, %s: %s, Current Test: %s (%s)'
@@ -24,19 +24,19 @@ myHtmlTemplate = '''<h1 style="%s; margin:0px; padding:1rem">Server: %s &nbsp;&n
 def SendIncidentNotification(incidentId):
     print('============================================')
     try:
-        print('Try to find a current incident')
+        # print('Try to find a current incident')
         i = Incident.objects.filter(id=incidentId)[0]
-        print('Found a current incident id: ' + str(i.id))
+        # print('Found a current incident id: ' + str(i.id))
     except:
-        print('Did not find an existing Incident')
+        print('[SendIncidentNotification] Did not find an existing Incident')
 
-    print('Create a new Issue Notification and TwerkIt!')
+    # print('Create a new Issue Notification and TwerkIt!')
 
-    if (i.current_status == IncidentStatusChoices.Critical):
+    if (i.current_status == Incident.StatusChoices.CRITICAL):
         headerColor = 'background-color:red'
-    elif (i.current_status == IncidentStatusChoices.Warning):
+    elif (i.current_status == Incident.StatusChoices.WARNING):
         headerColor = 'background-color:orange'
-    elif (i.current_status == IncidentStatusChoices.Normal):
+    elif (i.current_status == Incident.StatusChoices.NORMAL):
         headerColor = 'background-color:green'
 
     mySubject = mySubjectTemplate % (
@@ -65,9 +65,9 @@ def SendIncidentNotification(incidentId):
         incidentNotification.save()
     except (FieldDoesNotExist, FieldError, IntegrityError, TypeError, ValueError) as ex:
         print('Error: ' + str(ex))
-    except:
-        print('Other error')
+    except Exception as ex:
+        print('Error: ' + str(ex))
 
-    print('incidentNotification.notification_method.notification_method(' + incidentNotification.notification_method.notification_method+ ') == Email')
+    print('incidentNotification.notification_method.notification_method(' + incidentNotification.notification_method.notification_method + ') == Email')
     if (incidentNotification.notification_method.notification_method == 'Email'):
         SendNotificationEmail(incidentNotification.id, i.server.dbms_type)
