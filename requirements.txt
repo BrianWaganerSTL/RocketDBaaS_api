@@ -5,7 +5,6 @@ Click>=7.0
 cluster>=1.4.1.post2
 coreapi>=2.3.3
 coreschema>=0.0.4
-coverage>=4.5.2
 dj-static>=0.0.6
 Django>=2.1.5
 django-choices>=1.6.1
@@ -14,9 +13,8 @@ django-cors-headers>=2.4.0
 django-filter>=2.0.0
 django-rest-auth>=0.9.3
 django-rest-swagger>=2.2.0
-django-test>=0.4030
 djangorestframework>=3.9.0
-djangorestframework-filters>=0.10.2
+# djangorestframework-filters>=0.10.2
 easydict>=1.9
 env>=0.1.0
 gunicorn>=19.9.0
@@ -51,3 +49,7 @@ typing>=3.6.6
 tzlocal>=1.5.1
 uritemplate>=3.0.0
 urllib3>=1.23
+#--------------------------
+pytest
+# django-test>=0.4030
+coverage>=4.5.2

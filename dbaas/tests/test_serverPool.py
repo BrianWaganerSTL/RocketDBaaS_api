@@ -15,6 +15,6 @@ class PoolServersTestCases(TestCase):
     self.poolServer.node_role = Server.NodeRoleChoices.POOLSERVER
     self.poolServer.active_sw = True
 
-  # def test_create_pool_server(self):
-  #   response = self.client.post('/dbaas_api/poolservers/', self.poolServer)
-  #   # self.assertEquals(response.status_code, 201)
+#   # def test_create_pool_server(self):
+#   #   response = self.client.post('/dbaas_api/poolservers/', self.poolServer)
+#   #   # self.assertEquals(response.status_code, 201)

@@ -1,9 +1,6 @@
-from django_test import TestCase
+from django.test import TestCase
 
 from dbaas.utils.DynCompare import DynCompare
-
-
-# from django.test import TestCase
 
 
 class DynCompareTestCase(TestCase):
