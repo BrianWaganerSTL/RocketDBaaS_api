@@ -7,15 +7,15 @@ def DynCompare(left, operator, right):
 
     if (operator == PredicateTypeChoices.LTH):
         return leftValue < rightValue
-    elif (operator == '<='):
+    elif (operator == PredicateTypeChoices.LTE):
         return leftValue <= rightValue
-    elif (operator == '>'):
+    elif (operator == PredicateTypeChoices.GTH):
         return leftValue > rightValue
-    elif (operator == '>='):
+    elif (operator == PredicateTypeChoices.GTE):
         return leftValue >= rightValue
-    elif (operator == '=='):
+    elif (operator == PredicateTypeChoices.EQ):
         return leftValue == rightValue
-    elif (operator == '!='):
+    elif (operator == PredicateTypeChoices.NE):
         return leftValue != rightValue
     else:
-        return False;
+        return False

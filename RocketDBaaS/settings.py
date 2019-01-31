@@ -191,6 +191,8 @@ MINION_PORT = 0
 #     },
 # }
 
+# RUN_ALL_TESTS = True
+
 try:
     from .settings_local import *
 except ImportError:
