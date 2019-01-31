@@ -2,7 +2,6 @@ import logging
 
 from django.core.exceptions import ValidationError, FieldDoesNotExist, FieldError
 from django.db import IntegrityError
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
@@ -108,14 +107,14 @@ class ClusterSerializer(serializers.ModelSerializer):
     validated_data.update(environment_id=env_name)  # Add it to the object to be saved
 
     read_write_port = ServerPort.NextOpenPort(self)
-    read_write_port.updated_dttm = timezone.datetime.now()
+    # read_write_port.updated_dttm = timezone.datetime.now()
     read_write_port.port_status = ServerPort.PortStatusChoices.LOCKED
     read_write_port.save()
     read_write_port.port_status = ServerPort.PortStatusChoices.USED
     validated_data.update(read_write_port=read_write_port)
 
     read_only_port = ServerPort.NextOpenPort(self)
-    read_write_port.updated_dttm = timezone.datetime.now()
+    # read_write_port.updated_dttm = timezone.datetime.now()
     read_only_port.port_status = ServerPort.PortStatusChoices.LOCKED
     read_only_port.save()
     read_only_port.port_status = ServerPort.PortStatusChoices.USED
