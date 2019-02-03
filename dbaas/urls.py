@@ -7,13 +7,15 @@ from metrics.services.charts import mountPoints, cpu
 from monitor import monitor_views
 
 router = DefaultRouter()
+
 router.register(r'poolservers', ApiViews.PoolServersViewSet)
 router.register(r'clusters', ApiViews.Clusters)
 router.register(r'servers', ApiViews.Servers)
 router.register(r'applications', ApiViews.Applications)
 router.register(r'environments', ApiViews.Environments)
 router.register(r'threshold_tests', monitor_views.ThresholdTest)
-# http://127.0.0.1:8080/admin/dbaas/cluster/add/
+router.register(r'incident_alerts', monitor_views.IncidentAlertsViewSet)
+
 urlpatterns = [
   path('applications/<vApplicationId>/contacts/', ApiViews.ApplicationContactsList.as_view()),
   path('clusters/<vClusterId>/servers/', ApiViews.ServersList.as_view()),

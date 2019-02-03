@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny
@@ -14,21 +15,6 @@ class ThresholdTest(ModelViewSet):
     authentication_classes = [TokenAuthentication, ]
 
 
-# class ThresholdTestBList(generics.ListAPIView):
-#     queryset = ThresholdTest.objects.all()
-#     serializer_class = ThresholdTestSerializer
-#     permission_classes = [AllowAny, ]
-#
-#     def get_queryset(self):
-#         vServerId = self.kwargs['vServerId']
-#         afterDttm = timezone.now() - timezone.timedelta(minutes=defaultMetricsMins)
-#
-#         return ThresholdTest.objects \
-#             .filter(server_id=vServerId) \
-#             .filter(created_dttm__gte=afterDttm) \
-#             .order_by('-created_dttm')
-
-
 class IncidentList(generics.ListAPIView):
     serializer_class = IncidentSerializer
     permission_classes = [AllowAny, ]
@@ -37,4 +23,13 @@ class IncidentList(generics.ListAPIView):
 
     def get_queryset(self):
         vServerId = self.kwargs['vServerId']
-        return Incident.objects.filter(server_id=vServerId).order_by('-created_dttm')
+        return Incident.objects.filter(server_id=vServerId).order_by('-last_dttm')
+
+class IncidentAlertsViewSet(ModelViewSet):
+  queryset = Incident.objects \
+    .filter(Q(current_status=Incident.StatusChoices.WARNING) | Q(current_status=Incident.StatusChoices.CRITICAL)) \
+    .order_by('-last_dttm')
+  serializer_class = IncidentSerializer
+  permission_classes = [AllowAny, ]
+  authentication_classes = [TokenAuthentication, ]
+

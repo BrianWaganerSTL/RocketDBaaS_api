@@ -22,5 +22,5 @@ class IncidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Incident
         fields = '__all__'
-        depth = 2
+        depth = 4
         sorted('created_dttm', reverse=True)
