@@ -13,6 +13,9 @@ omit =
     .coveragerc
     .gitignore
     _config.yml
+    tests/*
+    test*.py
+    migrations
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -43,6 +46,9 @@ omit =
     .coveragerc
     .gitignore
     _config.yml
+    tests/*
+    test*.py
+    migrations
 
 ignore_errors = True
 

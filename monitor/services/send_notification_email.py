@@ -2,6 +2,7 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
 
+from RocketDBaaS.settings_local import emailCcPostgres, emailFromPostgres, emailCcMongo, emailFromMongo, replyToPostgres, replyToMongo
 from dbaas.models import ApplicationContact
 from monitor.models import IncidentNotification
 
@@ -17,29 +18,27 @@ def SendNotificationEmail(IncidentNotificationId, dbmsType):
 
   print('dbmsType=' + dbmsType)
   if (dbmsType == 'PostgreSQL'):
-    emailFrom = 'bwaganer<bwaganer@express-scripts.com>'
-    emailCc = ['bwaganer<bwaganer@express-scripts.com>', ]
-    replyTo = ['bwaganer<bwaganer@express-scripts.com>', ]
-    # emailFrom = 'NextGenDBaaS<DBA-PostgreSQL@express-scripts.com>'
-    # emailCc = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
-    # replyTo = ['DBA - PostgreSQL <DBA-PostgreSQL@express-scripts.com>']
+    emailFrom = emailFromPostgres
+    emailCc = emailCcPostgres
+    replyTo = replyToPostgres
   elif (dbmsType == 'MongoDB'):
-    emailFrom = 'NextGenDBaaS<DBA-MongoDB@express-scripts.com>'
-    emailCc = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>', ]
-    replyTo = ['DBA - MongoDB <DBA-MongoDB@express-scripts.com>', ]
+    emailFrom = emailFromMongo
+    emailCc = emailCcMongo
+    replyTo = replyToMongo
 
   # Send the Notification out to the following
   print('Notify the following contacts')
 
+  applContactsExists = False
   try:
     print('Try to find Application Contacts')
     applicationContacts = ApplicationContact.objects.filter(application=notification.application.id, contact__active_sw=True).all()
     print('Found it')
+    applContactsExists = True
   except:
     print('Did not find an application Contacts')
 
-  print('applicationContacts.count()=' + str(applicationContacts.count()))
-  if (applicationContacts.count() == 0):
+  if (applContactsExists == False):
     try:
       print('No Application Contacts registered for this metric, just send to the CC list')
       msg = EmailMessage(subject=notification.notification_subject, body=notification.notification_body,

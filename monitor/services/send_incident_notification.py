@@ -2,6 +2,7 @@ from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db import IntegrityError
 from django.utils import timezone
 
+from RocketDBaaS.settings_local import uiUrl
 from monitor.models import Incident, IncidentNotification
 from monitor.services.send_notification_email import SendNotificationEmail
 
@@ -16,9 +17,9 @@ myHtmlTemplate = '''<h1 style="%s; margin:0px; padding:1rem">Server: %s &nbsp;&n
     Started Tracking: %s <br>\n
     Last Activity: %s <br>\n
     <br>\n
-    Issue Tracker ID: %s <br>\n
+    Incident ID: %s <br>\n
     <br>\n
-    Link to Issue: <a href="http://0.0.0.0:8080/clusters/%s/servers/%s/incidents/%s">Click</a> <br>\n
+    Link to Incident: <a href="%s">Click</a>
     '''
 
 def SendIncidentNotification(incidentId):
@@ -39,26 +40,33 @@ def SendIncidentNotification(incidentId):
     elif (i.current_status == Incident.StatusChoices.NORMAL):
         headerColor = 'background-color:green'
 
+    if (i.server.cluster == None):
+        print('No Cluster and Application associated with this server')
+        application = None
+    else:
+        application = i.server.cluster.application;
+
     mySubject = mySubjectTemplate % (
         i.current_status, i.server.server_name,
+        i.threshold_test.threshold_metric.category.category_name,
         i.threshold_test.threshold_metric.metric_name,
-        i.threshold_test.detail_element,
         i.detail_element, i.cur_test_w_values)
     myBody = myHtmlTemplate % (
         headerColor, i.server.server_name, i.current_status,
+        i.threshold_test.threshold_metric.category.category_name,
         i.threshold_test.threshold_metric.metric_name,
-        i.detail_element, i.threshold_test.detail_element,
+        i.detail_element,
         i.cur_value,
         i.cur_test_w_values,
         timezone.datetime.strftime(i.start_dttm, "%a %b %d, %Y %H:%M"),
         timezone.datetime.strftime(i.last_dttm, "%a %b %d, %Y %H:%M"),
         i.id,
-        i.server.cluster_id, i.server_id, i.id)
+        uiUrl + '/clusters/'+str(i.server.cluster_id)+'/incidents/')
 
     try:
         print('NotificationMethod: ' + i.threshold_test.notification_method.notification_method)
         incidentNotification = IncidentNotification(incident_id=i.id,
-                                                    application=i.server.cluster.application,
+                                                    application=application,
                                                     notification_method=i.threshold_test.notification_method,
                                                     notification_subject=mySubject,
                                                     notification_body=myBody)

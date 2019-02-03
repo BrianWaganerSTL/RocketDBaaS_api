@@ -165,8 +165,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Set in the local file
-MINION_PORT = 0
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
@@ -192,6 +190,17 @@ MINION_PORT = 0
 # }
 
 # RUN_ALL_TESTS = True
+
+# Set in the setting_local.py file
+emailFromPostgres= ''
+emailCcPostgres = ''
+replyToPostgres = ''
+emailFromMongo = ''
+emailCcMongo = ''
+replyToMongo = ''
+
+uiUrl = ''
+MINION_PORT = ''
 
 try:
     from .settings_local import *
